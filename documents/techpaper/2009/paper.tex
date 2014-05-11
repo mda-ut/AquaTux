@@ -1,0 +1,153 @@
+\documentclass[12pt]{article}
+
+%\usepackage{times}
+%nips02e
+
+\usepackage{spconf}
+\usepackage{epsfig}
+%\usepackage{psfig}
+\usepackage{amsmath}
+\usepackage[sort]{cite}
+\usepackage{supertabular}
+%\usepackage{dcolumn}
+\usepackage{multirow}
+\usepackage{rotating}
+\usepackage{subfigure}
+\usepackage{url}
+\usepackage{bigstrut}
+\usepackage{hhline}
+%\usepackage{setspace}
+\usepackage{slashbox}
+\usepackage[T1]{fontenc} % for bold small caps
+
+\tolerance=1000
+\hyphenpenalty=2000
+
+%\textwidth 6.5in
+%\textheight 9.0in
+%\headheight 0.0in
+%\headsep 0.0in
+%\oddsidemargin 0.0in
+%\evensidemargin 0.5in
+\renewcommand{\topmargin}{-.25in} % AAA
+\newcommand{\commented}[1]{}
+
+%\global\boilerplate={}
+%\global\copyrightetc{}
+
+\newenvironment{packed_enum}{
+\begin{enumerate}
+  \setlength{\itemsep}{1pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}
+}{\end{enumerate}}
+
+\title{  AquaTux }
+\name{Josh Dian, Mark Harfouche, Lawrence Lee, Martin~Labrecque,
+  Shervin Mehryar,\vspace{-.3in}}
+\address{\em{Theodore Soong}$^+$\thanks{$^+$in alphabetical order} \\ University of Toronto Mechatronics Design Association\\
+email: mech.design@utoronto.ca }
+
+
+\usepackage{comment}
+% Un-comment one of the following two lines to turn pdf links on/off
+%\includecomment{pdfrefs}
+\excludecomment{pdfrefs}
+
+\begin{pdfrefs}
+\usepackage[ps2pdf]{hyperref}
+% (See the hyperref package documentation for a list of supported drivers.)
+\hypersetup{
+    pdftitle={  AquaTux },
+    pdfauthor={Josh Dian, Mark Harfouche, Lawrence Lee, Martin Labrecque,
+      Shervin Mehryar, Theodore Soong},
+    pdfsubject={AUVSI 2009},
+    pdfkeywords={Mechatronics Design Association, AUV, submarine}
+}
+\end{pdfrefs}
+
+
+
+%for subfigure
+\renewcommand{\subfigcapskip}{0mm}
+\renewcommand{\subfigtopskip}{0mm}
+\renewcommand{\subfigbottomskip}{2mm}
+
+\renewcommand{\topfraction}{0.999}     % max fraction of floats at top
+\renewcommand{\bottomfraction}{0.99}        % max fraction of floats at bottom
+\renewcommand{\floatpagefraction}{0.99}
+
+\usepackage{amssymb}
+\usepackage{fancyhdr}
+
+\lhead{}
+\chead{}
+\rhead{}
+\lfoot{}
+\cfoot{Mechatronics Design Association -- University of Toronto}
+\rfoot{\thepage}
+\renewcommand{\headsep}{10pt}   %AAAA
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{2pt}
+
+\pagestyle{fancy}
+\hyphenation{program-mable}
+\hyphenation{pipe-lined}
+\hyphenation{Chem-que}
+
+\makeatletter
+\renewcommand\maketitle{%
+ \begin{minipage}[h]{.3\textwidth} 
+   \centering 
+   \includegraphics[width=2in]{fig/logo2} 
+ \end{minipage}% 
+ \begin{minipage}[h]{.7\textwidth} 
+   \centering 
+\vspace{.3in}
+\Huge{AquaTux} \\
+\vspace{.1in}
+\large{ Josh~Dian, Mark~Harfouche, Lawrence~Lee, Martin~Labrecque, Shervin~Mehryar, Theodore~Soong }\\
+\normalsize{ University of Toronto Mechatronics Design Association\\
+ email: mech.design@utoronto.ca }
+
+ \end{minipage} 
+\vspace{.3in}
+\par}
+\let\after@maketitle\@empty
+\makeatother
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\twocolumn[\maketitle]
+
+
+
+\thispagestyle{fancy} 
+
+\begin{abstract}
+\input{abstract}
+\end{abstract}
+
+
+\vspace{-.1in}
+\input{introduction.tex}
+\vspace{-.1in}
+\input{frame.tex}
+\vspace{-.1in}
+\input{electronics.tex}
+\vspace{-.1in}
+\input{sonar.tex}
+\vspace{-.1in}
+\input{vision.tex}
+\vspace{-.12in}
+\input{conclusions.tex}
+\vspace{-.12in}
+\input{ack.tex}
+%\vspace{-.08in}
+\small
+%\bibliographystyle{IEEEtran}
+%\bibliography{IEEEabrv,paper}
+
+
+\end{document}

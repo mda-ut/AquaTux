@@ -1,0 +1,10 @@
+## hacks for competition
+
+GATE_DEPTH, 450
+
+RUN_BUOY, 1
+BUOY_DEPTH, 350
+BUOY_TIME, 12
+
+RUN_FRAME, 1
+FRAME_DEPTH, 350

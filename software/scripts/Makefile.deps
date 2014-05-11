@@ -1,0 +1,2 @@
+move_up_down.o: move_up_down.c scripts.h ../ui/fpga_ui.h
+template.o: template.c scripts.h ../ui/fpga_ui.h

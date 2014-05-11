@@ -1,0 +1,52 @@
+simulator README
+
+*** Useful files you may edit ***
+init.h - stores starting location/orientation of sub for various tasks
+site.cpp - defines the pool and its objects
+main.cpp - duh
+physical_model.cpp/h - defines physical_model class, which stores sub position, orientation and velocity, and methods dealing with them
+types.h - General-purpose include file
+
+***  Files theres no need to touch ***
+bmp_io.cpp/h - Utilities for bitmap image processing
+glQuaternion.cpp/h - Fancy math for camera orientation using a quaternion
+
+copy pasted from main.cpp:
+/** OpenCV integration section starts here.
+ *  Info:
+ *  The glut model of code goes revolves around the function glutMainLoop(). A
+ *  glut program generally has 2 steps: 
+ *      1. Init the main loop with parameters. 
+ *      2. Register functions that will be called by mainloop when keyboard is hit,
+ *      screen needs to be redraw, etc
+ *      3. Call glutMainLoop. Once this is done the loop cannot be exited.
+ * 
+ *  For our purposes theres only 2 functions you need to care about.
+ *      cv_display - function that is called whenever sim needs to update the
+ *          window. redraws the window.
+ *      cv_keyboard - function that is called whenever key is hit. It processes
+ *          the keyhit, updates the model, and raises a flag to redraw window.
+ *  Thus everytime u hit key the 2 above functions get called. Idle redraw has been
+ *      disabled for now.
+ * 
+ * The openCV integrated model will expand this: instead of 
+ *      keyhit -> glut process key -> update -> redraw
+ * We have: 
+ *      Anykeyhit -> send current img to opencv -> cv process -> sends keystroke command
+ *      -> glut process key -> update -> redraw
+ * 
+ * The Anykeyhit refers to the user hitting any key. Its just to "go to next step" of sim.
+ * User has no input when cv is running. cv will overwrite the user's key.
+ * 
+ * This is implemented by adding a section in cv_display that sends img to cv and processes
+ * it. Thus cv will see a new image immediately as it is painted on window.
+ * 
+ * cv processes the image and updates a global var CV_COMMAND
+ * 
+ * Then cv_keyboard reads CV_COMMAND and does its normal thing. 
+ * 
+ * To start the cycle each time user must press key, this will call cv_keyboard to execute 
+ * the current CV_COMMAND, then flag window as needing to be redraw. This causes cv to update 
+ * CV_COMMAND. Thus you will see on terminal what CV wants to do, and press a key to see the
+ * action occur.
+

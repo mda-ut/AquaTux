@@ -1,0 +1,64 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%              Power Connectors              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+5-pin Power Connector
+---------------------
+HEADER
+ Manufacturer    = Hirose Electric Co Ltd
+ Manufacturer PN = DF5A-5P-5DSA(05)
+ Digikey PN      = H10284-ND
+
+CONNECTOR
+ Manufacturer    = Hirose Electric Co Ltd
+ Manufacturer PN = DF5A-5S-5C
+ Digikey PN      = H1903-ND
+
+3-pin Power Connector
+---------------------
+HEADER
+ Manufacturer    = Hirose Electric Co Ltd
+ Manufacturer PN = DF5A-3P-5DSA(05)
+ Digikey PN      = H10282-ND
+
+CONNECTOR
+ Manufacturer    = Hirose Electric Co Ltd
+ Manufacturer PN = DF5A-3S-5C
+ Digikey PN      = H1901-ND
+
+2-pin Power Connector
+---------------------
+HEADER
+ Manufacturer    = Hirose Electric Co Ltd
+ Manufacturer PN = DF5A-2P-5DSA(05)
+ Digikey PN      = H10281-ND
+
+CONNECTOR
+ Manufacturer    = Hirose Electric Co Ltd
+ Manufacturer PN = DF5A-2S-5C
+ Digikey PN      = H1900-ND
+
+Crimp Contacts
+--------------
+ Manufacturer    = Hirose Electric Co Ltd
+ Manufacturer PN = DF5A-1822SCF(51)
+ Digikey PN      = H1933CT-ND
+ Wire AWG        = 18-22
+ Jacket Diameter = 2.2-3.2mm
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%       FPGA-PowerManagement Connector       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+HEADER
+ Manufacturer    = TE Connectivity
+ Manufacturer PN = 5103309-1
+ Digikey PN      = A33160-ND
+ Pitch           = 0.100
+ Row Spacing     = 0.100
+
+CONNECTOR
+ Manufacturer    = TE Connectivity
+ Manufacturer PN = 1658527-3
+ Digikey PN      = 1658527-3-ND
+ Pitch           = 0.100
+ Row Spacing     = 0.100

@@ -1,0 +1,73 @@
+# Begin compile flags
+ifeq ($(OS),APPLE)
+	GL_LIBS=-L/opt/local/lib -lGL -lglut -lGLU
+else
+	GL_LIBS=-lGL -lglut -lGLU
+endif
+
+CV_LIBS=`pkg-config --cflags --libs opencv`
+
+I_FLAGS=-I ../sim -I ../vision -I ../tasks -I ../ui -I ../interface
+L_FLAGS=-Wl,--no-as-needed -lsim -L../sim -lvision -L../vision -ltasks -L../tasks -lui -L../ui -linterface -L../interface -lncurses -lm -pthread -Wl,-rpath,'$$ORIGIN/../vision/' -Wl,-rpath,'$$ORIGIN/../tasks/' -Wl,-rpath,'$$ORIGIN/../sim/' -Wl,-rpath,'$$ORIGIN/../ui/' -Wl,-rpath,'$$ORIGIN/../interface/'
+COMPILE_FLAGS+=-O3 -Wall -g -fPIC
+
+CXXFLAGS=$(I_FLAGS) $(COMPILE_FLAGS) $(L_FLAGS) $(GL_LIBS) $(CV_LIBS)
+CFLAGS=$(CXXFLAGS)
+
+DEBUG_FLAGS=-DDEBUG_FRAME_BY_FRAME -DDISABLE_SCRATCH_IMAGE -DFLOOD_DEBUG -DM_DEBUG
+# End compile flags
+
+# Begin files
+ifndef SRCS
+	SRCS:=$(wildcard *.cpp)
+endif
+ifndef OBJ
+	OBJ:=$(patsubst %.cpp,%.o,$(SRCS))
+endif
+
+LIBVISION=../vision/libvision.so
+LIBTASKS=../tasks/libtasks.so
+LIBSIM=../sim/libsim.so
+LIBUI=../ui/libui.so
+LIBINTERFACE=../interface/libinterface.so
+LIB=$(LIBVISION) $(LIBTASKS) $(LIBSIM) $(LIBUI) $(LIBINTERFACE)
+# End files
+
+# Begin targets
+parallel:
+	$(MAKE) -j4 all
+
+all: $(LIB) $(SO)
+	$(MAKE) $(EXES)
+
+debug:
+	$(MAKE) all CXXFLAGS="$(CXXFLAGS) $(DEBUG_FLAGS)" CFLAGS="$(CFLAGS) $(DEBUG_FLAGS)"
+
+ifdef SO
+$(SO): $(OBJ)
+	$(CXX) -fPIC -shared -o $@ $(OBJ)
+endif
+
+deps:
+	$(CXX) -MM $(I_FLAGS) $(SRCS) > Makefile.deps
+
+clean:
+	rm -rf $(OBJ) $(EXES) $(SO) ./*~
+
+PHONY_TARGETS=parallel all debug deps clean
+
+$(LIBVISION):
+	+$(MAKE) -C `dirname $@` `basename $@`
+
+$(LIBTASKS):
+	+$(MAKE) -C `dirname $@` `basename $@`
+
+$(LIBSIM):
+	+$(MAKE) -C `dirname $@` `basename $@`
+
+$(LIBUI):
+	+$(MAKE) -C `dirname $@` `basename $@`
+
+$(LIBINTERFACE):
+	+$(MAKE) -C `dirname $@` `basename $@`
+# End targets

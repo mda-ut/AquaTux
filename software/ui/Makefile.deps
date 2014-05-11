@@ -1,0 +1,1 @@
+fpga_ui.o: fpga_ui.c fpga_ui.h

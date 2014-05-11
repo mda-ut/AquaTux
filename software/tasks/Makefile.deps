@@ -1,0 +1,96 @@
+mda_task_base.o: mda_task_base.cpp mda_tasks.h mda_vision.h \
+ ../vision/mgui.h ../vision/profile_bin.h ../vision/mv.h ../vision/mgui.h \
+ ../vision/mvColorFilter.h ../vision/mv.h ../vision/mvLines.h \
+ ../vision/mvShapes.h ../vision/mvLines.h ../vision/mvContours.h \
+ ../vision/mvColorFilter.h frame_data.h ../interface/AttitudeInput.h \
+ ../interface/ImageInput.h ../interface/ActuatorOutput.h \
+ ../interface/CharacterStreamSingleton.h
+Mission.o: Mission.cpp Mission.h ../interface/Operation.h \
+ ../interface/AttitudeInput.h ../interface/ImageInput.h ../vision/mgui.h \
+ ../vision/profile_bin.h ../interface/ActuatorOutput.h \
+ ../interface/CharacterStreamSingleton.h ../tasks/mda_vision.h \
+ ../vision/mv.h ../vision/mgui.h ../vision/mvColorFilter.h ../vision/mv.h \
+ ../vision/mvLines.h ../vision/mvShapes.h ../vision/mvLines.h \
+ ../vision/mvContours.h ../vision/mvColorFilter.h ../tasks/frame_data.h \
+ ../tasks/mda_tasks.h ../tasks/mda_vision.h ../interface/AttitudeInput.h \
+ ../interface/ImageInput.h ../interface/ActuatorOutput.h \
+ ../interface/CharacterStreamSingleton.h mda_tasks.h
+task_buoy.o: task_buoy.cpp mda_vision.h ../vision/mgui.h \
+ ../vision/profile_bin.h ../vision/mv.h ../vision/mgui.h \
+ ../vision/mvColorFilter.h ../vision/mv.h ../vision/mvLines.h \
+ ../vision/mvShapes.h ../vision/mvLines.h ../vision/mvContours.h \
+ ../vision/mvColorFilter.h frame_data.h mda_tasks.h \
+ ../interface/AttitudeInput.h ../interface/ImageInput.h \
+ ../interface/ActuatorOutput.h ../interface/CharacterStreamSingleton.h
+task_frame.o: task_frame.cpp mda_vision.h ../vision/mgui.h \
+ ../vision/profile_bin.h ../vision/mv.h ../vision/mgui.h \
+ ../vision/mvColorFilter.h ../vision/mv.h ../vision/mvLines.h \
+ ../vision/mvShapes.h ../vision/mvLines.h ../vision/mvContours.h \
+ ../vision/mvColorFilter.h frame_data.h mda_tasks.h \
+ ../interface/AttitudeInput.h ../interface/ImageInput.h \
+ ../interface/ActuatorOutput.h ../interface/CharacterStreamSingleton.h
+task_gate.o: task_gate.cpp mda_tasks.h mda_vision.h ../vision/mgui.h \
+ ../vision/profile_bin.h ../vision/mv.h ../vision/mgui.h \
+ ../vision/mvColorFilter.h ../vision/mv.h ../vision/mvLines.h \
+ ../vision/mvShapes.h ../vision/mvLines.h ../vision/mvContours.h \
+ ../vision/mvColorFilter.h frame_data.h ../interface/AttitudeInput.h \
+ ../interface/ImageInput.h ../interface/ActuatorOutput.h \
+ ../interface/CharacterStreamSingleton.h
+task_marker.o: task_marker.cpp mda_tasks.h mda_vision.h ../vision/mgui.h \
+ ../vision/profile_bin.h ../vision/mv.h ../vision/mgui.h \
+ ../vision/mvColorFilter.h ../vision/mv.h ../vision/mvLines.h \
+ ../vision/mvShapes.h ../vision/mvLines.h ../vision/mvContours.h \
+ ../vision/mvColorFilter.h frame_data.h ../interface/AttitudeInput.h \
+ ../interface/ImageInput.h ../interface/ActuatorOutput.h \
+ ../interface/CharacterStreamSingleton.h
+task_other.o: task_other.cpp mda_tasks.h mda_vision.h ../vision/mgui.h \
+ ../vision/profile_bin.h ../vision/mv.h ../vision/mgui.h \
+ ../vision/mvColorFilter.h ../vision/mv.h ../vision/mvLines.h \
+ ../vision/mvShapes.h ../vision/mvLines.h ../vision/mvContours.h \
+ ../vision/mvColorFilter.h frame_data.h ../interface/AttitudeInput.h \
+ ../interface/ImageInput.h ../interface/ActuatorOutput.h \
+ ../interface/CharacterStreamSingleton.h
+task_path.o: task_path.cpp mda_tasks.h mda_vision.h ../vision/mgui.h \
+ ../vision/profile_bin.h ../vision/mv.h ../vision/mgui.h \
+ ../vision/mvColorFilter.h ../vision/mv.h ../vision/mvLines.h \
+ ../vision/mvShapes.h ../vision/mvLines.h ../vision/mvContours.h \
+ ../vision/mvColorFilter.h frame_data.h ../interface/AttitudeInput.h \
+ ../interface/ImageInput.h ../interface/ActuatorOutput.h \
+ ../interface/CharacterStreamSingleton.h
+task_test.o: task_test.cpp mda_tasks.h mda_vision.h ../vision/mgui.h \
+ ../vision/profile_bin.h ../vision/mv.h ../vision/mgui.h \
+ ../vision/mvColorFilter.h ../vision/mv.h ../vision/mvLines.h \
+ ../vision/mvShapes.h ../vision/mvLines.h ../vision/mvContours.h \
+ ../vision/mvColorFilter.h frame_data.h ../interface/AttitudeInput.h \
+ ../interface/ImageInput.h ../interface/ActuatorOutput.h \
+ ../interface/CharacterStreamSingleton.h
+vision_buoy.o: vision_buoy.cpp mda_vision.h ../vision/mgui.h \
+ ../vision/profile_bin.h ../vision/mv.h ../vision/mgui.h \
+ ../vision/mvColorFilter.h ../vision/mv.h ../vision/mvLines.h \
+ ../vision/mvShapes.h ../vision/mvLines.h ../vision/mvContours.h \
+ ../vision/mvColorFilter.h frame_data.h
+vision_frame.o: vision_frame.cpp mda_vision.h ../vision/mgui.h \
+ ../vision/profile_bin.h ../vision/mv.h ../vision/mgui.h \
+ ../vision/mvColorFilter.h ../vision/mv.h ../vision/mvLines.h \
+ ../vision/mvShapes.h ../vision/mvLines.h ../vision/mvContours.h \
+ ../vision/mvColorFilter.h frame_data.h
+vision_gate.o: vision_gate.cpp mda_vision.h ../vision/mgui.h \
+ ../vision/profile_bin.h ../vision/mv.h ../vision/mgui.h \
+ ../vision/mvColorFilter.h ../vision/mv.h ../vision/mvLines.h \
+ ../vision/mvShapes.h ../vision/mvLines.h ../vision/mvContours.h \
+ ../vision/mvColorFilter.h frame_data.h
+vision_marker.o: vision_marker.cpp mda_vision.h ../vision/mgui.h \
+ ../vision/profile_bin.h ../vision/mv.h ../vision/mgui.h \
+ ../vision/mvColorFilter.h ../vision/mv.h ../vision/mvLines.h \
+ ../vision/mvShapes.h ../vision/mvLines.h ../vision/mvContours.h \
+ ../vision/mvColorFilter.h frame_data.h
+vision_path.o: vision_path.cpp mda_vision.h ../vision/mgui.h \
+ ../vision/profile_bin.h ../vision/mv.h ../vision/mgui.h \
+ ../vision/mvColorFilter.h ../vision/mv.h ../vision/mvLines.h \
+ ../vision/mvShapes.h ../vision/mvLines.h ../vision/mvContours.h \
+ ../vision/mvColorFilter.h frame_data.h
+vision_test.o: vision_test.cpp mda_vision.h ../vision/mgui.h \
+ ../vision/profile_bin.h ../vision/mv.h ../vision/mgui.h \
+ ../vision/mvColorFilter.h ../vision/mv.h ../vision/mvLines.h \
+ ../vision/mvShapes.h ../vision/mvLines.h ../vision/mvContours.h \
+ ../vision/mvColorFilter.h frame_data.h

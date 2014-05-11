@@ -1,0 +1,68 @@
+### Default settings file for the submarine
+### The only difference between this and aquatux_submarine.csv 
+### should be that this says "OPERATION MISSION"
+
+# Choose type of inputs, operation and outputs
+IMAGE_INPUT WEBCAM
+ATTITUDE_INPUT SUBMARINE
+OPERATION MISSION ### This line is different!
+ACTUATOR_OUTPUT SUBMARINE
+
+# IMAGE_INPUT options
+WRITE_TO_VIDEO 1
+IMAGE_SHOW_RAW 1
+WEBCAM_FWD 1
+WEBCAM_DWN 2
+FWD_VIDEO_FILE sub.avi
+DWN_VIDEO_FILE sub_dwn.avi
+
+### Options for the submarine ###
+
+DEPTH_P 20.0
+DEPTH_I 0.005
+DEPTH_D 10.0
+DEPTH_ALPHA 0.0
+
+PITCH_P 24.0
+PITCH_I 0.0
+PITCH_D 0.0
+PITCH_ALPHA 0.0
+
+ROLL_P 18.0
+ROLL_I 0.0
+ROLL_D 0.0
+ROLL_ALPHA 0.0
+
+YAW_P 6.0
+YAW_I 0.0
+YAW_D 0.8
+YAW_ALPHA 0.0
+
+## For streaming image source
+
+# IMAGE_INPUT SIMULATOR
+
+# IMAGE_INPUT VIDEO
+## IMAGE_SHOW_RAW 1
+## VIDEO_FWD ../vision/webcam.avi
+## VIDEO_DWN ../vision/runtime_simple1.avi
+
+# IMAGE_INPUT WEBCAM
+## IMAGE_SHOW_RAW 1
+## WEBCAM_FWD 0
+## WEBCAM_DWN 1
+
+## For attitude (yaw, pitch, roll, depth) readings
+
+# ATTITUDE_INPUT SIMULATOR
+# ATTITUDE_INPUT SUBMARINE
+
+## For controlling movement
+# ACTUATOR_INPUT SIMULATOR
+# ACTUATOR_INPUT SUBMARINE
+
+## Algorithm to process input data and output control movement
+# OPERATION MANUAL  # Manual control with single-button pressing
+# OPERATION MISSION # Autonomous control
+
+## Note: all options also have a NULL option which does nothing

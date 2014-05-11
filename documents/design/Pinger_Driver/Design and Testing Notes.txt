@@ -1,0 +1,139 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                December, 2012                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Transformer winding calculations.
+0) Design Parameters
+Frequency: 12-30kHz
+Power Dissipated: < 1W
+Primary Voltage:   40Vpp
+Secondary Voltage: 240Vpp (6 x turns ratio)
+
+1) Magnetic losses
+B = |V| / A w N
+  where A = cross-sectional area
+	N = number of turns
+	w = angular frequency
+	V = voltage amplitude (NOT rms)
+	B = peak magnetic field (T)
+
+For the ETD59 core used in the transformer (3F3 ferrite),
+	A = 368 mm^2
+	V = 51500 mm^3
+
+	P = V * 10kW/m^3 @ 100mT, 25kHz (3F3 material)
+	  = 0.515W (significant)
+Thus, we plan to design the transformer with a max 50mT B-field.
+
+Considering the primary (fewer turns), we have:
+	|V| = 20V
+	B   = 0.05T
+	A   = 363mm^2
+	w   = 2*pi*12e3;
+	N   = (20)/(362e-6)(2*pi*12e3)(0.05) = 14.5 turns minimum
+
+2) Shunt inductance
+Inductance of core is given by:
+L = N^2 A_L
+  where A_L = 5.6 uH for the ETD59 core
+
+If we try N = 31, we get:
+	L = 25^2 (5.6uH) = 5380uH
+At 12kHz, this has an impedance of 405 ohms, which is acceptably high.
+
+3) Resistance calculations
+	24AWG wire: 25.3 ohms/1000ft
+	32AWG wire: 159.7 ohms/1000ft
+Using a 25mm bobbin, we have ~80mm = 0.262 ft/turn.
+Using N_primary = 31, N_secondary = 186:
+	L_primary   = 6.55 ft
+	L_secondary = 39.3 ft
+With 24AWG wire (32AWG is unecessarily lossy):
+	R_primary   = 0.166 ohms
+	R_secondary = 0.994 ohms
+Since the primary has 6x the current of the secondary, the primary is currently ~6x lossier than the secondary.
+Thus, it is probably a good idea to use multiple strans for the primary.
+
+Using 4 x 24AWG wire for the primary, 1x 24AWG for the secondary:
+	R_primary   = 0.041 ohms
+	R_secondary = 0.994 ohms
+
+4) Turns per layer of bobbin
+24AWG ~ 3/5mm = 0.6mm
+Thus, with our 4cm bobbin => 66 turns / layer maximum (60 is easily achievable).
+
+FINAL DESIGN:
+-------------
+Turns Ratio     - 1:6
+Primary Turns   - 31
+Secondary Turns - 186
+Wire            - 24AWG (1x for secondary, 4x for primary)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                January, 2012                 %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Transformer winding details
+- secondary: 186 total (placed on INSIDE of winding)
+	=> 1 x 24AWG
+	=> layer 1 - 67
+	     "   2 - 59
+	     "   3 - 60
+- primary: 31 total (placed on OUTSIDE of winding)
+	=> 4 x 24AWG (to reduce winding resistance)
+	=> layer 1 - 16
+	     "   2 - 15
+- used fish paper between all layers, and fully impregnated with red insulating varnish, to fully insulate the windings
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%           April 14, 2012 (Saturday)          %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+- tested and characterized transformer: quite impressive performance (measured characteristics using sine-wave generator, resistor, & scope)
+	=> 6:1 ratio (+/- 0.3%) from 10-40kHz
+	=> primary (fewer turns) leakage inductance: 6.14uH (10kHz) - 5.13uH (40kHz)
+	=> primary (fewer turns) shunt impedance: 432 ohms (10kHz) - 4657 ohms (40kHz)
+		- antiresonance @ 36kHz (shunt impedance goes to ~10,000 ohms)
+		- inductive below 36kHZ, capacitive above 36kHz
+	=> impedances of secondary are same as primary, except *approximately* converted via the impedance ratio (36 times larger)
+- tested amplifier with transformer (open load), and 2 x 1uF capacitors in series with the primary coil
+	=> no oscillations or other issues with amplifier
+	=> successfully measured ~230Vpp at output of transformer using oscilloscope
+	=> no distortions in transformer output signal
+
+*** IMPORTANT ***: oscillator in pinger driver (oscillator) does NOT start unless the POSITIVE supply rail is turned on FIRST.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            April 24, 2012 (Tuesday)          %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+- characterized the impedance of the ultrasound transducer (Sensor Technology Limited SQ09 Transmit/Recieve hydrophone) using a sine-wave generator, resistor, and scope
+	=> impedance modelled well by a 10nF capacitor over most of 10kHz - 40kHz range
+	=> encounter some sort of acoustic resonance @ 30-33kHz: the impedance briefly transitions from capacitive to resistive, and the impedance becomes very sensitive to the presence of water (the addition of water can increase the impedance by a factor of two)
+	=> over the rest of the range, the transducer is fairly insensitive to the presence of water; the impedance changes by less than 20%
+		- tested pinger driver with ultrasound transducer: success!
+	=> used total system: sine-wave generator, power amplifier, and transformer
+	=> great performance: no stability issues, ringing, etc.
+	=> over most of frequency range (12kHz - 32kHz), able to use max amplitude setting (~240Vpp)
+	=> from ~28-31kHz (corresponding to resonance of transducer):
+		- too much current drawn from power supplies used, which went into current-limiting mode
+		- no distortion / current limiting if output is reduced to ~170-180Vpp
+	=> system should work over entire range at 240Vpp if we use batteries
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%            April 24, 2012 (Tuesday)          %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+- fully tested the pinger driver with the ultrasound transducer: everything works well
+- minor issue: when using external trigger, there is ~50mS delay until the output signal turns off (design error)
+- measured frequency vs. frequency knob setting:
+
+Setting		Frequency(kHz)
+--------------------------------
+0		12.0
+10		13.5
+20		15.9
+30		18.0
+40		20.2
+50		22.5
+60		25.0
+70		27.3
+80		29.6
+90		31.7
+100		32.6

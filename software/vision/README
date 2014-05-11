@@ -1,0 +1,18 @@
+This is the second iteration in writing a good vision code system.
+Main Goals
+  - Seperation of layers of code:
+    - img/filter layer, task layer, mission layer
+  - Use .msf text files to store configuration info
+  - Better interface between vision and control
+  - Minimize explicit use of opencv in main functions
+
+Important Things:
+  - You need a "common_settings.msf" in settings, which contains the minimum
+    needed config info to start the system. This is extensively hardcoded
+  - Each filter and task has its own settings file
+  - In a settings file, any setting that looks like _LENGTH_ will be a scale
+    factor from zero to 1. In the code this ratio is multiplied by an
+    appropriate value indicated in the comments. 
+  - A setting like LENGTH without underscores will behave as the value itself.
+  - Use "gtk-v4l" to edit hardware camera settings
+    - (or v4l2ucp on the netbook)

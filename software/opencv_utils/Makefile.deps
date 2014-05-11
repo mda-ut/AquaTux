@@ -1,0 +1,9 @@
+cap_video.o: cap_video.cpp
+gaussian_blur.o: gaussian_blur.cpp
+gaussian_smooth.o: gaussian_smooth.cpp
+open_img.o: open_img.cpp
+play_video.o: play_video.cpp
+print_pix_vert.o: print_pix_vert.cpp
+show_HSV.o: show_HSV.cpp
+video_getframe.o: video_getframe.cpp
+webcam.o: webcam.cpp

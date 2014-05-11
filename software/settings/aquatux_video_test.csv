@@ -1,0 +1,11 @@
+# Test video input
+
+IMAGE_INPUT VIDEO
+VIDEO_FWD ../San_Diego_Wednesday_1/Wed_gate_14_09.avi
+VIDEO_DWN ../San_Diego_Tuesday_2/Tues_path_21_24.avi
+IMAGE_SHOW_RAW 1
+WRITE_TO_VIDEO 0
+
+ATTITUDE_INPUT NULL
+OPERATION MANUAL
+ACTUATOR_OUTPUT NULL

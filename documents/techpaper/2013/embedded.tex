@@ -1,0 +1,35 @@
+\section{Embedded System}
+
+The embedded system was designed to link the submarine's computer with all
+electronic peripherals, with a high-level interface to access groups of peripherals.
+The embedded system consists of a DE0-Nano FPGA, synthesizing custom circuitry to
+communicate with each peripheral and a soft processor to communicate with the computer. The FPGA was chosen
+for its quantity of general-purpose I/O pins, allowing it to manage all electronic peripherals,
+and its compact size of 3x2 inches. The FPGA is the only programmable element in the submarine
+besides the computer, reducing the amount of communication between programmable elements.
+
+\subsection{FPGA Soft Processor}
+
+The FPGA Soft Processor exposes high-level commands to the computer to access each group
+of electronic peripherals.
+The IMU and depth sensor provide attitude readings and are used by the PID controllers and the
+computer interface. Power management continually monitors each
+voltage rail, and will power off the submarine if any voltage is invalid.
+The five motor drivers are controlled together by the soft processor's yaw, pitch, roll,
+and depth PID controllers. The computer interface can set target
+speed, yaw, and depth, which are inputs to the PID controllers. Speed is implemented as an offset
+because the submarine does not have velocity measurement. The PID controllers are implemented on the
+soft processor because they need immediate access to the motor drivers and attitude readings.
+The high-level commands are
+text-based, allowing manual control to test each peripheral individually.
+Future plans for sonar processing will be implemented on the FPGA, using the soft processor and
+built-in DSP elements.
+
+\subsection{FPGA Hardware}
+
+The FPGA also synthesizes custom hardware to communicate with peripherals through general-purpose pins.
+This flexibility can support any protocol to communicate with peripherals, including SPI and UART.
+Each peripheral protocol is a separate module, memory-mapped to the soft processor across Altera's
+Avalon Bus. The DE0-Nano has 85 general-purpose pins for digital inputs and 8 ADC inputs.
+The depth sensor is an analog peripheral, and all other peripherals communicate digitally.
+The hardware and soft processor run at 50 MHz.

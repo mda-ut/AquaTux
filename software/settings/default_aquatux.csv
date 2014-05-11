@@ -1,0 +1,43 @@
+### Default settings file for the submarine
+
+# Choose type of inputs, operation and outputs
+IMAGE_INPUT SIMULATOR
+ATTITUDE_INPUT SIMULATOR
+OPERATION MANUAL
+ACTUATOR_OUTPUT SIMULATOR
+
+# IMAGE_INPUT options
+WRITE_TO_VIDEO 0
+FWD_VIDEO_FILE sim.avi
+DWN_VIDEO_FILE sim_dwn.avi
+
+### Options for the submarine ###
+
+## For streaming image source
+
+# IMAGE_INPUT SIMULATOR
+
+# IMAGE_INPUT VIDEO
+## IMAGE_SHOW_RAW 1
+## VIDEO_FWD ../vision/webcam.avi
+## VIDEO_DWN ../vision/runtime_simple1.avi
+
+# IMAGE_INPUT WEBCAM
+## IMAGE_SHOW_RAW 1
+## WEBCAM_FWD 0
+## WEBCAM_DWN 1
+
+## For attitude (yaw, pitch, roll, depth) readings
+
+# ATTITUDE_INPUT SIMULATOR
+# ATTITUDE_INPUT SUBMARINE
+
+## For controlling movement
+# ACTUATOR_INPUT SIMULATOR
+# ACTUATOR_INPUT SUBMARINE
+
+## Algorithm to process input data and output control movement
+# OPERATION MANUAL  # Manual control with single-button pressing
+# OPERATION MISSION # Autonomous control
+
+## Note: all options also have a NULL option which does nothing
