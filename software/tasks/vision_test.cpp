@@ -13,12 +13,10 @@ const char MDA_VISION_MODULE_TEST::MDA_VISION_TEST_SETTINGS[] = "vision_test_set
 /// MODULE_TEST methods
 /// ########################################################################
 MDA_VISION_MODULE_TEST:: MDA_VISION_MODULE_TEST () :
-	window (mvWindow("Test Vision Module")),
+    window (mvWindow("Test Vision Module")),
     window2 (mvWindow("Test Vision Module 2")),
-	HSVFilter (mvHSVFilter(MDA_VISION_TEST_SETTINGS)),
-	AdvancedColorFilter (MDA_VISION_TEST_SETTINGS),
+    HSVFilter (mvHSVFilter(MDA_VISION_TEST_SETTINGS)),
     HoughLines (mvHoughLines(MDA_VISION_TEST_SETTINGS)),
-    histogram_filter ("vision_gate_settings.csv"),
     bin_test ("Test Module")
 {
     color_img = mvCreateImage_Color();

@@ -123,15 +123,12 @@ class MDA_VISION_MODULE_TEST : public MDA_VISION_MODULE_BASE {
     mvWindow window;
     mvWindow window2;
     mvHSVFilter HSVFilter;
-    mvAdvancedColorFilter AdvancedColorFilter;
     mvWatershedFilter WatershedFilter;
     mvContours Contours;
     mvHoughLines HoughLines;
     mvKMeans KMeans;
     mvLines lines;
     
-    mvHistogramFilter histogram_filter;
-
     IplImage* color_img;
     IplImage* gray_img;
     IplImage* gray_img_2;

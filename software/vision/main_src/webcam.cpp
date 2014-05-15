@@ -17,7 +17,6 @@ unsigned CAM_NUMBER=0;
 unsigned WRITE=0;
 unsigned TEST=0;
 unsigned GRAD=0;
-unsigned FLOOD=0;
 unsigned WATERSHED=0;
 unsigned LINE=0;
 unsigned CIRCLE=0;
@@ -45,8 +44,6 @@ int main( int argc, char** argv ) {
             TEST = 1;
         else if (!strcmp (argv[i], "--grad"))
             GRAD = 1;
-        else if (!strcmp (argv[i], "--flood"))
-            FLOOD = 1;
         else if (!strcmp (argv[i], "--watershed"))
             WATERSHED = 1;
         else if (!strcmp (argv[i], "--write"))
@@ -121,8 +118,6 @@ int main( int argc, char** argv ) {
     mvLines lines; // data struct to store lines
     mvAdvancedCircles circles ("test_settings.csv");
     mvKMeans kmeans;
-    mvHistogramFilter histogram_filter ("test_settings.csv");
-    mvAdvancedColorFilter advanced_filter("test_settings.csv");
     mvWatershedFilter watershed_filter;
     mvContours contour_filter;
 
@@ -168,18 +163,6 @@ int main( int argc, char** argv ) {
         win1->showImage (scratch_color);
         
         if (TEST) {             
-        }
-        else if (FLOOD) {
-            if (c == 'L') { 
-                advanced_filter.flood_image(frame, filter_img, true);
-            }
-            else {
-                advanced_filter.flood_image(frame, filter_img);
-            }
-            Morphology5.open(filter_img, filter_img);
-            Morphology7.close(filter_img, filter_img);
-            
-            win2->showImage (filter_img);
         }
         else if (GATE) {
             if (gate->filter (frame) == FULL_DETECT) {
