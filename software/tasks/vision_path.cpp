@@ -68,7 +68,7 @@ void MDA_VISION_MODULE_PATH::add_frame (IplImage* src) {
     }
 
     window.showImage (src);
-    watershed_filter.watershed(src, gray_img, 1);
+    watershed_filter.watershed(src, gray_img, mvWatershedFilter::WATERSHED_STEP_SMALL);
 
     COLOR_TRIPLE color;
     int H,S,V;

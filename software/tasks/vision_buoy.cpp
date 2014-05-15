@@ -73,7 +73,7 @@ void MDA_VISION_MODULE_BUOY::add_frame (IplImage* src) {
         return;
     }*/
 
-    watershed_filter.watershed(src, gray_img, 0x1);
+    watershed_filter.watershed(src, gray_img, mvWatershedFilter::WATERSHED_STEP_SMALL);
     window.showImage(src);
     window2.showImage(gray_img);
 

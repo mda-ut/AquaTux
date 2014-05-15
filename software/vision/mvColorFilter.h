@@ -175,7 +175,7 @@ class mvWatershedFilter {
     static const int MAX_MARKERS_TO_GENERATE = 100;
     static const int KERNEL_WIDTH = 3;
     static const int KERNEL_HEIGHT = 3;
-    
+
     IplImage* scratch_image_3c;
     IplImage* scratch_image;
     IplImage* ds_image_3c;
@@ -208,6 +208,9 @@ class mvWatershedFilter {
     void watershed_filter_internal (IplImage* src, IplImage* dst); // run watershed
 
 public:
+    static const int WATERSHED_STEP_SMALL = 1;
+    static const int WATERSHED_SAMPLE_RANDOM = 2;
+
     mvWatershedFilter ();
     mvWatershedFilter (const char* settings_file); //constructor
     ~mvWatershedFilter(); // destructor
