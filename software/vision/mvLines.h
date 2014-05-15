@@ -69,8 +69,6 @@ class mvHoughLines {
     void findLines (IplImage *img, mvLines* lines);
 };
 
-
-
 /** The following code deal with K-Means clustering */
 #define GLOBAL_INT_FACTOR 100.0  // factor to keep all numbers integer
 

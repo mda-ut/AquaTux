@@ -68,8 +68,7 @@ void MDA_VISION_MODULE_BUOY::add_frame (IplImage* src) {
             srcptr += 3;
         }
     }*/
-    /*int zeros = remove_background (src);
-    if (zeros > 0.999 * 400*300) {
+    /*if (zeros > 0.999 * 400*300) {
         printf ("Path: add_frame: not enough pixels\n");
         return;
     }*/
