@@ -8,7 +8,6 @@
 #include "mv.h"
 #include "mvColorFilter.h"
 #include "mvLines.h"
-#include "mvShapes.h"
 #include "mvContours.h"
 #include "../../tasks/mda_vision.h"
 #include "profile_bin.h"
@@ -116,7 +115,6 @@ int main( int argc, char** argv ) {
     mvBinaryMorphology Morphology5 (5,5, MV_KERN_ELLIPSE);
     mvHoughLines HoughLines ("test_settings.csv");
     mvLines lines; // data struct to store lines
-    mvAdvancedCircles circles ("test_settings.csv");
     mvKMeans kmeans;
     mvWatershedFilter watershed_filter;
     mvContours contour_filter;

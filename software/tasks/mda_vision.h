@@ -10,7 +10,6 @@
 #include "mv.h"
 #include "mvColorFilter.h"
 #include "mvLines.h"
-#include "mvShapes.h"
 #include "mvContours.h"
 #include "frame_data.h"
 

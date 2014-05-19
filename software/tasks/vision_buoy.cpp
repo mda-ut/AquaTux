@@ -23,8 +23,6 @@ MDA_VISION_MODULE_BUOY:: MDA_VISION_MODULE_BUOY () :
     window2 (mvWindow("Buoy Vision Module 2")),
     Morphology5 (mvBinaryMorphology(5, 5, MV_KERN_RECT)),
     Morphology3 (mvBinaryMorphology(3, 3, MV_KERN_RECT))//,
-    //AdvancedCircles(MDA_VISION_BUOY_SETTINGS),
-    //Rect ("Rect_settings.csv")
 {
     read_mv_setting (MDA_VISION_BUOY_SETTINGS, "TARGET_BLUE", TARGET_BLUE);
     read_mv_setting (MDA_VISION_BUOY_SETTINGS, "TARGET_GREEN", TARGET_GREEN);
