@@ -32,7 +32,7 @@ void MDA_VISION_MODULE_GATE::add_frame (IplImage* src) {
     // shift the frames back by 1
     shift_frame_data (m_frame_data_vector, read_index, N_FRAMES_TO_KEEP);
 
-    watershed_filter.watershed(src, gray_img, 1);
+    watershed_filter.watershed(src, gray_img, mvWatershedFilter::WATERSHED_STEP_SMALL);
     window.showImage (src);
 
     COLOR_TRIPLE color;

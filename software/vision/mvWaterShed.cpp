@@ -116,59 +116,57 @@ void mvWatershedFilter::watershed_generate_markers_internal (IplImage* src, int 
     }
     */
     color_point_vector.clear();
-if (method & 0xFFFF) {
-    cvSet (ds_image_nonedge, CV_RGB(1,1,1));
-    // sample the image like this
-    // 1. randomly generate an x,y coordinate.
-    // 2. Check if the coordinate is a non-edge pixel on the nonedge image.
-    // 3. If so add it to color_point_vector and
-    // 4. If so mark coordinates near it as edge on the nonege image
-    for (int i = 0; i < 200; i++) {
-        int x = rand() % ds_image_nonedge->width;
-        int y = rand() % ds_image_nonedge->height;
+    
+    if (method & WATERSHED_SAMPLE_RANDOM) {
+        cvSet (ds_image_nonedge, CV_RGB(1,1,1));
+        // sample the image like this
+        // 1. randomly generate an x,y coordinate.
+        // 2. Check if the coordinate is a non-edge pixel on the nonedge image.
+        // 3. If so add it to color_point_vector and
+        // 4. If so mark coordinates near it as edge on the nonege image
+        for (int i = 0; i < 200; i++) {
+            int x = rand() % ds_image_nonedge->width;
+            int y = rand() % ds_image_nonedge->height;
 
-        unsigned char nonedge = *((unsigned char*)ds_image_nonedge->imageData + y*ds_image_nonedge->widthStep + x);
-        if (nonedge != 0) {
-            // calculate corresponding large image coords
-            int xl = x * WATERSHED_DS_FACTOR;
-            int yl = y * WATERSHED_DS_FACTOR;
-            // 3.
-            unsigned char* colorPtr = (unsigned char*)src->imageData + yl*src->widthStep + 3*xl;
-            COLOR_TRIPLE ct (colorPtr[0], colorPtr[1], colorPtr[2], 0);;
-            color_point_vector.push_back(std::make_pair(ct, cvPoint(xl,yl)));
-            // 4.
-            cvCircle (ds_image_nonedge, cvPoint(x,y), 10, CV_RGB(0,0,0), -1);          
-        }
-    }
-}
-else {
-    int step = 10;
-    if (method & 0x1) 
-        step = 5;
-    COLOR_TRIPLE ct_prev;
-
-    for (int y = step/2; y < src->height; y += step) {
-        unsigned char* colorPtr = (unsigned char*)src->imageData + y*src->widthStep + 3*step/2;
-
-        for (int x = step/2; x < src->width; x += step) {
-            COLOR_TRIPLE ct (colorPtr[0], colorPtr[1], colorPtr[2], 0);
-            
-            if (ct.diff(ct_prev) >= 20) {
-                color_point_vector.push_back(std::make_pair(ct, cvPoint(x,y)));
-                ct_prev = ct;
-                //x += step;
-                //colorPtr += 3*step;
+            unsigned char nonedge = *((unsigned char*)ds_image_nonedge->imageData + y*ds_image_nonedge->widthStep + x);
+            if (nonedge != 0) {
+                // calculate corresponding large image coords
+                int xl = x * WATERSHED_DS_FACTOR;
+                int yl = y * WATERSHED_DS_FACTOR;
+                // 3.
+                unsigned char* colorPtr = (unsigned char*)src->imageData + yl*src->widthStep + 3*xl;
+                COLOR_TRIPLE ct (colorPtr[0], colorPtr[1], colorPtr[2], 0);;
+                color_point_vector.push_back(std::make_pair(ct, cvPoint(xl,yl)));
+                // 4.
+                cvCircle (ds_image_nonedge, cvPoint(x,y), 10, CV_RGB(0,0,0), -1);          
             }
-
-            colorPtr += 3*step;
         }
     }
-}
+    else {
+        int step = 10;
+        if (method & WATERSHED_STEP_SMALL) step = 5;
+
+        COLOR_TRIPLE ct_prev;
+
+        for (int y = step/2; y < src->height; y += step) {
+            unsigned char* colorPtr = (unsigned char*)src->imageData + y*src->widthStep + 3*step/2;
+
+            for (int x = step/2; x < src->width; x += step) {
+                COLOR_TRIPLE ct (colorPtr[0], colorPtr[1], colorPtr[2], 0);
+                
+                if (ct.diff(ct_prev) >= 20) {
+                    color_point_vector.push_back(std::make_pair(ct, cvPoint(x,y)));
+                    ct_prev = ct;
+                    //x += step;
+                    //colorPtr += 3*step;
+                }
+
+                colorPtr += 3*step;
+            }
+        }
+    }
 
     int diff_limit = 30;
-    if (method & 0x2) {
-        diff_limit = 50;
-    }
     // the color point vector will have too many pixels that are really similar - get rid of some by merging    
     for (unsigned i = 0; i < color_point_vector.size(); i++) {
         for (unsigned j = i+1; j < color_point_vector.size(); j++) {

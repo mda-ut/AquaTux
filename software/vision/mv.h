@@ -41,8 +41,6 @@ inline std::string color_int_to_string (int color) {
     return std::string("UNKNOWN");
 }
 
-int remove_background (IplImage* src);
-
 class MvShape {
 public:
     CvPoint center;
@@ -249,9 +247,6 @@ inline void mvGradient (IplImage* src, IplImage* dst, unsigned kern_w, unsigned 
     cvReleaseImage (&temp);
     cvReleaseStructuringElement (&kernel);
 }
-
-/// split the image into any of its 2 planes in place
-void mvSplitImage (IplImage* src, IplImage** plane1=NULL, IplImage** plane2=NULL);
 
 /** Binary Filters */
 // These are fast filters designed specifically for binary images with very
