@@ -55,6 +55,9 @@ void mvWatershedFilter::watershed(IplImage* src, IplImage* dst, int method) {
 // attemps to use cvWaterShed to segment the image
     assert (src->nChannels == 3);
     assert (dst->nChannels == 1);
+    
+    segment_color_hash.clear();
+    color_point_vector.clear();
 
     cvCopy (src, scratch_image_3c);
 
@@ -115,8 +118,7 @@ void mvWatershedFilter::watershed_generate_markers_internal (IplImage* src, int 
         }
     }
     */
-    color_point_vector.clear();
-    
+
     if (method & WATERSHED_SAMPLE_RANDOM) {
         cvSet (ds_image_nonedge, CV_RGB(1,1,1));
         // sample the image like this
@@ -196,7 +198,6 @@ void mvWatershedFilter::watershed_place_markers_internal (IplImage* src) {
     // clear segment_color_hash, then populate the hash with the needed triples
     int num_pixels = color_point_vector.size();
 
-    segment_color_hash.clear();
     for (int i = 0; i < num_pixels; i++) {
         int index_number = color_point_vector[i].first.index_number;
         
@@ -322,8 +323,9 @@ void mvWatershedFilter::watershed_process_markers_internal2 () {
 
     double best_validity = -100;    // will keep track of lowest validity number
     int bad_cluster_counter = 0;    // keeps track of how many non-valid clustering configs we've had
+    int max_n_clusters = std::min(6, num_pixels);
 
-    for (int n_clusters = 1; n_clusters <= 6; n_clusters++) {
+    for (int n_clusters = 1; n_clusters <= max_n_clusters; n_clusters++) {
         cv::Mat centers (n_clusters, 1, CV_32FC3);
 
         double compactness = cv::kmeans (
