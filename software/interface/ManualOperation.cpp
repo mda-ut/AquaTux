@@ -329,8 +329,8 @@ void ManualOperation::work()
            MDA_TASK_RETURN_CODE ret_code;
            // Scope task so that it is destructed before display_start_message
            {
-             MDA_TASK_FRAME frame_task(attitude_input, image_input, actuator_output);
-             ret_code = frame_task.run_task();
+             MDA_TASK_GOALPOST goalpost_task(attitude_input, image_input, actuator_output);
+             ret_code = goalpost_task.run_task();
            }
 
            display_start_message();

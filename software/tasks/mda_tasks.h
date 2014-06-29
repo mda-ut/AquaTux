@@ -16,7 +16,7 @@ enum MDA_TASK {
 	TASK_MARKER,
 	TASK_PATH,
 	TASK_BUOY,
-	TASK_FRAME
+	TASK_GOALPOST
 };
 
 enum MDA_TASK_RETURN_CODE {
@@ -170,11 +170,11 @@ public:
 /// ########################################################################
 /// Frame task
 /// ########################################################################
-class MDA_TASK_FRAME : public MDA_TASK_BASE {
+class MDA_TASK_GOALPOST : public MDA_TASK_BASE {
 
 public:
-	MDA_TASK_FRAME (AttitudeInput* a, ImageInput* i, ActuatorOutput* o);
-	~MDA_TASK_FRAME ();
+	MDA_TASK_GOALPOST (AttitudeInput* a, ImageInput* i, ActuatorOutput* o);
+	~MDA_TASK_GOALPOST ();
 
 	MDA_TASK_RETURN_CODE run_task ();
 };
