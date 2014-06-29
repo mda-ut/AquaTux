@@ -47,7 +47,7 @@ public:
     int m1,m2,m3;
     int h1,h2,h3;
     int color_int;
-    int validity;
+    float validity;
     int count;
     MvShape () { validity = -1; count = 1; center.x=center.y=0; m1=m2=m3=0; color_int = MV_UNCOLORED; }
     virtual int center_diff (MvShape second) {
@@ -75,6 +75,8 @@ public:
         this->m1 = other.m1;  this->m2 = other.m2;  this->m3 = other.m3;
         this->h1 = other.h1;  this->h2 = other.h2;  this->h3 = other.h3;
         this->color_int = other.color_int;
+        this->validity = other.validity;
+        this->count = this->count;
         return *this;
     }
     float diff(MvCircle &other) {
@@ -122,6 +124,8 @@ public:
         this->m1 = other.m1;  this->m2 = other.m2;  this->m3 = other.m3;
         this->h1 = other.h1;  this->h2 = other.h2;  this->h3 = other.h3;
         this->color_int = other.color_int;
+        this->validity = other.validity;
+        this->count = this->count;
         return *this;    
     }
     float diff(MvRotatedBox &other) {
