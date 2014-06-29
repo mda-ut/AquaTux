@@ -14,10 +14,10 @@
 #define NUM_BUOYS 3
 #define EXIT_SIDES 8
 #define WINDOW_CUTOUT_PARTS 1
-#define U_GATE_PARTS 5
+#define GOALPOST_PARTS 4
 
 int list;
-GLUquadricObj *g1/**Side gate post*/, *g2/**Other side gate post*/, *g3/**Top gate post*/, *buoys[2 * NUM_BUOYS], *EXIT[2 * EXIT_SIDES], *window_cutout[WINDOW_CUTOUT_PARTS], *u_gate[2 * U_GATE_PARTS];
+GLUquadricObj *g1/**Side gate post*/, *g2/**Other side gate post*/, *g3/**Top gate post*/, *buoys[2 * NUM_BUOYS], *EXIT[2 * EXIT_SIDES], *window_cutout[WINDOW_CUTOUT_PARTS], *goalpost[2 * GOALPOST_PARTS];
 #define NLIST 4
 
 extern GLuint texName[10];
@@ -325,8 +325,8 @@ void init_site()
    g3 = gluNewQuadric();
    for (int i=0; i<WINDOW_CUTOUT_PARTS; i++)
       window_cutout[i] = gluNewQuadric();
-   for (int i=0; i<U_GATE_PARTS * 2; i++)
-      u_gate[i] = gluNewQuadric();
+   for (int i=0; i<GOALPOST_PARTS * 2; i++)
+      goalpost[i] = gluNewQuadric();
    for (int i=0; i<NUM_BUOYS * 2; i++)
    {
       buoys[i] = gluNewQuadric();
@@ -527,78 +527,59 @@ void do_buoys()
 
 }
 
-#define U_GATEHEIGHT 1.2
-#define U_GATEWIDTH 1.8
-#define U_GATE_X 5.20
-#define U_GATE_Z -6.45
-#define U_GATE_RADIUS 0.025
-#define VERT_SPACE 0.6
-#define VERT_FILL 0.6
-#define U_GATE_COLOR_PERIOD 2 // in seconds
-
+#define GOALPOST_HEIGHT 1.2
+#define GOALPOST_WIDTH 1.8
+#define GOALPOST_X 5.20
+#define GOALPOST_Y 2
+#define GOALPOST_Z -6.45
+#define GOALPOST_RADIUS 0.025
+#define VERT_SPACE 0.2
+#define VERT_FILL 0.3
 /**
-* @brief Define U gate obstacle
+* @brief Define circumnavigating goalpost obstacle
 */
-void do_u_gate()
+void do_goalpost()
 {
-   glColor3f (0.0f, 0.0f, 0.0f);
-   glTranslatef(U_GATE_X, 0, U_GATE_Z);
-   glRotatef(-90, 1.0, 0.0, 0.0);
-   gluCylinder(u_gate[0],
-               /*BASE_RADIUS*/ 0.01,
-               /*TOP_RADIUS*/ 0.01,
-               /*HEIGHT*/ U_GATEHEIGHT,
-               /*SLICES*/ 10,
-               /*STACKS*/ 10);
-      
-   glRotatef(90, 1.0, 0.0, 0.0);
-   glTranslatef(0, 0, U_GATEWIDTH);
-   glRotatef(-90, 1.0, 0.0, 0.0);
-   gluCylinder(u_gate[1],
-               /*BASE_RADIUS*/ 0.01,
-               /*TOP_RADIUS*/ 0.01,
-               /*HEIGHT*/ U_GATEHEIGHT,
-               /*SLICES*/ 10,
-               /*STACKS*/ 10);
 
    glColor3f (0.0f, 1.0f, 0.0f);
-   glRotatef(90, 1.0, 0.0, 0.0);
-   glTranslatef(0, U_GATEHEIGHT, -U_GATEWIDTH);
-   gluCylinder(u_gate[2],
-               /*BASE_RADIUS*/ U_GATE_RADIUS,
-               /*TOP_RADIUS*/ U_GATE_RADIUS,
-               /*HEIGHT*/ U_GATEWIDTH,
+   glTranslatef(GOALPOST_X, GOALPOST_Y, GOALPOST_Z);
+   gluCylinder(goalpost[0],
+               /*BASE_RADIUS*/ GOALPOST_RADIUS,
+               /*TOP_RADIUS*/ GOALPOST_RADIUS,
+               /*HEIGHT*/ GOALPOST_WIDTH,
                /*SLICES*/ 10,
                /*STACKS*/ 10);
-/*
-#ifdef CYCLE_COLORS
-   // set color base on time
-   unsigned long long t = gettimeofday() / 1000000; // convert to seconds
-   t = t / U_GATE_COLOR_PERIOD; // convert to periods
-   if (t % 2 == 0)              // every other period
-    glColor3f (1.0f, 0.0f, 0.0f);
-#endif
-*/
+
    // far side vertical piece
    glTranslatef (0, VERT_SPACE, 0); // up
    glRotatef(-90, 1.0, 0.0, 0.0); // pointing up
-   gluCylinder(u_gate[3],
-               /*BASE_RADIUS*/ U_GATE_RADIUS,
-               /*TOP_RADIUS*/ U_GATE_RADIUS,
+   gluCylinder(goalpost[1],
+               /*BASE_RADIUS*/ GOALPOST_RADIUS,
+               /*TOP_RADIUS*/ GOALPOST_RADIUS,
                /*HEIGHT*/ VERT_FILL,
                /*SLICES*/ 10,
                /*STACKS*/ 10);
    
    glColor3f (0.0f, 1.0f, 0.0f);
    // near side vertical piece
-   glTranslatef (0, -U_GATEWIDTH, 0);
-   gluCylinder(u_gate[4],
-                /*BASE_RADIUS*/ U_GATE_RADIUS,
-                /*TOP_RADIUS*/ U_GATE_RADIUS,
+   glTranslatef (0, -GOALPOST_WIDTH, 0);
+   gluCylinder(goalpost[2],
+                /*BASE_RADIUS*/ GOALPOST_RADIUS,
+                /*TOP_RADIUS*/ GOALPOST_RADIUS,
                 /*HEIGHT*/ VERT_FILL,
                 /*SLICES*/ 10,
                 /*STACKS*/ 10);
     
+   glColor3f (1.0f, 0.0f, 0.0f);
+   // near side vertical piece
+   glTranslatef (0, GOALPOST_WIDTH/2, 0);
+   gluCylinder(goalpost[3],
+                /*BASE_RADIUS*/ GOALPOST_RADIUS,
+                /*TOP_RADIUS*/ GOALPOST_RADIUS,
+                /*HEIGHT*/ GOALPOST_HEIGHT,
+                /*SLICES*/ 10,
+                /*STACKS*/ 10);
+
 }
 
 #define EXIT_radius 0.0254
@@ -742,7 +723,7 @@ void draw()
    glPopMatrix();
 
    glPushMatrix();
-   do_u_gate();
+   do_goalpost();
    glPopMatrix();
 
 #define EXIT_OFFSET_X -2.34f
