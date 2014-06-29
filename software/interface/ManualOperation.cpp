@@ -350,7 +350,7 @@ void ManualOperation::work()
          }
          delete vision_module;
          message_hold("Selected frame vision module\n");
-         vision_module = new MDA_VISION_MODULE_FRAME();
+         vision_module = new MDA_VISION_MODULE_GOALPOST();
          use_fwd_img = true;
          break;
       case '5':

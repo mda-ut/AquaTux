@@ -245,7 +245,7 @@ void SimulatorSingleton::run_sim()
     start_y = 4.5f;
     start_z = 3.f;
     start_yaw = 18.f;
-  } else if (start_at == "FRAME") {
+  } else if (start_at == "GOALPOST") {
     start_x = 1.f;
     start_y = 2.5f;
     start_z = -4.2f;

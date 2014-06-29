@@ -7,26 +7,26 @@
     #define DEBUG_PRINT(format, ...)
 #endif
 
-const char MDA_VISION_MODULE_FRAME::MDA_VISION_FRAME_SETTINGS[] = "vision_goalpost_settings.csv";
+const char MDA_VISION_MODULE_GOALPOST::MDA_VISION_GOALPOST_SETTINGS[] = "vision_goalpost_settings.csv";
 
 /// #########################################################################
-/// MODULE_FRAME methods
+/// MODULE_GOALPOST methods
 /// #########################################################################
-MDA_VISION_MODULE_FRAME:: MDA_VISION_MODULE_FRAME () :
-    window (mvWindow("Frame Vision Module")),
-    window2 (mvWindow("Frame Vision Module 2"))//,
+MDA_VISION_MODULE_GOALPOST:: MDA_VISION_MODULE_GOALPOST () :
+    window (mvWindow("Goalpost Vision Module")),
+    window2 (mvWindow("Goalpost Vision Module 2"))//,
 {
     N_FRAMES_TO_KEEP = 8;
     gray_img = mvGetScratchImage();
     gray_img_2 = mvGetScratchImage2();
 }
 
-MDA_VISION_MODULE_FRAME:: ~MDA_VISION_MODULE_FRAME () {
+MDA_VISION_MODULE_GOALPOST:: ~MDA_VISION_MODULE_GOALPOST () {
     mvReleaseScratchImage();
     mvReleaseScratchImage2();
 }
 
-void MDA_VISION_MODULE_FRAME::primary_filter (IplImage* src) {
+void MDA_VISION_MODULE_GOALPOST::primary_filter (IplImage* src) {
     // shift the frames back by 1
     shift_frame_data (m_frame_data_vector, read_index, N_FRAMES_TO_KEEP);
 
@@ -54,7 +54,7 @@ void MDA_VISION_MODULE_FRAME::primary_filter (IplImage* src) {
     window.showImage (src);
 }
 
-MDA_VISION_RETURN_CODE MDA_VISION_MODULE_FRAME::calc_vci () {
+MDA_VISION_RETURN_CODE MDA_VISION_MODULE_GOALPOST::calc_vci () {
     MDA_VISION_RETURN_CODE retval = NO_TARGET;
     COLOR_TRIPLE color;
     int H,S,V;
@@ -66,7 +66,7 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_FRAME::calc_vci () {
         // check that the segment is roughly red
         tripletBGR2HSV (color.m1,color.m2,color.m3, H,S,V);
         if (S < 10 || V < 30 || color.m2 < 40 || color.m1 > 80/*|| !(H >= 160 || H < 130)*/) {
-            DEBUG_PRINT ("VISION_FRAME: rejected rectangle due to color: HSV=(%3d,%3d,%3d)\n", H,S,V);
+            DEBUG_PRINT ("VISION_GOALPOST: rejected rectangle due to color: HSV=(%3d,%3d,%3d)\n", H,S,V);
             continue;
         }
 
@@ -81,7 +81,7 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_FRAME::calc_vci () {
     window2.showImage (gray_img);
 
     if (rbox_vector.size() < 2) { // not enough good segments, return no target
-        printf ("Frame: No Target\n");
+        printf ("Goalpot: No Target\n");
         return NO_TARGET;
     }
     else if (rbox_vector.size() == 2) {
@@ -91,11 +91,11 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_FRAME::calc_vci () {
         float width  = -1;
 
         if(abs(rbox0.angle) > 60 && abs(rbox1.angle) > 60){
-            printf("Frame Sanity Failure: 2 Horizontal Lines?????\n");
+            printf("Goalpot Sanity Failure: 2 Horizontal Lines?????\n");
             return NO_TARGET;
         }
         else if(abs(rbox0.angle) > 30 && abs(rbox1.angle) < 30){
-            printf ("Frame: 2 segments, rbox0 horiz\n");
+            printf ("Goalpot: 2 segments, rbox0 horiz\n");
             // 0 is horiz
             m_pixel_x = rbox0.center.x - gray_img->width/2;
             m_pixel_y = rbox1.center.y - gray_img->height/2;
@@ -105,7 +105,7 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_FRAME::calc_vci () {
             retval = FULL_DETECT;
         }
         else if(abs(rbox0.angle) < 30 && abs(rbox1.angle) > 60){
-            printf ("Frame: 2 segments, rbox1 horiz\n");
+            printf ("Goalpot: 2 segments, rbox1 horiz\n");
             // 1 is horiz
             m_pixel_x = rbox1.center.x - gray_img->width/2;
             m_pixel_y = rbox0.center.y - gray_img->height/2;
@@ -115,7 +115,7 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_FRAME::calc_vci () {
             retval = FULL_DETECT;
         }
         else if(abs(rbox0.angle) < 30 && abs(rbox1.angle) < 30){
-            printf ("Frame: 2 segments, both vertical\n");
+            printf ("Goalpot: 2 segments, both vertical\n");
             // 2 vertical
             m_pixel_x = (rbox0.center.x + rbox1.center.x - gray_img->width) / 2;
             m_pixel_y = (rbox0.center.y + rbox1.center.y - gray_img->height) / 2;
@@ -128,7 +128,7 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_FRAME::calc_vci () {
             return NO_TARGET;
         }
 
-        m_range = (float)(FRAME_REAL_WIDTH * gray_img->width / width * TAN_FOV_X);
+        m_range = (float)(GOALPOST_REAL_WIDTH * gray_img->width / width * TAN_FOV_X);
     }
     else if (rbox_vector.size() == 3) {
         MvRotatedBox rbox0 = rbox_vector[0];
@@ -138,7 +138,7 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_FRAME::calc_vci () {
         float width  = -1;
 
         if(abs(rbox0.angle) > 60 && abs(rbox1.angle) < 30 && abs(rbox2.angle) < 30) {
-            printf ("Frame: 3 segments, rbox0 horiz\n");
+            printf ("Goalpost: 3 segments, rbox0 horiz\n");
             m_pixel_x = rbox0.center.x - gray_img->width/2;
             m_pixel_y = (rbox1.center.y + rbox2.center.y - gray_img->height) / 2;
             width  = abs(rbox1.center.x - rbox2.center.x);
@@ -147,7 +147,7 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_FRAME::calc_vci () {
             retval = FULL_DETECT;
         }
         else if(abs(rbox0.angle) < 30 && abs(rbox1.angle) > 60 && abs(rbox2.angle) < 30) {
-            printf ("Frame: 3 segments, rbox1 horiz\n");
+            printf ("Goalpost: 3 segments, rbox1 horiz\n");
             m_pixel_x = rbox1.center.x - gray_img->width/2;
             m_pixel_y = (rbox0.center.y + rbox2.center.y - gray_img->height) / 2;
             width  = abs(rbox0.center.x - rbox2.center.x);
@@ -156,7 +156,7 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_FRAME::calc_vci () {
             retval = FULL_DETECT;
         }
         else if(abs(rbox0.angle) < 30 && abs(rbox1.angle) < 30 && abs(rbox2.angle) > 60) {
-            printf ("Frame: 3 segments, rbox2 horiz\n");
+            printf ("Goalpost: 3 segments, rbox2 horiz\n");
             m_pixel_x = rbox2.center.x - gray_img->width/2;
             m_pixel_y = (rbox0.center.y + rbox1.center.y - gray_img->height) / 2;
             width  = abs(rbox0.center.x - rbox1.center.x);
@@ -168,7 +168,7 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_FRAME::calc_vci () {
             return NO_TARGET;
         }
 
-        m_range = (float)(FRAME_REAL_WIDTH * gray_img->width / width * TAN_FOV_X);
+        m_range = (float)(GOALPOST_REAL_WIDTH * gray_img->width / width * TAN_FOV_X);
     }
     else {
         return NO_TARGET;
@@ -176,12 +176,12 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_FRAME::calc_vci () {
 
     m_angular_x = RAD_TO_DEG * atan(TAN_FOV_X * m_pixel_x / gray_img->width);
     m_angular_y = RAD_TO_DEG * atan(TAN_FOV_Y * m_pixel_y / gray_img->height);
-    DEBUG_PRINT ("Frame: (%d,%d) (%5.2f, %5.2f)  range=%d\n", m_pixel_x, m_pixel_y, 
+    DEBUG_PRINT ("Goalpost: (%d,%d) (%5.2f, %5.2f)  range=%d\n", m_pixel_x, m_pixel_y, 
         m_angular_x, m_angular_y, m_range);
     return retval;
 }
 /*
-MDA_VISION_RETURN_CODE MDA_VISION_MODULE_FRAME:: calc_vci () {
+MDA_VISION_RETURN_CODE MDA_VISION_MODULE_GOALPOST:: calc_vci () {
     MDA_VISION_RETURN_CODE retval = FATAL_ERROR;
     unsigned nClusters = KMeans.nClusters();
     int imWidth  =  (int)filtered_img->width*0.5;
@@ -193,11 +193,11 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_FRAME:: calc_vci () {
     IsRed = -1;
 
     if(nClusters == 0) {
-        printf ("Frame: No clusters =(\n");
+        printf ("Goalpost: No clusters =(\n");
         return NO_TARGET;
     }
     else if(nClusters == 1){
-        DEBUG_PRINT("Frame: 1 Cluster...\n");
+        DEBUG_PRINT("Goalpost: 1 Cluster...\n");
         int x1 = KMeans[0][0].x, x2 = KMeans[0][1].x;
         int y1 = KMeans[0][0].y, y2 = KMeans[0][1].y;    
 
@@ -207,10 +207,10 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_FRAME:: calc_vci () {
         if (abs(slope) < 0.2) { // single horizontal line
             m_pixel_x = (int)(x1+x2)*0.5 - imWidth;
             m_pixel_y = (int)(y1+y2)*0.5 - imHeight;
-            m_range = ((float)(FRAME_REAL_WIDTH) * filtered_img->width) / ((x2-x1) * TAN_FOV_X);
+            m_range = ((float)(GOALPOST_REAL_WIDTH) * filtered_img->width) / ((x2-x1) * TAN_FOV_X);
 
-            // displace returned y coordinate upwards by half the frame height 
-            m_pixel_y -= (int) (abs(x2-x1) / FRAME_REAL_WIDTH * FRAME_REAL_HEIGHT * 0.5); 
+            // displace returned y coordinate upwards by half the goalpost height 
+            m_pixel_y -= (int) (abs(x2-x1) / GOALPOST_REAL_WIDTH * GOALPOST_REAL_HEIGHT * 0.5); 
             
             retval = ONE_SEGMENT;
             goto RETURN_CENTROID;
@@ -223,7 +223,7 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_FRAME:: calc_vci () {
             m_pixel_y = centroid_y - imHeight;
             
             // displace returned y coordinate upwards by half the frame height 
-            m_pixel_y -= (int) (abs(x2-x1) / FRAME_REAL_WIDTH * FRAME_REAL_HEIGHT * 0.5);
+            m_pixel_y -= (int) (abs(x2-x1) / GOALPOST_REAL_WIDTH * GOALPOST_REAL_HEIGHT * 0.5);
 
             retval = ONE_SEGMENT;
             goto RETURN_CENTROID;
@@ -234,7 +234,7 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_FRAME:: calc_vci () {
         }
     }
     else if(nClusters == 2){
-        DEBUG_PRINT ("Frame: 2 clusters...\n");
+        DEBUG_PRINT ("Goalpost: 2 clusters...\n");
         int x00 = KMeans[0][0].x,   y00 = KMeans[0][0].y;
         int x01 = KMeans[0][1].x,   y01 = KMeans[0][1].y;
         int x10 = KMeans[1][0].x,   y10 = KMeans[1][0].y;
@@ -252,7 +252,7 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_FRAME:: calc_vci () {
         double slope1 = ((double)y10-y11)/denom1;
 
         if(abs(slope0) < 0.2 && abs(slope1) < 0.2){
-            printf("Frame Sanity Failure: 2 Horizontal Lines?????\n");
+            printf("Goalpost Sanity Failure: 2 Horizontal Lines?????\n");
             m_pixel_x = (int)(x00+x01+x10+x11)*0.25 - imWidth;
             m_pixel_y = (int)(y00+y01+y10+y11)*0.25 - imHeight;
             width = (int)(abs(x00-x01) + abs(x10-x11))*0.25;
@@ -300,16 +300,16 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_FRAME:: calc_vci () {
             retval = ONE_SEGMENT;
         }
         else{
-            DEBUG_PRINT("Frame Sanity Failure: Lines Incorrectly Oriented\n");  
+            DEBUG_PRINT("Goalpost Sanity Failure: Lines Incorrectly Oriented\n");  
             retval = UNKNOWN_TARGET;   
             goto RETURN_CENTROID;   
         }
 
-        m_range = (float)(FRAME_REAL_WIDTH * filtered_img->width / width * TAN_FOV_X);
+        m_range = (float)(GOALPOST_REAL_WIDTH * filtered_img->width / width * TAN_FOV_X);
     }
 
     else if(nClusters == 3){
-        DEBUG_PRINT ("Frame: 3 clusters\n");
+        DEBUG_PRINT ("Goalpost: 3 clusters\n");
         int x00 = KMeans[0][0].x,   y00 = KMeans[0][0].y;
         int x01 = KMeans[0][1].x,   y01 = KMeans[0][1].y;
         int x10 = KMeans[1][0].x,   y10 = KMeans[1][0].y;
@@ -369,14 +369,14 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_FRAME:: calc_vci () {
             retval = FULL_DETECT;
         }
         else{
-            DEBUG_PRINT("Frame Sanity Failure: Incorrect line arrangement\n");
+            DEBUG_PRINT("Goalpost Sanity Failure: Incorrect line arrangement\n");
             m_pixel_x = (int)(x00+x01+x10+x11+x20+x21)*0.167 -imWidth;
             m_pixel_y = (int)(y00+y01+y10+y11+y20+y21)*0.167 - imHeight;
             retval = UNKNOWN_TARGET;
             goto RETURN_CENTROID;
         }
 
-        m_range = (float)(FRAME_REAL_WIDTH * filtered_img->width / width * TAN_FOV_X);
+        m_range = (float)(GOALPOST_REAL_WIDTH * filtered_img->width / width * TAN_FOV_X);
     }
 
     else{
@@ -393,13 +393,13 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_FRAME:: calc_vci () {
     RETURN_CENTROID:
         m_angular_x = RAD_TO_DEG * atan(TAN_FOV_X * m_pixel_x / filtered_img->width);
         m_angular_y = RAD_TO_DEG * atan(TAN_FOV_Y * m_pixel_y / filtered_img->height);
-        DEBUG_PRINT ("Frame: (%d,%d) (%5.2f, %5.2f)\n", m_pixel_x, m_pixel_y, 
+        DEBUG_PRINT ("Goalpost: (%d,%d) (%5.2f, %5.2f)\n", m_pixel_x, m_pixel_y, 
             m_angular_x, m_angular_y); 
 
         switch (IsRed) {
-            case -1: DEBUG_PRINT ("Frame red signal: Unsure\n"); break;
-            case 0: DEBUG_PRINT ("Frame red signal = No\n"); break;
-            case 1: DEBUG_PRINT ("Frame red signal = Yes\n"); break;
+            case -1: DEBUG_PRINT ("Goalpost red signal: Unsure\n"); break;
+            case 0: DEBUG_PRINT ("Goalpost red signal = No\n"); break;
+            case 1: DEBUG_PRINT ("Goalpost red signal = Yes\n"); break;
             default: printf ("Unhandled value of IsRed in vision_frame.\n"); exit(1);
         }
         return retval;

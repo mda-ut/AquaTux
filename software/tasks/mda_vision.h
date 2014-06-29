@@ -343,11 +343,11 @@ public:
 /// ########################################################################
 /// this class is for the frame
 /// ########################################################################
-class MDA_VISION_MODULE_FRAME : public MDA_VISION_MODULE_BASE {
-    static const char MDA_VISION_FRAME_SETTINGS[];
-    static const float FRAME_REAL_WIDTH = 180.0;
-    static const float FRAME_REAL_HEIGHT = 120.0;
-    static const float FRAME_REAL_VERTICAL_SEGMENT_LENGTH = 40.0;
+class MDA_VISION_MODULE_GOALPOST : public MDA_VISION_MODULE_BASE {
+    static const char MDA_VISION_GOALPOST_SETTINGS[];
+    static const float GOALPOST_REAL_WIDTH = 180.0;
+    static const float GOALPOST_REAL_HEIGHT = 120.0;
+    static const float GOALPOST_REAL_VERTICAL_SEGMENT_LENGTH = 40.0;
 
     mvWindow window;
     mvWindow window2;
@@ -358,13 +358,13 @@ class MDA_VISION_MODULE_FRAME : public MDA_VISION_MODULE_BASE {
     IplImage* gray_img_2;
 
 public:
-    MDA_VISION_MODULE_FRAME ();
-    ~MDA_VISION_MODULE_FRAME ();
+    MDA_VISION_MODULE_GOALPOST ();
+    ~MDA_VISION_MODULE_GOALPOST ();
     
     void primary_filter (IplImage* src);
     MDA_VISION_RETURN_CODE calc_vci ();
 
-    virtual int get_angle() {printf ("VISION_MODULE_FRAME - get_angle not allowed\n"); exit(1); return 0;}
+    virtual int get_angle() {printf ("VISION_MODULE_GOALPOST - get_angle not allowed\n"); exit(1); return 0;}
 };
 
 /// ########################################################################

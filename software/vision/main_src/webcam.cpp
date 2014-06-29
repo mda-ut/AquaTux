@@ -25,7 +25,7 @@ unsigned BREAK=0;
 unsigned GATE=0;
 unsigned PATH=0;
 unsigned BUOY=0;
-unsigned FRAME=0;
+unsigned GOALPOST=0;
 unsigned TIMEOUT=0;
 unsigned POS=0;
 
@@ -61,8 +61,8 @@ int main( int argc, char** argv ) {
             PATH = 1;
         else if (!strcmp (argv[i], "--buoy"))
             BUOY = 1;
-        else if (!strcmp (argv[i], "--frame"))
-            FRAME = 1;
+        else if (!strcmp (argv[i], "--goalpost"))
+            GOALPOST = 1;
         else if (!strcmp (argv[i], "--timeout"))
             TIMEOUT = atoi(argv[++i]);
         else if (!strcmp (argv[i], "--pos"))
@@ -122,7 +122,7 @@ int main( int argc, char** argv ) {
     MDA_VISION_MODULE_GATE* gate=GATE? new MDA_VISION_MODULE_GATE : 0;
     MDA_VISION_MODULE_PATH* path=PATH? new MDA_VISION_MODULE_PATH : 0;
     MDA_VISION_MODULE_BUOY* buoy=BUOY? new MDA_VISION_MODULE_BUOY : 0;
-    MDA_VISION_MODULE_FRAME* frame_task=FRAME? new MDA_VISION_MODULE_FRAME : 0;
+    MDA_VISION_MODULE_GOALPOST* goalpost=GOALPOST? new MDA_VISION_MODULE_GOALPOST : 0;
 
     // declare images we need
     IplImage* scratch_color = mvCreateImage_Color();
@@ -177,8 +177,8 @@ int main( int argc, char** argv ) {
                 cvWaitKey(200);
             }
         }
-        else if (FRAME) {
-            if (frame_task->filter (frame) == FULL_DETECT) {
+        else if (GOALPOST) {
+            if (goalpost->filter (frame) == FULL_DETECT) {
                 cvWaitKey(200);
             }
         }
