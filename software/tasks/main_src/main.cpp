@@ -49,13 +49,7 @@ int main (int argc, char** argv) {
     cvWaitKey(500);
     delete frame_module;
     cvWaitKey(500);
-/*
-    MDA_TASK_BASE* task_test = NULL;
-    MDA_TASK_BASE* task_gate = NULL;
-    MDA_TASK_BASE* task_path = NULL;
-    MDA_TASK_BASE* task_buoy = NULL;
-    MDA_TASK_BASE* task_frame = NULL;
-*/
+
 
     cvReleaseImage (&raw_img);
     cvReleaseImage (&img);

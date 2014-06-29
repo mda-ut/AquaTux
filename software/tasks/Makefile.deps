@@ -20,7 +20,7 @@ task_buoy.o: task_buoy.cpp mda_vision.h ../vision/mgui.h \
  ../vision/mvContours.h ../vision/mvColorFilter.h frame_data.h \
  mda_tasks.h ../interface/AttitudeInput.h ../interface/ImageInput.h \
  ../interface/ActuatorOutput.h ../interface/CharacterStreamSingleton.h
-task_frame.o: task_frame.cpp mda_vision.h ../vision/mgui.h \
+task_goalpost.o: task_goalpost.cpp mda_vision.h ../vision/mgui.h \
  ../vision/profile_bin.h ../vision/mv.h ../vision/mgui.h \
  ../vision/mvColorFilter.h ../vision/mv.h ../vision/mvLines.h \
  ../vision/mvContours.h ../vision/mvColorFilter.h frame_data.h \
@@ -60,7 +60,7 @@ vision_buoy.o: vision_buoy.cpp mda_vision.h ../vision/mgui.h \
  ../vision/profile_bin.h ../vision/mv.h ../vision/mgui.h \
  ../vision/mvColorFilter.h ../vision/mv.h ../vision/mvLines.h \
  ../vision/mvContours.h ../vision/mvColorFilter.h frame_data.h
-vision_frame.o: vision_frame.cpp mda_vision.h ../vision/mgui.h \
+vision_goalpost.o: vision_goalpost.cpp mda_vision.h ../vision/mgui.h \
  ../vision/profile_bin.h ../vision/mv.h ../vision/mgui.h \
  ../vision/mvColorFilter.h ../vision/mv.h ../vision/mvLines.h \
  ../vision/mvContours.h ../vision/mvColorFilter.h frame_data.h

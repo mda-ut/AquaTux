@@ -7,7 +7,7 @@
     #define DEBUG_PRINT(format, ...)
 #endif
 
-const char MDA_VISION_MODULE_FRAME::MDA_VISION_FRAME_SETTINGS[] = "vision_frame_settings.csv";
+const char MDA_VISION_MODULE_FRAME::MDA_VISION_FRAME_SETTINGS[] = "vision_goalpost_settings.csv";
 
 /// #########################################################################
 /// MODULE_FRAME methods
@@ -61,6 +61,7 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_FRAME::calc_vci () {
     MvRotatedBox rbox;
     MvRBoxVector rbox_vector;
 
+    // In this step, loop over every segment and try to find one that looks like a rectangle
     while ( watershed_filter.get_next_watershed_segment(gray_img_2, color) ) {
         // check that the segment is roughly red
         tripletBGR2HSV (color.m1,color.m2,color.m3, H,S,V);
