@@ -106,8 +106,7 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_GOALPOST::calc_vci () {
 
     m_angular_x = RAD_TO_DEG * atan(TAN_FOV_X * m_pixel_x / gray_img->width);
     m_angular_y = RAD_TO_DEG * atan(TAN_FOV_Y * m_pixel_y / gray_img->height);
-    //DEBUG_PRINT ("Goalpost: (%d,%d) (%5.2f, %5.2f)  range=%d\n", m_pixel_x, m_pixel_y, 
-    m_angular_x, m_angular_y, m_range);
+    //DEBUG_PRINT ("Goalpost: (%d,%d) (%5.2f, %5.2f)  range=%d\n", m_pixel_x, m_pixel_y, m_angular_x, m_angular_y, m_range);
     
     return retval;
 }
