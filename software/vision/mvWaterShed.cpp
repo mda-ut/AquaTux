@@ -463,7 +463,7 @@ bool mvWatershedFilter::get_next_watershed_segment(IplImage* binary_img, COLOR_T
     // check if we are out of segments
     //if (curr_segment_iter == segment_color_hash.end()) {
     if (curr_segment_index >= segment_color_hash.size()) {
-        return false;   
+        return false;
     }
 
     // get the index number of the current segment, then obtain a binary image which is 1 for each pixel

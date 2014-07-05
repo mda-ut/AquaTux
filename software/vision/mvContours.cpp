@@ -1,7 +1,7 @@
 #include "mvContours.h"
 
 //#define MATCH_CONTOURS_DEBUG
-//#define M_DEBUG
+#define M_DEBUG
 #ifdef M_DEBUG
     #define DEBUG_PRINT(format, ...) printf(format, ##__VA_ARGS__)
 #else
@@ -203,7 +203,7 @@ float mvContours::match_rectangle (IplImage* img, MvRBoxVector* rbox_vector, COL
         double perimeter = cvArcLength (c_contour, CV_WHOLE_SEQ, 1);
         double perimeter_ratio = perimeter / (2*length+2*width);
         double area_ratio = area / (length*width);
-        if (method == 0) {
+        if (method == 0) { // MAKE THE METHOD OPTIONS MORE CLEAR
             if (area_ratio < 0.75 || perimeter_ratio > 1.2 || perimeter_ratio < 0.85) {
                 DEBUG_PRINT ("Rect Fail: Area / Peri:    %6.2lf / %6.2lf\n", area_ratio, perimeter_ratio);
                 continue;
