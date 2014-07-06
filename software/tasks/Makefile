@@ -8,6 +8,6 @@ include Makefile.deps
 MAIN_SRC=main_src/main.cpp
 
 $(MAIN): $(MAIN_SRC)
-	$(CXX) -o $@ $(MAIN_SRC) $(CXXFLAGS) -I .
+	$(CXX) -o $@ $(MAIN_SRC) $(CXXFLAGS) -I . $(CV_LIBS)
 
 .PHONY: $(PHONY_TARGETS)

@@ -11,9 +11,9 @@ MAIN_SRC=$(MAIN_DIR)main.cpp
 WEBCAM_SRC=$(MAIN_DIR)webcam.cpp
 
 $(MAIN): $(MAIN_SRC)
-	$(CXX) -o $@ $(MAIN_SRC) $(CXXFLAGS) -I .
+	$(CXX) -o $@ $(MAIN_SRC) $(CXXFLAGS) -I . $(CV_LIBS)
 
 $(WEBCAM): $(WEBCAM_SRC)
-	$(CXX) -o $@ $(WEBCAM_SRC) $(CXXFLAGS) -I .
+	$(CXX) -o $@ $(WEBCAM_SRC) $(CXXFLAGS) -I . $(CV_LIBS)
 
 .PHONY: $(PHONY_TARGETS)

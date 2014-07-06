@@ -8,6 +8,6 @@ include Makefile.deps
 AQUATUX_SRC=main_src/main.cpp
 
 $(AQUATUX): $(AQUATUX_SRC)
-	$(CXX) -o $@ $(AQUATUX_SRC) $(CXXFLAGS) -I .
+	$(CXX) -o $@ $(AQUATUX_SRC) $(CXXFLAGS) -I . $(CV_LIBS)
 
 .PHONY: $(PHONY_TARGETS)
