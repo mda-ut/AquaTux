@@ -1,6 +1,6 @@
 SRCS:=$(wildcard *.c)
 OBJ:=$(patsubst %.c,%.o,$(SRCS))
-SO=libui.so
+A=libui.a
 UI=ui
 EXES=$(UI)
 
@@ -9,7 +9,7 @@ include Makefile.deps
 
 MAIN_SRC=main_src/main.c
 
-$(UI): $(MAIN_SRC)
-	$(CC) -o $@ $(MAIN_SRC) $(CXXFLAGS) -I .
+$(UI): $(OBJ) $(MAIN_SRC)
+	$(CC) -o $@ $(MAIN_SRC) $(OBJ) $(CXXFLAGS) -I .
 
 .PHONY: $(PHONY_TARGETS)

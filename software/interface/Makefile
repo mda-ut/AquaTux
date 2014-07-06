@@ -1,13 +1,10 @@
 AQUATUX=aquatux
 EXES=$(AQUATUX)
-SO=libinterface.so
 
 include ../Makefile.in
 include Makefile.deps
 
-AQUATUX_SRC=main_src/main.cpp
-
-$(AQUATUX): $(AQUATUX_SRC)
-	$(CXX) -o $@ $(AQUATUX_SRC) $(CXXFLAGS) -I .
+$(AQUATUX): $(OBJ) $(LIB)
+	$(CXX) -o $@ $(OBJ) $(LIB) $(CXXFLAGS) $(CV_LIBS)
 
 .PHONY: $(PHONY_TARGETS)

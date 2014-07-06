@@ -5,13 +5,14 @@ else
 	GL_LIBS=-lGL -lglut -lGLU
 endif
 
-CV_LIBS=`pkg-config --cflags --libs opencv`
+CV_FLAGS=`pkg-config --cflags opencv`
+CV_LIBS=`pkg-config --libs opencv`
 
 I_FLAGS=-I ../sim -I ../vision -I ../tasks -I ../ui -I ../interface
-L_FLAGS=-Wl,--no-as-needed -lsim -L../sim -lvision -L../vision -ltasks -L../tasks -lui -L../ui -linterface -L../interface -lncurses -lm -pthread -Wl,-rpath,'$$ORIGIN/../vision/' -Wl,-rpath,'$$ORIGIN/../tasks/' -Wl,-rpath,'$$ORIGIN/../sim/' -Wl,-rpath,'$$ORIGIN/../ui/' -Wl,-rpath,'$$ORIGIN/../interface/'
-COMPILE_FLAGS+=-O3 -Wall -g -fPIC
+L_FLAGS=-lsim -L../sim -lvision -L../vision -ltasks -L../tasks -lui -L../ui -lncurses -lm -pthread -fopenmp
+COMPILE_FLAGS+=-O3 -Wall -g
 
-CXXFLAGS=$(I_FLAGS) $(COMPILE_FLAGS) $(L_FLAGS) $(GL_LIBS) $(CV_LIBS)
+CXXFLAGS=$(I_FLAGS) $(COMPILE_FLAGS) $(L_FLAGS) $(GL_LIBS) $(CV_FLAGS)
 CFLAGS=$(CXXFLAGS)
 
 DEBUG_FLAGS=-DDEBUG_FRAME_BY_FRAME -DDISABLE_SCRATCH_IMAGE -DFLOOD_DEBUG -DM_DEBUG
@@ -25,34 +26,34 @@ ifndef OBJ
 	OBJ:=$(patsubst %.cpp,%.o,$(SRCS))
 endif
 
-LIBVISION=../vision/libvision.so
-LIBTASKS=../tasks/libtasks.so
-LIBSIM=../sim/libsim.so
-LIBUI=../ui/libui.so
-LIBINTERFACE=../interface/libinterface.so
-LIB=$(LIBVISION) $(LIBTASKS) $(LIBSIM) $(LIBUI) $(LIBINTERFACE)
+LIBVISION=../vision/libvision.a
+LIBTASKS=../tasks/libtasks.a
+LIBSIM=../sim/libsim.a
+LIBUI=../ui/libui.a
+LIB=$(LIBVISION) $(LIBTASKS) $(LIBSIM) $(LIBUI)
 # End files
 
 # Begin targets
 parallel:
 	$(MAKE) -j4 all
 
-all: $(LIB) $(SO)
+all: $(LIB) $(A)
 	$(MAKE) $(EXES)
 
 debug:
 	$(MAKE) all CXXFLAGS="$(CXXFLAGS) $(DEBUG_FLAGS)" CFLAGS="$(CFLAGS) $(DEBUG_FLAGS)"
 
-ifdef SO
-$(SO): $(OBJ)
-	$(CXX) -fPIC -shared -o $@ $(OBJ)
+ifdef A
+$(A): $(OBJ)
+	rm -f $@
+	ar -cvq $@ $(OBJ)
 endif
 
 deps:
 	$(CXX) -MM $(I_FLAGS) $(SRCS) > Makefile.deps
 
 clean:
-	rm -rf $(OBJ) $(EXES) $(SO) ./*~
+	rm -rf $(OBJ) $(EXES) $(A) ./*~
 
 PHONY_TARGETS=parallel all debug deps clean
 
@@ -66,8 +67,5 @@ $(LIBSIM):
 	+$(MAKE) -C `dirname $@` `basename $@`
 
 $(LIBUI):
-	+$(MAKE) -C `dirname $@` `basename $@`
-
-$(LIBINTERFACE):
 	+$(MAKE) -C `dirname $@` `basename $@`
 # End targets
