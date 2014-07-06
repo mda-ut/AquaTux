@@ -18,13 +18,13 @@ int main (int argc, char** argv) {
     MDA_VISION_MODULE_BASE* gate_module = NULL;
     MDA_VISION_MODULE_BASE* path_module = NULL;
     MDA_VISION_MODULE_BASE* buoy_module = NULL;
-    MDA_VISION_MODULE_BASE* frame_module = NULL;
+    MDA_VISION_MODULE_BASE* goalpost_module = NULL;
     
     test_module = new MDA_VISION_MODULE_TEST;
     gate_module = new MDA_VISION_MODULE_GATE;
     path_module = new MDA_VISION_MODULE_PATH;
     buoy_module = new MDA_VISION_MODULE_BUOY;
-    frame_module = new MDA_VISION_MODULE_FRAME;
+    goalpost_module = new MDA_VISION_MODULE_GOALPOST;
 
 
     test_module->filter (img);
@@ -35,8 +35,8 @@ int main (int argc, char** argv) {
     printf ("path module passed\n");
     buoy_module->filter (img);
     printf ("buoy module passed\n");
-    frame_module->filter (img);
-    printf ("frame module passed\n");
+    goalpost_module->filter (img);
+    printf ("goalpost module passed\n");
 
     cvWaitKey(500);
     delete test_module;
@@ -47,15 +47,9 @@ int main (int argc, char** argv) {
     cvWaitKey(500);
     delete buoy_module;
     cvWaitKey(500);
-    delete frame_module;
+    delete goalpost_module;
     cvWaitKey(500);
-/*
-    MDA_TASK_BASE* task_test = NULL;
-    MDA_TASK_BASE* task_gate = NULL;
-    MDA_TASK_BASE* task_path = NULL;
-    MDA_TASK_BASE* task_buoy = NULL;
-    MDA_TASK_BASE* task_frame = NULL;
-*/
+
 
     cvReleaseImage (&raw_img);
     cvReleaseImage (&img);

@@ -74,9 +74,11 @@ void MDA_TASK_BASE::move(ATTITUDE_CHANGE_DIRECTION direction, int delta_accel)
 
 void MDA_TASK_BASE::set(ATTITUDE_DIRECTION dir, int val)
 {
+  // if direction is DEPTH, call move() to go to that depth without returning until we reach the depth
   if (dir == DEPTH) {
     move(SINK, val - attitude_input->depth());
   } else {
+  // otherwise just set the target yaw
     actuator_output->set_attitude_absolute(dir, val);  
     stabilize(dir);
   }

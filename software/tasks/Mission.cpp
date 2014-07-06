@@ -30,7 +30,7 @@ void Mission::work_internal(bool show_image)
   // Tasks
   //MDA_TASK_GATE       gate(attitude_input, image_input, actuator_output);
   MDA_TASK_BUOY       buoy(attitude_input, image_input, actuator_output);
-  MDA_TASK_FRAME      frame(attitude_input, image_input, actuator_output);
+  MDA_TASK_GOALPOST      goalpost(attitude_input, image_input, actuator_output);
   MDA_TASK_PATH       path(attitude_input, image_input, actuator_output);
   //MDA_TASK_PATH_SKIP  path_skip(attitude_input, image_input, actuator_output);
   MDA_TASK_SURFACE    surface(attitude_input, image_input, actuator_output);
@@ -43,7 +43,7 @@ void Mission::work_internal(bool show_image)
     &path,
     //&path_skip,
     //&path,
-    &frame,
+    &goalpost,
     &surface,
     NULL};
 
@@ -56,14 +56,14 @@ void Mission::work_internal(bool show_image)
   printf ("Running a %s mission!\n", show_image?"test":"Real");
   int RUN_BUOY;
   read_mv_setting ("hacks.csv", "RUN_BUOY", RUN_BUOY);  
-  int RUN_FRAME;
-  read_mv_setting ("hacks.csv", "RUN_FRAME", RUN_FRAME);  
+  int RUN_GOALPOST;
+  read_mv_setting ("hacks.csv", "RUN_GOALPOST", RUN_GOALPOST);  
 
 
   ret_code = path.run_task();
   if (RUN_BUOY) ret_code = buoy.run_task();
   ret_code = path.run_task();
-  if (RUN_FRAME) ret_code = frame.run_task();
+  if (RUN_GOALPOST) ret_code = goalpost.run_task();
   ret_code = surface.run_task();
 
   /*int task_index = 0;

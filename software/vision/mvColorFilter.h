@@ -215,6 +215,7 @@ public:
     mvWatershedFilter (const char* settings_file); //constructor
     ~mvWatershedFilter(); // destructor
     void watershed(IplImage* src, IplImage* dst, int method=0);
+    int num_watershed_segments () { return segment_color_hash.size(); }
     bool get_next_watershed_segment (IplImage* binary_img, COLOR_TRIPLE &T);    
 };
 

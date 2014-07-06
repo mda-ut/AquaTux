@@ -1,6 +1,6 @@
 #include "mda_vision.h"
 
-#define M_DEBUG
+//#define M_DEBUG
 #ifdef M_DEBUG
     #define DEBUG_PRINT(format, ...) printf(format, ##__VA_ARGS__)
 #else
@@ -12,10 +12,12 @@ float absf(float f){
     else return f;
 }
 
-const float LEN_TO_WIDTH_MAX = 9.0;
-const float LEN_TO_WIDTH_MIN = 4.0;
+const float LEN_TO_WIDTH_MAX = 5.0;
+const float LEN_TO_WIDTH_MIN = 2.0;
 
 const char MDA_VISION_MODULE_PATH::MDA_VISION_PATH_SETTINGS[] = "vision_path_settings.csv";
+
+static const int N_GOOD_FRAMES_NEEDED = 1;
 
 /// ########################################################################
 /// MODULE_PATH methods
@@ -33,7 +35,7 @@ MDA_VISION_MODULE_PATH:: MDA_VISION_MODULE_PATH () :
     read_mv_setting (MDA_VISION_PATH_SETTINGS, "TARGET_RED", TARGET_RED);
     //read_mv_setting (MDA_VISION_PATH_SETTINGS, "DIFF_THRESHOLD", DIFF_THRESHOLD_SETTING);
 
-    N_FRAMES_TO_KEEP = 6;
+    N_FRAMES_TO_KEEP = 2;
     gray_img = mvGetScratchImage();
     gray_img_2 = mvGetScratchImage2();
 }
@@ -46,14 +48,14 @@ MDA_VISION_MODULE_PATH:: ~MDA_VISION_MODULE_PATH () {
 void MDA_VISION_MODULE_PATH::add_frame (IplImage* src) {
     // shift the frames back by 1
     shift_frame_data (m_frame_data_vector, read_index, N_FRAMES_TO_KEEP);
-
-    // HSV hack!
+/*
+    // BGR hack!
     unsigned char *srcptr;
     int zeros = 0;
     for (int i = 0; i < src->height; i++) {
         srcptr = (unsigned char*)src->imageData + i*src->widthStep;
         for (int j = 0; j < src->width; j++) {
-            if (srcptr[2] < 15) {
+            if (srcptr[2] < 100) {
                 srcptr[0] = 0;
                 srcptr[1] = 0;
                 srcptr[2] = 0;
@@ -62,31 +64,43 @@ void MDA_VISION_MODULE_PATH::add_frame (IplImage* src) {
             srcptr += 3;
         }
     }
+
     if (zeros > 0.999 * 400*300) {
         printf ("Path: add_frame: not enough pixels\n");
         return;
     }
-
-    window.showImage (src);
+*/
+//    window.showImage (src);
     watershed_filter.watershed(src, gray_img, mvWatershedFilter::WATERSHED_STEP_SMALL);
 
     COLOR_TRIPLE color;
-    int H,S,V;
+    //int H,S,V;
     MvRotatedBox rbox;
     MvRBoxVector rbox_vector;
 
+    printf ("Number of Segments: %d\n", watershed_filter.num_watershed_segments());
+
     while ( watershed_filter.get_next_watershed_segment(gray_img_2, color) ) {
         // check that the segment is roughly red
-        tripletBGR2HSV (color.m1,color.m2,color.m3, H,S,V);
-        /*if (S < 30 || V < 40 || !(H >= 160 || H <= 120)) {
-            //printf ("VISION_BUOY: rejected rectangle due to color: HSV=(%3d,%3d,%3d)\n", H,S,V);
+        //tripletBGR2HSV (color.m1,color.m2,color.m3, H,S,V);
+        //if (S < 30 || V < 40 || !(H >= 160 || H <= 120)) {
+        if (color.m1 > 100 || color.m2 > 100 || color.m3 < 100) {
+            printf ("VISION_BUOY: rejected rectangle due to color: HSV=(%3d,%3d,%3d)\n", color.m1, color.m2, color.m3);
             continue;
-        }*/
+        }
 
-        contour_filter.match_rectangle(gray_img_2, &rbox_vector, color, LEN_TO_WIDTH_MIN, LEN_TO_WIDTH_MAX);
+        int old_num_rbox = rbox_vector.size();
+        contour_filter.match_rectangle(gray_img_2, &rbox_vector, color, LEN_TO_WIDTH_MIN, LEN_TO_WIDTH_MAX, 1);
+        cvZero(gray_img_2);
         contour_filter.drawOntoImage(gray_img_2);
-        //window.showImage (gray_img_2);
+        window2.showImage (gray_img_2);
+        if (rbox_vector.size() > old_num_rbox) {
+            printf ("FOUND!!\n");
+            cvWaitKey(0);
+        }
     }
+
+    printf ("Rectangles Identified: %d\n", rbox_vector.size());    
 
     // debug only
     cvCopy (gray_img, gray_img_2);
@@ -95,7 +109,6 @@ void MDA_VISION_MODULE_PATH::add_frame (IplImage* src) {
         MvRBoxVector::iterator iter = rbox_vector.begin();
         MvRBoxVector::iterator iter_end = rbox_vector.end();
      
-
         // for now, frame will store rect with best validity
         for (; iter != iter_end; ++iter) {
             if (iter->length * iter->width < 40*20 || iter->length * iter->width > 300*10)
@@ -159,7 +172,7 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_PATH::frame_calc () {
             segment_vector[i].length, segment_vector[i].width, segment_vector[i].count);
     }
 
-    if (segment_vector.size() == 0 || segment_vector[0].count < 2) { // not enough good segments, return no target
+    if (segment_vector.size() == 0 || segment_vector[0].count < N_GOOD_FRAMES_NEEDED) { // not enough good segments, return no target
         printf ("Path: No Target\n");
         return NO_TARGET;
     }

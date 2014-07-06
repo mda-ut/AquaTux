@@ -45,7 +45,6 @@ void MDA_VISION_MODULE_BUOY::add_frame (IplImage* src) {
     shift_frame_data (m_frame_data_vector, read_index, N_FRAMES_TO_KEEP);
 
     COLOR_TRIPLE color;
-    int H,S,V;
     //MvCircle circle;
     //MvCircleVector circle_vector;
     MvRotatedBox rbox;
@@ -77,8 +76,9 @@ void MDA_VISION_MODULE_BUOY::add_frame (IplImage* src) {
 
     while ( watershed_filter.get_next_watershed_segment(gray_img_2, color) ) {
         cvCopy (gray_img_2, gray_img);
+        /*int H,S,V;
         tripletBGR2HSV (color.m1,color.m2,color.m3, H,S,V);
-        /*if (S < 10 || V < 60 || H > 70) {
+        if (S < 10 || V < 60 || H > 70) {
             printf ("VISION_BUOY: rejected rectangle due to color: HSV=(%3d,%3d,%3d)\n", H,S,V);
             continue;
         }*/
