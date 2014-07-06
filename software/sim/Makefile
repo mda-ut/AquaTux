@@ -1,13 +1,13 @@
 SIM=sim
 EXES=$(SIM)
-A=libsim.a
+SO=libsim.so
 
 include ../Makefile.in
 include Makefile.deps
 
 SIM_SRC=main_src/main.cpp
 
-$(SIM): $(SIM_SRC) $(OBJ) $(LIB)
-	$(CXX) -o $@ $(OBJ) $(SIM_SRC) $(CXXFLAGS) -I . $(CV_LIBS)
+$(SIM): $(SIM_SRC)
+	$(CXX) -o $@ $(SIM_SRC) $(CXXFLAGS) -I .
 
 .PHONY: $(PHONY_TARGETS)
