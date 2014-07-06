@@ -1,10 +1,11 @@
 #include "mda_vision.h"
+#include "../common.h"
 
-//#define M_DEBUG
-#ifdef M_DEBUG
-    #define DEBUG_PRINT(format, ...) printf(format, ##__VA_ARGS__)
+#ifdef DEBUG_VISION_PATH
+    #define DEBUG_PRINT(_n, _format, ...) if(_n<=DEBUG_VISION_PATH)printf(_format, ##__VA_ARGS__)
+	#define DEBUG_SHOWIMAGE(_n, _win, _img) if(_n<=DEBUG_VISION_PATH)_win.showImage(_img);
 #else
-    #define DEBUG_PRINT(format, ...)
+    #define DEBUG_PRINT(n, format, ...)
 #endif
 
 float absf(float f){
@@ -74,33 +75,29 @@ void MDA_VISION_MODULE_PATH::add_frame (IplImage* src) {
     watershed_filter.watershed(src, gray_img, mvWatershedFilter::WATERSHED_STEP_SMALL);
 
     COLOR_TRIPLE color;
-    //int H,S,V;
     MvRotatedBox rbox;
     MvRBoxVector rbox_vector;
 
-    printf ("Number of Segments: %d\n", watershed_filter.num_watershed_segments());
+    DEBUG_PRINT(1,"Number of Segments: %d\n", watershed_filter.num_watershed_segments());
 
     while ( watershed_filter.get_next_watershed_segment(gray_img_2, color) ) {
         // check that the segment is roughly red
-        //tripletBGR2HSV (color.m1,color.m2,color.m3, H,S,V);
-        //if (S < 30 || V < 40 || !(H >= 160 || H <= 120)) {
         if (color.m1 > 100 || color.m2 > 100 || color.m3 < 100) {
-            printf ("VISION_BUOY: rejected rectangle due to color: HSV=(%3d,%3d,%3d)\n", color.m1, color.m2, color.m3);
+            DEBUG_PRINT(2,"VISION_BUOY: rejected rectangle due to color: HSV=(%3d,%3d,%3d)\n", color.m1, color.m2, color.m3);
             continue;
         }
 
-        int old_num_rbox = rbox_vector.size();
-        contour_filter.match_rectangle(gray_img_2, &rbox_vector, color, LEN_TO_WIDTH_MIN, LEN_TO_WIDTH_MAX, 1);
+        bool found = contour_filter.match_rectangle(gray_img_2, &rbox_vector, color, LEN_TO_WIDTH_MIN, LEN_TO_WIDTH_MAX, 1);
         cvZero(gray_img_2);
         contour_filter.drawOntoImage(gray_img_2);
-        window2.showImage (gray_img_2);
-        if (rbox_vector.size() > old_num_rbox) {
+        DEBUG_SHOWIMAGE(2,window2, gray_img_2);
+        if (found) {
             printf ("FOUND!!\n");
             cvWaitKey(0);
         }
     }
 
-    printf ("Rectangles Identified: %d\n", rbox_vector.size());    
+    DEBUG_PRINT(1, "Rectangles Identified: %d\n", (int)rbox_vector.size());    
 
     // debug only
     cvCopy (gray_img, gray_img_2);
@@ -168,21 +165,21 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_PATH::frame_calc () {
 
     // debug
     for (unsigned i = 0; i<=1 && i<segment_vector.size(); i++) {
-        printf ("\tSegment %d (%3d,%3d) height=%3.0f, width=%3.0f   count=%d\n", i, segment_vector[i].center.x, segment_vector[i].center.y,
+        DEBUG_PRINT(1,"\tSegment %d (%3d,%3d) height=%3.0f, width=%3.0f   count=%d\n", i, segment_vector[i].center.x, segment_vector[i].center.y,
             segment_vector[i].length, segment_vector[i].width, segment_vector[i].count);
     }
 
     if (segment_vector.size() == 0 || segment_vector[0].count < N_GOOD_FRAMES_NEEDED) { // not enough good segments, return no target
-        printf ("Path: No Target\n");
+        DEBUG_PRINT (1,"Path: No Target\n");
         return NO_TARGET;
     }
     else { // first segment is good enough, use that only
-        printf ("Path: Segment found\n");
+        DEBUG_PRINT (1,"Path: Segment found\n");
         
         // check path length to width
         float length_to_width = static_cast<float>(segment_vector[0].length) / segment_vector[0].width;
         if (length_to_width < LEN_TO_WIDTH_MIN || length_to_width > LEN_TO_WIDTH_MAX) {
-            DEBUG_PRINT("Path: length to width check failed\n");
+            DEBUG_PRINT(2,"Path: length to width check failed\n");
             return NO_TARGET;
         }
 
@@ -194,7 +191,7 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_PATH::frame_calc () {
         retval = FULL_DETECT;
     }
 
-#ifdef M_DEBUG
+#ifdef DEBUG_VISION_PATH
     segment_vector[0].drawOntoImage(gray_img);
     window2.showImage(gray_img);
 #endif

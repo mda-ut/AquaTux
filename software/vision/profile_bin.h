@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#define PROFILE_ON
+#include "../common.h"
 
 class PROFILE_BIN {
 

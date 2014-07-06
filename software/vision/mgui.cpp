@@ -3,6 +3,7 @@
 #include "mgui.h"
 #include "mv.h"
 
+#ifdef ENABLE_WINDOW_DISPLAY
 /** mvWindow methods **/
 static bool WINDOWS_ARRAY[NUM_SUPPORTED_WINDOWS] = {false,false,false,false};
 
@@ -38,6 +39,7 @@ mvWindow:: ~mvWindow () {
         WINDOWS_ARRAY[_window_number] = false;
     }
 }
+#endif
 
 /** mvVideoWriter methods */
 mvVideoWriter:: mvVideoWriter (const char* filename, unsigned framerate) :

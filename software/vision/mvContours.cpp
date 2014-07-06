@@ -146,7 +146,7 @@ FIND_CONTOUR_ERROR:
     return -1;
 }
 
-float mvContours::match_rectangle (IplImage* img, MvRBoxVector* rbox_vector, COLOR_TRIPLE color, float min_lw_ratio, float max_lw_ratio, int method) {
+int mvContours::match_rectangle (IplImage* img, MvRBoxVector* rbox_vector, COLOR_TRIPLE color, float min_lw_ratio, float max_lw_ratio, int method) {
     assert (img != NULL);
     assert (img->nChannels == 1);
 
@@ -156,7 +156,7 @@ float mvContours::match_rectangle (IplImage* img, MvRBoxVector* rbox_vector, COL
 
     bin_calc.start();
     CvSeq* c_contour = m_contours;
-    int n_boxes = 0;
+    int n_boxes_found = 0;
 
     // debug
     //mvWindow window("contours");
@@ -229,22 +229,14 @@ float mvContours::match_rectangle (IplImage* img, MvRBoxVector* rbox_vector, COL
         rbox.validity = area_ratio;
         rbox_vector->push_back(rbox);
 
-        // draw a line to indicate the angle
-        /*CvPoint p0, p1;
-        int delta_x = length/2 * -sin(angle*CV_PI/180.f);
-        int delta_y = length/2 * cos(angle*CV_PI/180.f);
-        p0.x = x - delta_x;  p0.y = y - delta_y;
-        p1.x = x + delta_x;  p1.y = y + delta_y;
-        cvLine (img, p0, p1, CV_RGB(50,50,50), 2);
-        */
-        n_boxes++;
+        n_boxes_found++;
     }
 
     bin_calc.stop();
-    return n_boxes;
+    return n_boxes_found;
 }
 
-float mvContours::match_circle (IplImage* img, MvCircleVector* circle_vector, COLOR_TRIPLE color, int method) {
+int mvContours::match_circle (IplImage* img, MvCircleVector* circle_vector, COLOR_TRIPLE color, int method) {
     assert (img != NULL);
     assert (img->nChannels == 1);
 
@@ -254,7 +246,7 @@ float mvContours::match_circle (IplImage* img, MvCircleVector* circle_vector, CO
 
     bin_calc.start();
     CvSeq* c_contour = m_contours;
-    int n_circles = 0;
+    int n_circles_found = 0;
 
     // debug
     //mvWindow window("contours");
@@ -341,16 +333,16 @@ float mvContours::match_circle (IplImage* img, MvCircleVector* circle_vector, CO
         circle_vector->push_back(circle);
         
         //cvCircle (img, cvPoint(x,y), static_cast<int>(radius), CV_RGB(50,50,50), 2);
-        n_circles++;
+        n_circles_found++;
     }
     
     bin_calc.stop();
 
-    return n_circles;
+    return n_circles_found;
 }
 
 
-float mvContours::match_ellipse (IplImage* img, MvRBoxVector* ellipse_vector, COLOR_TRIPLE color, float min_lw_ratio, float max_lw_ratio, int method) {
+int mvContours::match_ellipse (IplImage* img, MvRBoxVector* ellipse_vector, COLOR_TRIPLE color, float min_lw_ratio, float max_lw_ratio, int method) {
     assert (img != NULL);
     assert (img->nChannels == 1);
 
@@ -360,7 +352,7 @@ float mvContours::match_ellipse (IplImage* img, MvRBoxVector* ellipse_vector, CO
 
     bin_calc.start();
     CvSeq* c_contour = m_contours;
-    int n_circles = 0;
+    int n_circles_found = 0;
 
     // debug
     //mvWindow window("contours");
@@ -434,12 +426,12 @@ float mvContours::match_ellipse (IplImage* img, MvRBoxVector* ellipse_vector, CO
         //cvEllipse (img, cvPoint(ellipse.center.x,ellipse.center.y), cvSize(b,a), ellipse.angle, 0, 359, CV_RGB(50,50,50), 2);
         //window.showImage (img);
         //cvWaitKey(0);
-        n_circles++;
+        n_circles_found++;
     }
     
     bin_calc.stop();
 
-    return n_circles;
+    return n_circles_found;
 }
 
 

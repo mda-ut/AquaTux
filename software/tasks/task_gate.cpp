@@ -64,7 +64,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_GATE:: run_task() {
         image_input->ready_image(DWN_IMG);
 
         // static
-        static int prev_t = -1;
+        //static int prev_t = -1;
 
         /**
         * Basic Algorithm: (repeat)
@@ -85,7 +85,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_GATE:: run_task() {
                 }
                 else if (vision_code == FULL_DETECT) {
                     printf ("FAST Foward: Full Detect\n");
-                    int ang_x = gate_vision.get_angular_x();
+                    //int ang_x = gate_vision.get_angular_x();
                     //set_yaw_change(ang_x);
 
                     if (gate_vision.get_range() < 420) {
@@ -153,7 +153,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_GATE:: run_task() {
                     }
                     else if (vision_code == ONE_SEGMENT) {
                         printf ("Stopped: One Segment\n");
-                        int ang_x = gate_vision.get_angular_x();
+                        //int ang_x = gate_vision.get_angular_x();
 
                         // if segment too close just finish
                         if (gate_vision.get_range() < 240) {
@@ -163,8 +163,8 @@ MDA_TASK_RETURN_CODE MDA_TASK_GATE:: run_task() {
                         else if (gate_vision.get_range() < 470 && full_detect_timer.get_time() > 10) {
                             timer.restart();
                             master_timer.restart();
-                            prev_t = -1;
-                            state = PANNING;
+                            //prev_t = -1;
+                            //state = PANNING;
                         }
                         // only execute turn if the segment is close to out of view and no other options
                         /*else if (ang_x >= 40) {

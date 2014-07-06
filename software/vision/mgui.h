@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <cv.h>
 
+#include "../common.h"
 #include "profile_bin.h"
 
 // Hopefully this is the only hardcoded settings file
@@ -44,11 +45,14 @@ inline void read_common_mv_setting (const char setting_name[], std::string &valu
 // on the screen
 #define NUM_SUPPORTED_WINDOWS 4 
 #define WINDOW_NAME_LEN 50
+
 class mvWindow {
+#ifdef ENABLE_WINDOW_DISPLAY
     PROFILE_BIN bin_showImage;
     
     char _name[WINDOW_NAME_LEN];
     int _window_number;
+    static bool show_image_val;
 
     public:
     mvWindow (const char name[]);
@@ -66,8 +70,15 @@ class mvWindow {
     }
     void move (unsigned x, unsigned y) { cvMoveWindow(_name, x, y); }
 
-    private:
-    static bool show_image_val;
+#else
+	public:
+	mvWindow (const char name[]) { (void) name; }
+    static void setShowImage (bool val) { (void) val; }
+	~mvWindow () {}
+	void showImage (const CvArr* image) { (void) image; }
+	void move (unsigned x, unsigned y) { (void) x; (void) y; }
+
+#endif
 };
 
 /** mvVideoWriter - class for writing to disk **/
