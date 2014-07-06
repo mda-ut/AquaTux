@@ -110,10 +110,10 @@ int main( int argc, char** argv ) {
     mvWindow* win3 = new mvWindow ("win3");
 
     // declare filters we need
-    mvHSVFilter HSVFilter ("test_settings.csv"); // color filter
+    mvHSVFilter HSVFilter ("HSVFilter_settings.csv"); // color filter
     mvBinaryMorphology Morphology7 (9,9, MV_KERN_ELLIPSE);
     mvBinaryMorphology Morphology5 (5,5, MV_KERN_ELLIPSE);
-    mvHoughLines HoughLines ("test_settings.csv");
+    mvHoughLines HoughLines ("HoughLines_settings.csv");
     mvLines lines; // data struct to store lines
     mvKMeans kmeans;
     mvWatershedFilter watershed_filter;
