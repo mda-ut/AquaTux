@@ -198,37 +198,6 @@ void ManualOperation::work()
          message_hold("Mission complete!");
          break;
 
-      case '0':
-         if (mode != VISION) {
-           endwin();
-
-           MDA_TASK_RETURN_CODE ret_code;
-           // Scope task so that it is destructed before display_start_message
-           {
-             MDA_TASK_TEST test_task(attitude_input, image_input, actuator_output);
-             ret_code = test_task.run_task();
-           }
-
-           display_start_message();
-
-           switch(ret_code) {
-             case TASK_DONE:
-                message_hold("Test task completed successfully");
-                break;
-             case TASK_QUIT:
-                message_hold("Test task quit by user");
-                break;
-             default:
-                message_hold("Test task errored out");
-                break;
-           }
-           break;
-         }
-         delete vision_module;
-         message_hold("Selected test vision module\n");
-         vision_module = new MDA_VISION_MODULE_TEST();
-         use_fwd_img = true;
-         break;
       case '1':
          if (mode != VISION) {
            endwin();

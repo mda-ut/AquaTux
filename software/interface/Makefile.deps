@@ -1,36 +1,31 @@
-ActuatorOutputSimulator.o: ActuatorOutputSimulator.cpp ActuatorOutput.h \
+AttitudeInputSimulator.o: AttitudeInputSimulator.cpp AttitudeInput.h \
  SimulatorSingleton.h ../sim/physical_model.h ../sim/types.h ImageInput.h \
- ../vision/mgui.h ../vision/profile_bin.h ../sim/PID.h
+ ../vision/mgui.h ../vision/../common.h ../vision/profile_bin.h \
+ ../sim/PID.h
 ActuatorOutputSubmarine.o: ActuatorOutputSubmarine.cpp ActuatorOutput.h \
  CharacterStreamSingleton.h SubmarineSingleton.h ../scripts/scripts.h \
  ../ui/fpga_ui.h
-AquaTux.o: AquaTux.cpp AquaTux.h AttitudeInput.h ImageInput.h \
- ../vision/mgui.h ../vision/profile_bin.h Operation.h ActuatorOutput.h \
- CharacterStreamSingleton.h ../tasks/mda_vision.h ../vision/mv.h \
- ../vision/mgui.h ../vision/mvColorFilter.h ../vision/mv.h \
- ../vision/mvLines.h ../vision/mvContours.h ../vision/mvColorFilter.h \
- ../tasks/frame_data.h ../tasks/mda_tasks.h ../tasks/mda_vision.h \
- ../interface/AttitudeInput.h ../interface/ImageInput.h \
- ../interface/ActuatorOutput.h ../interface/CharacterStreamSingleton.h \
- ../tasks/Mission.h ../tasks/../interface/Operation.h \
- SimulatorSingleton.h ../sim/physical_model.h ../sim/types.h ../sim/PID.h \
- SubmarineSingleton.h
-AttitudeInputSimulator.o: AttitudeInputSimulator.cpp AttitudeInput.h \
- SimulatorSingleton.h ../sim/physical_model.h ../sim/types.h ImageInput.h \
- ../vision/mgui.h ../vision/profile_bin.h ../sim/PID.h
+ImageInputSimulator.o: ImageInputSimulator.cpp ImageInput.h \
+ ../vision/mgui.h ../vision/../common.h ../vision/profile_bin.h \
+ SimulatorSingleton.h ../sim/physical_model.h ../sim/types.h ../sim/PID.h
 AttitudeInputSubmarine.o: AttitudeInputSubmarine.cpp AttitudeInput.h \
  SubmarineSingleton.h ../scripts/scripts.h ../ui/fpga_ui.h
-ImageInputSimulator.o: ImageInputSimulator.cpp ImageInput.h \
- ../vision/mgui.h ../vision/profile_bin.h SimulatorSingleton.h \
- ../sim/physical_model.h ../sim/types.h ../sim/PID.h
 ImageInputVideo.o: ImageInputVideo.cpp ImageInput.h ../vision/mgui.h \
- ../vision/profile_bin.h
-ImageInputWebcam.o: ImageInputWebcam.cpp ImageInput.h ../vision/mgui.h \
- ../vision/profile_bin.h
+ ../vision/../common.h ../vision/profile_bin.h
+OperationNull.o: OperationNull.cpp Operation.h AttitudeInput.h \
+ ImageInput.h ../vision/mgui.h ../vision/../common.h \
+ ../vision/profile_bin.h ActuatorOutput.h CharacterStreamSingleton.h \
+ ../tasks/mda_vision.h ../vision/mv.h ../vision/mgui.h \
+ ../vision/mvColorFilter.h ../vision/mv.h ../vision/mvLines.h \
+ ../vision/mvContours.h ../vision/mvColorFilter.h ../tasks/frame_data.h \
+ ../tasks/mda_tasks.h ../tasks/mda_vision.h ../interface/AttitudeInput.h \
+ ../interface/ImageInput.h ../interface/ActuatorOutput.h \
+ ../interface/CharacterStreamSingleton.h
 ManualOperation.o: ManualOperation.cpp ../tasks/Mission.h \
  ../tasks/../interface/Operation.h ../tasks/../interface/AttitudeInput.h \
  ../tasks/../interface/ImageInput.h ../vision/mgui.h \
- ../vision/profile_bin.h ../tasks/../interface/ActuatorOutput.h \
+ ../vision/../common.h ../vision/profile_bin.h \
+ ../tasks/../interface/ActuatorOutput.h \
  ../tasks/../interface/CharacterStreamSingleton.h ../tasks/mda_vision.h \
  ../vision/mv.h ../vision/mgui.h ../vision/mvColorFilter.h ../vision/mv.h \
  ../vision/mvLines.h ../vision/mvContours.h ../vision/mvColorFilter.h \
@@ -38,16 +33,26 @@ ManualOperation.o: ManualOperation.cpp ../tasks/Mission.h \
  ../interface/AttitudeInput.h ../interface/ImageInput.h \
  ../interface/ActuatorOutput.h ../interface/CharacterStreamSingleton.h \
  Operation.h CharacterStreamSingleton.h
-OperationNull.o: OperationNull.cpp Operation.h AttitudeInput.h \
- ImageInput.h ../vision/mgui.h ../vision/profile_bin.h ActuatorOutput.h \
- CharacterStreamSingleton.h ../tasks/mda_vision.h ../vision/mv.h \
- ../vision/mgui.h ../vision/mvColorFilter.h ../vision/mv.h \
- ../vision/mvLines.h ../vision/mvContours.h ../vision/mvColorFilter.h \
- ../tasks/frame_data.h ../tasks/mda_tasks.h ../tasks/mda_vision.h \
- ../interface/AttitudeInput.h ../interface/ImageInput.h \
- ../interface/ActuatorOutput.h ../interface/CharacterStreamSingleton.h
+AquaTux.o: AquaTux.cpp AquaTux.h AttitudeInput.h ImageInput.h \
+ ../vision/mgui.h ../vision/../common.h ../vision/profile_bin.h \
+ Operation.h ActuatorOutput.h CharacterStreamSingleton.h \
+ ../tasks/mda_vision.h ../vision/mv.h ../vision/mgui.h \
+ ../vision/mvColorFilter.h ../vision/mv.h ../vision/mvLines.h \
+ ../vision/mvContours.h ../vision/mvColorFilter.h ../tasks/frame_data.h \
+ ../tasks/mda_tasks.h ../tasks/mda_vision.h ../interface/AttitudeInput.h \
+ ../interface/ImageInput.h ../interface/ActuatorOutput.h \
+ ../interface/CharacterStreamSingleton.h ../tasks/Mission.h \
+ ../tasks/../interface/Operation.h SimulatorSingleton.h \
+ ../sim/physical_model.h ../sim/types.h ../sim/PID.h SubmarineSingleton.h
 SimulatorSingleton.o: SimulatorSingleton.cpp CharacterStreamSingleton.h \
  SimulatorSingleton.h ../sim/physical_model.h ../sim/types.h ImageInput.h \
- ../vision/mgui.h ../vision/profile_bin.h ../sim/PID.h ../sim/sim.h
+ ../vision/mgui.h ../vision/../common.h ../vision/profile_bin.h \
+ ../sim/PID.h ../sim/sim.h
+ImageInputWebcam.o: ImageInputWebcam.cpp ImageInput.h ../vision/mgui.h \
+ ../vision/../common.h ../vision/profile_bin.h
+ActuatorOutputSimulator.o: ActuatorOutputSimulator.cpp ActuatorOutput.h \
+ SimulatorSingleton.h ../sim/physical_model.h ../sim/types.h ImageInput.h \
+ ../vision/mgui.h ../vision/../common.h ../vision/profile_bin.h \
+ ../sim/PID.h
 SubmarineSingleton.o: SubmarineSingleton.cpp SubmarineSingleton.h \
  ../scripts/scripts.h ../ui/fpga_ui.h

@@ -109,43 +109,6 @@ public:
         read_index = 0;
     }
 };
-/// ########################################################################
-/// ########################################################################
-
-/// You probably dont want to touch anything above this line
-
-/// ########################################################################
-/// this class is to test stuff. write whatever you want
-/// ########################################################################
-class MDA_VISION_MODULE_TEST : public MDA_VISION_MODULE_BASE {
-    static const char MDA_VISION_TEST_SETTINGS[];
-    mvWindow window;
-    mvWindow window2;
-    mvHSVFilter HSVFilter;
-    mvWatershedFilter WatershedFilter;
-    mvContours Contours;
-    mvHoughLines HoughLines;
-    mvKMeans KMeans;
-    mvLines lines;
-    
-    IplImage* color_img;
-    IplImage* gray_img;
-    IplImage* gray_img_2;
-
-    PROFILE_BIN bin_test;
-    
-public:
-    MDA_VISION_MODULE_TEST ();
-    ~MDA_VISION_MODULE_TEST ();
-    
-    void primary_filter (IplImage* src);
-    MDA_VISION_RETURN_CODE calc_vci ();
-
-    // prevent users from accessing range/angle
-    virtual int get_range() {printf ("VISION_MODULE_TEST - get_range not allowed\n"); exit(1); return 0;}
-    virtual int get_angle() {printf ("VISION_MODULE_TEST - get_angle not allowed\n"); exit(1); return 0;}
-};
-
 
 /// ########################################################################
 /// this class is for the gate

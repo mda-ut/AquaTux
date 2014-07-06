@@ -14,21 +14,17 @@ int main (int argc, char** argv) {
 
     cvResize (raw_img, img);
 
-    MDA_VISION_MODULE_BASE* test_module = NULL;
     MDA_VISION_MODULE_BASE* gate_module = NULL;
     MDA_VISION_MODULE_BASE* path_module = NULL;
     MDA_VISION_MODULE_BASE* buoy_module = NULL;
     MDA_VISION_MODULE_BASE* goalpost_module = NULL;
     
-    test_module = new MDA_VISION_MODULE_TEST;
     gate_module = new MDA_VISION_MODULE_GATE;
     path_module = new MDA_VISION_MODULE_PATH;
     buoy_module = new MDA_VISION_MODULE_BUOY;
     goalpost_module = new MDA_VISION_MODULE_GOALPOST;
 
 
-    test_module->filter (img);
-    printf ("test module passed\n");
     gate_module->filter (img);
     printf ("gate module passed\n");
     path_module->filter (img);
@@ -38,8 +34,6 @@ int main (int argc, char** argv) {
     goalpost_module->filter (img);
     printf ("goalpost module passed\n");
 
-    cvWaitKey(500);
-    delete test_module;
     cvWaitKey(500);
     delete gate_module;
     cvWaitKey(500);
