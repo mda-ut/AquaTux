@@ -67,7 +67,7 @@ int main (int argc, char** argv) {
 */
     IplImage* binaryResize = mvCreateImage();
     
-    mvHSVFilter HSVFilter ("test_settings.csv");
+    mvHSVFilter HSVFilter ("HSVFilter_settings.csv");
     HSVFilter.filter_non_common_size (colourResize, binaryResize);
     window.showImage(binaryResize);
     cvWaitKey(0);
