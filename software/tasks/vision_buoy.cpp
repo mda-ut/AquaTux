@@ -24,10 +24,10 @@ MDA_VISION_MODULE_BUOY:: MDA_VISION_MODULE_BUOY () :
     Morphology5 (mvBinaryMorphology(5, 5, MV_KERN_RECT)),
     Morphology3 (mvBinaryMorphology(3, 3, MV_KERN_RECT))//,
 {
-    read_mv_setting (MDA_VISION_BUOY_SETTINGS, "TARGET_BLUE", TARGET_BLUE);
-    read_mv_setting (MDA_VISION_BUOY_SETTINGS, "TARGET_GREEN", TARGET_GREEN);
-    read_mv_setting (MDA_VISION_BUOY_SETTINGS, "TARGET_RED", TARGET_RED);
+    read_color_settings (MDA_VISION_BUOY_SETTINGS);
+    read_mv_setting (MDA_VISION_BUOY_SETTINGS, "BUOY_DEBUG_LEVEL", DEBUG_LEVEL);
     read_mv_setting (MDA_VISION_BUOY_SETTINGS, "DIFF_THRESHOLD", DIFF_THRESHOLD_SETTING);
+    rectangle_params = read_rectangle_settings(MDA_VISION_BUOY_SETTINGS);
 
     gray_img = mvGetScratchImage();
     gray_img_2 = mvGetScratchImage2();
@@ -83,7 +83,8 @@ void MDA_VISION_MODULE_BUOY::add_frame (IplImage* src) {
             continue;
         }*/
 
-        contour_filter.match_ellipse(gray_img_2, &rbox_vector, color, LEN_TO_WIDTH_MIN, LEN_TO_WIDTH_MAX);
+        bool found = contour_filter.match_rectangle(gray_img_2, &rbox_vector, color, rectangle_params);
+        (void) found;
         //contour_filter.match_rectangle(gray_img, &rbox_vector, color, LEN_TO_WIDTH_MIN, LEN_TO_WIDTH_MAX);        
         //window2.showImage (gray_img_2);
         //cvWaitKey(0);

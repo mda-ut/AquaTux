@@ -198,7 +198,7 @@ int main( int argc, char** argv ) {
                     contour_filter.match_circle(filter_img_2, &circle_vector, color);
                 }
                 else if (RECT) {
-                    contour_filter.match_rectangle(filter_img_2, &rbox_vector, color, 2, 6);
+                    //contour_filter.match_rectangle(filter_img_2, &rbox_vector, color, params);
                 }
 /*
                 win3->showImage(filter_img_2);

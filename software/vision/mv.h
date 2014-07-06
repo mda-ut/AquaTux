@@ -41,6 +41,14 @@ inline std::string color_int_to_string (int color) {
     return std::string("UNKNOWN");
 }
 
+inline char WAITKEY (int msecs)
+{
+    char c = cvWaitKey(msecs);
+    if (c == 'q')
+        exit(0);
+    return c;
+}
+
 class MvShape {
 public:
     CvPoint center;

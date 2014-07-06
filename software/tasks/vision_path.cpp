@@ -2,8 +2,9 @@
 #include "../common.h"
 
 #ifdef DEBUG_VISION_PATH
-    #define DEBUG_PRINT(_n, _format, ...) if(_n<=DEBUG_VISION_PATH)printf(_format, ##__VA_ARGS__)
-	#define DEBUG_SHOWIMAGE(_n, _win, _img) if(_n<=DEBUG_VISION_PATH)_win.showImage(_img);
+    #define DEBUG_PRINT(_n, _format, ...) if(_n<=DEBUG_LEVEL)printf(_format, ##__VA_ARGS__)
+	#define DEBUG_SHOWIMAGE(_n, _win, _img) if(_n<=DEBUG_LEVEL)_win.showImage(_img);
+    #define DEBUG_WAITKEY(_n,_msecs) if(_n<=DEBUG_LEVEL)WAITKEY(_msecs);
 #else
     #define DEBUG_PRINT(n, format, ...)
 #endif
@@ -12,9 +13,6 @@ float absf(float f){
     if(f < 0) return f*-1;
     else return f;
 }
-
-const float LEN_TO_WIDTH_MAX = 5.0;
-const float LEN_TO_WIDTH_MIN = 2.0;
 
 const char MDA_VISION_MODULE_PATH::MDA_VISION_PATH_SETTINGS[] = "vision_path_settings.csv";
 
@@ -26,14 +24,14 @@ static const int N_GOOD_FRAMES_NEEDED = 1;
 MDA_VISION_MODULE_PATH:: MDA_VISION_MODULE_PATH () :
 	window (mvWindow("Path Vision 1")),
     window2 (mvWindow("Path Vision 2")),
-    //HSVFilter (mvHSVFilter(MDA_VISION_PATH_SETTINGS)),
     Morphology (mvBinaryMorphology(19, 19, MV_KERN_RECT)),
     Morphology2 (mvBinaryMorphology(7, 7, MV_KERN_RECT))//,
-    //HoughLines (mvHoughLines(MDA_VISION_PATH_SETTINGS))
 {
-    read_mv_setting (MDA_VISION_PATH_SETTINGS, "TARGET_BLUE", TARGET_BLUE);
-    read_mv_setting (MDA_VISION_PATH_SETTINGS, "TARGET_GREEN", TARGET_GREEN);
-    read_mv_setting (MDA_VISION_PATH_SETTINGS, "TARGET_RED", TARGET_RED);
+    read_color_settings (MDA_VISION_PATH_SETTINGS);
+    read_mv_setting (MDA_VISION_PATH_SETTINGS, "PATH_DEBUG_LEVEL", DEBUG_LEVEL);
+    contour_filter.set_debug_level(DEBUG_LEVEL);
+    rectangle_params = read_rectangle_settings(MDA_VISION_PATH_SETTINGS);
+
     //read_mv_setting (MDA_VISION_PATH_SETTINGS, "DIFF_THRESHOLD", DIFF_THRESHOLD_SETTING);
 
     N_FRAMES_TO_KEEP = 2;
@@ -78,26 +76,28 @@ void MDA_VISION_MODULE_PATH::add_frame (IplImage* src) {
     MvRotatedBox rbox;
     MvRBoxVector rbox_vector;
 
-    DEBUG_PRINT(1,"Number of Segments: %d\n", watershed_filter.num_watershed_segments());
+    DEBUG_PRINT(1,"VISION_PATH: Number of Segments from watershed: %d\n", watershed_filter.num_watershed_segments());
 
     while ( watershed_filter.get_next_watershed_segment(gray_img_2, color) ) {
         // check that the segment is roughly red
-        if (color.m1 > 100 || color.m2 > 100 || color.m3 < 100) {
-            DEBUG_PRINT(2,"VISION_BUOY: rejected rectangle due to color: HSV=(%3d,%3d,%3d)\n", color.m1, color.m2, color.m3);
+        DEBUG_PRINT(2,"VISION_PATH: segment color: BGR=(%3d,%3d,%3d)\n", color.m1, color.m2, color.m3);
+        DEBUG_PRINT(2, "VISION_PATH: comparing against: %s\n", color_limit_string().c_str());
+        if (!check_color_triple(color)) {
+            DEBUG_PRINT(2,"VISION_PATH: \e[0;31mrejected rectangle due to color\e[0m\n\n");
             continue;
         }
 
-        bool found = contour_filter.match_rectangle(gray_img_2, &rbox_vector, color, LEN_TO_WIDTH_MIN, LEN_TO_WIDTH_MAX, 1);
-        cvZero(gray_img_2);
-        contour_filter.drawOntoImage(gray_img_2);
-        DEBUG_SHOWIMAGE(2,window2, gray_img_2);
-        if (found) {
-            printf ("FOUND!!\n");
-            cvWaitKey(0);
+        bool found = contour_filter.match_rectangle(gray_img_2, &rbox_vector, color, rectangle_params);
+        if (DEBUG_LEVEL >= 2) {
+            cvZero(gray_img_2);
+            contour_filter.drawOntoImage(gray_img_2);
+            DEBUG_SHOWIMAGE(2,window2, gray_img_2);
+            DEBUG_WAITKEY(2,0);
         }
+        DEBUG_PRINT(1,"VISION_PATH: Segment was %s\n", found ? "accepted" : "rejected");
     }
 
-    DEBUG_PRINT(1, "Rectangles Identified: %d\n", (int)rbox_vector.size());    
+    DEBUG_PRINT(1, "VISION_PATH: Num rectangles identified: %d\n", (int)rbox_vector.size());    
 
     // debug only
     cvCopy (gray_img, gray_img_2);
@@ -178,7 +178,7 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_PATH::frame_calc () {
         
         // check path length to width
         float length_to_width = static_cast<float>(segment_vector[0].length) / segment_vector[0].width;
-        if (length_to_width < LEN_TO_WIDTH_MIN || length_to_width > LEN_TO_WIDTH_MAX) {
+        if (length_to_width < rectangle_params.lw_ratio_min || length_to_width > rectangle_params.lw_ratio_min) {
             DEBUG_PRINT(2,"Path: length to width check failed\n");
             return NO_TARGET;
         }

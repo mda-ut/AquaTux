@@ -11,7 +11,20 @@ static const int CONTOURS_MATCH_NORMAL = 0;
 static const int CONTOURS_MATCH_RECIP = 1;
 static const int CONTOURS_MATCH_FRACTION = 2;
 
+typedef struct _RECTANGLE_PARAMS {
+    int contour_points_min;
+    int contour_area_min;
+    int contour_area_max;
+    float lw_ratio_min;
+    float lw_ratio_max;
+    float area_ratio_min;
+    float peri_ratio_min;
+    float peri_ratio_max;
+} RECTANGLE_PARAMS;
+
 class mvContours {
+    int DEBUG_LEVEL;
+
     // list of images that contain objects to match against
     static const int NUM_CONTOUR_RECT_IMAGES = 5;
     static const char* contour_rect_images[];
@@ -45,25 +58,26 @@ private:
     void get_rect_parameters (IplImage* img, CvSeq* contour1, CvPoint &centroid, float &length, float &angle);
     void get_circle_parameters (IplImage* img, CvSeq* contour1, CvPoint &centroid, float &radius);
 
-    void draw_contours (CvSeq* contours_to_draw, IplImage* img) {
+    void draw_contours (CvSeq* contours_to_draw, IplImage* img, int level=0) {
         cvDrawContours (
                     img,
                     contours_to_draw,
                     cvScalar(200,200,200),  // contour color
                     cvScalar(200,200,200),  // background color
-                    0                       // max contours level
+                    level                   // max contours level
             );
     }
 
 public:
-    mvContours ();
+    mvContours (const int _debug_level=0);
     ~mvContours ();
 
-    int match_rectangle (IplImage* img, MvRBoxVector* rbox_vector, COLOR_TRIPLE color, float min_lw_ratio=1, float max_lw_ratio=100, int method=0);
+    void set_debug_level(int _debug_level) { DEBUG_LEVEL = _debug_level; }
+    int match_rectangle (IplImage* img, MvRBoxVector* rbox_vector, COLOR_TRIPLE color, const RECTANGLE_PARAMS &params);
     int match_circle (IplImage* img, MvCircleVector* circle_vector, COLOR_TRIPLE color, int method=0);
     int match_ellipse (IplImage* img, MvRBoxVector* circle_vector, COLOR_TRIPLE color, float min_lw_ratio=1, float max_lw_ratio=100, int method=0);
 
-    void drawOntoImage (IplImage* img) { draw_contours (m_contours, img); }        
+    void drawOntoImage (IplImage* img) { draw_contours (m_contours, img, 1); }        
 
 };
 

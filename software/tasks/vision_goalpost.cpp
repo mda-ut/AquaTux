@@ -29,7 +29,7 @@ MDA_VISION_MODULE_GOALPOST:: ~MDA_VISION_MODULE_GOALPOST () {
 void MDA_VISION_MODULE_GOALPOST::primary_filter (IplImage* src) {
     // shift the frames back by 1
     shift_frame_data (m_frame_data_vector, read_index, N_FRAMES_TO_KEEP);
-
+    rectangle_params = read_rectangle_settings(MDA_VISION_GOALPOST_SETTINGS);
 
     watershed_filter.watershed(src, gray_img, mvWatershedFilter::WATERSHED_STEP_SMALL);
     window.showImage (src);
@@ -45,8 +45,8 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_GOALPOST::calc_vci () {
     // In this step, loop over every segment and try to find one that looks like a rectangle
     while ( watershed_filter.get_next_watershed_segment(gray_img_2, color) ) {
         // check that the segment is roughly red
-        contour_filter.match_rectangle(gray_img_2, &rbox_vector, color, 10.0, 40.0, 1);
-        //window2.showImage (gray_img_2);
+        bool found = contour_filter.match_rectangle(gray_img_2, &rbox_vector, color, rectangle_params);
+        (void) found;
     }
     for (unsigned i = 0; i < rbox_vector.size(); i++) {
         //look for vertical red rbox

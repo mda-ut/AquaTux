@@ -5,7 +5,7 @@
 
 //#define PROFILE_ON
 
-#define DEBUG_VISION_PATH 1
-
+#define DEBUG_VISION_PATH
+#define DEBUG_CONTOURS
 
 #endif

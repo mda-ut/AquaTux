@@ -5,6 +5,7 @@
 #include <cv.h>
 #include <math.h>
 #include <algorithm>
+#include <stdlib.h>
 
 #include "mgui.h"
 #include "mv.h"
@@ -47,6 +48,10 @@ protected:
     static const float TAN_FOV_Y = 1.2;
     static const float RAD_TO_DEG = 57.2958;
 
+    int DEBUG_LEVEL;
+    int B_MIN, B_MAX, G_MIN, G_MAX, R_MIN, R_MAX;
+    RECTANGLE_PARAMS rectangle_params;
+
     // stores numerical data that can be queried. The goal of the modules is to calculate this
     int m_pixel_x, m_pixel_y, m_range;
     float m_angular_x, m_angular_y;
@@ -61,6 +66,39 @@ protected:
     int n_valid_circle_frames;
     int n_valid_box_frames;
     int n_valid;
+
+    /* Helper functions for vision modules */
+    void read_color_settings(const char filename[]){
+        read_mv_setting (filename, "B_MIN", B_MIN);
+        read_mv_setting (filename, "B_MAX", B_MAX);
+        read_mv_setting (filename, "G_MIN", G_MIN);
+        read_mv_setting (filename, "G_MAX", G_MAX);
+        read_mv_setting (filename, "R_MIN", R_MIN);
+        read_mv_setting (filename, "R_MAX", R_MAX);
+    }
+
+    bool check_color_triple(COLOR_TRIPLE color){
+        return ((color.m1 >= B_MIN && color.m1 <= B_MAX)&&(color.m2 >= G_MIN && color.m2 <= G_MAX)&&(color.m3 >= R_MIN && color.m3 <= R_MAX));
+    }
+
+    std::string color_limit_string(){
+        char buffer[100];
+        sprintf (buffer, "( B(%d,%d) & G(%d,%d) & R(%d,%d) )", B_MIN, B_MAX, G_MIN, G_MAX, R_MIN, R_MAX);
+        return std::string(buffer);
+    }
+
+    RECTANGLE_PARAMS read_rectangle_settings(const char filename[]) {
+        RECTANGLE_PARAMS params;
+        read_mv_setting (filename, "CONTOUR_POINTS_MIN", params.contour_points_min);
+        read_mv_setting (filename, "CONTOUR_AREA_MIN", params.contour_area_min);
+        read_mv_setting (filename, "CONTOUR_AREA_MAX", params.contour_area_max);
+        read_mv_setting (filename, "LW_RATIO_MIN", params.lw_ratio_min);
+        read_mv_setting (filename, "LW_RATIO_MAX", params.lw_ratio_max);
+        read_mv_setting (filename, "AREA_RATIO_MIN", params.area_ratio_min);
+        read_mv_setting (filename, "PERI_RATIO_MIN", params.peri_ratio_min);
+        read_mv_setting (filename, "PERI_RATIO_MAX", params.peri_ratio_max);
+        return params;
+    }
 
     void clear_data () {
         m_pixel_x = m_pixel_y = m_range = MV_UNDEFINED_VALUE;
@@ -120,6 +158,7 @@ class MDA_VISION_MODULE_GATE : public MDA_VISION_MODULE_BASE {
     static const float GATE_REAL_SLENDERNESS = 0.017;
     static const float GATE_WIDTH_TO_HEIGHT_RATIO = 2.50;
 
+
     mvWindow window;
     mvWindow window2;
     mvWatershedFilter watershed_filter;
@@ -173,8 +212,6 @@ class MDA_VISION_MODULE_PATH : public MDA_VISION_MODULE_BASE {
     static const float K_LEN = 1.0;
     static const float K_DIS = 2.0;
 
-    // for contour shape/color matching
-    int TARGET_BLUE, TARGET_GREEN, TARGET_RED;
 
     int m_pixel_x_alt, m_pixel_y_alt, m_range_alt;
     float m_angular_x_alt, m_angular_y_alt;
@@ -251,7 +288,6 @@ class MDA_VISION_MODULE_BUOY : public MDA_VISION_MODULE_BASE {
     static const double COLOR_DIVISION_FACTOR = 2000;
     static const double DIFF_THRESHOLD = 0.3 + 40/200; // shape diff + color diff
     double DIFF_THRESHOLD_SETTING;
-    int TARGET_BLUE, TARGET_GREEN, TARGET_RED;
 
     mvWindow window;
     mvWindow window2;

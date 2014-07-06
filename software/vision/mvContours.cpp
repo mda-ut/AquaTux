@@ -1,11 +1,12 @@
 #include "mvContours.h"
+#include "../common.h"
 
-//#define MATCH_CONTOURS_DEBUG
-#define M_DEBUG
-#ifdef M_DEBUG
-    #define DEBUG_PRINT(format, ...) printf(format, ##__VA_ARGS__)
+#ifdef DEBUG_CONTOURS
+    #define DEBUG_PRINT(_n, _format, ...) if(_n<=DEBUG_LEVEL)printf(_format, ##__VA_ARGS__)
+    #define DEBUG_SHOWIMAGE(_n, _win, _img) if(_n<=DEBUG_LEVEL)_win.showImage(_img);
+    #define DEBUG_WAITKEY(_n,_msecs) if(_n<=DEBUG_LEVEL)WAITKEY(_msecs);
 #else
-    #define DEBUG_PRINT(format, ...)
+    #define DEBUG_PRINT(n, format, ...)
 #endif
 
 #define CONTOUR_IMG_PREFIX "../vision/contour_images/"
@@ -30,7 +31,8 @@ double dslog (double x) { // double signed log
     return (sign * log(fabs(x)));
 }
 
-mvContours::mvContours() :
+mvContours::mvContours(const int _debug_level) :
+    DEBUG_LEVEL(_debug_level),
     bin_contours(PROFILE_BIN("mvContours - Contour Finding")),
     bin_match(PROFILE_BIN("mvContours - Matching")),
     bin_calc(PROFILE_BIN("mvContours - Calculation"))
@@ -120,13 +122,13 @@ int mvContours::find_contour_and_check_errors(IplImage* img) {
         CvPoint* p = CV_GET_SEQ_ELEM (CvPoint, m_contours, i);
         if (p->x == 1 || p->x == 398) {
             if (p->x == last_x && abs(p->y-last_y) > img->height/3) {
-                DEBUG_PRINT ("find_contour: contour shares vertical side with image (x=%d). Discarding.\n", last_x);
+                DEBUG_PRINT (1, "find_contour: contour shares vertical side with image (x=%d). Discarding.\n", last_x);
                 goto FIND_CONTOUR_ERROR;
             }
         }
         if ((p->y == 1) || (p->y == 298)) {
             if (p->y == last_y && abs(p->x-last_x) > img->width/3) {
-                DEBUG_PRINT ("find_contour: contour shares horizontal side with image (y=%d). Discarding.\n", last_y);
+                DEBUG_PRINT (1, "find_contour: contour shares horizontal side with image (y=%d). Discarding.\n", last_y);
                 goto FIND_CONTOUR_ERROR;
             }
         }
@@ -146,7 +148,7 @@ FIND_CONTOUR_ERROR:
     return -1;
 }
 
-int mvContours::match_rectangle (IplImage* img, MvRBoxVector* rbox_vector, COLOR_TRIPLE color, float min_lw_ratio, float max_lw_ratio, int method) {
+int mvContours::match_rectangle (IplImage* img, MvRBoxVector* rbox_vector, COLOR_TRIPLE color, const RECTANGLE_PARAMS &params) {
     assert (img != NULL);
     assert (img->nChannels == 1);
 
@@ -159,30 +161,35 @@ int mvContours::match_rectangle (IplImage* img, MvRBoxVector* rbox_vector, COLOR
     int n_boxes_found = 0;
 
     // debug
-    //mvWindow window("contours");
+    mvWindow window("contours");
 
     // examine each contour, put the passing ones into the circle_vector
     for (int C = 0; C < n_contours; C++, c_contour = c_contour->h_next) {   
         // debug
-        /*cvZero (img);
-        draw_contours (c_contour, img);
+        cvZero (img);
+        draw_contours (c_contour, img);    
         window.showImage (img);
-        cvWaitKey(0);
-        */
+        
         // check that there are at least 6 points
-        if (c_contour->total < 6) {
-            DEBUG_PRINT ("Rect Fail: Contour has less than 6 points\n");
+        if (c_contour->total < params.contour_points_min) {
+            DEBUG_PRINT (2, "%s: Contour has %d < %d points\n", __FUNCTION__, c_contour->total, params.contour_points_min);
+            DEBUG_WAITKEY(4, 0);
             continue;
         }
 
         // check the contour's area to make sure it isnt too small
         double area = cvContourArea(c_contour);
-        if (method == 0) {
-            if (area < img->width*img->height/600) {
-                DEBUG_PRINT ("Rect Fail: Contour too small!\n");
-                continue;
-            }
+        if (area < params.contour_area_min) {
+            DEBUG_PRINT (2, "%s: Contour with area %4.1lf < %d pixels!\n", __FUNCTION__, area, params.contour_area_min);
+            DEBUG_WAITKEY(4, 0);
+            continue;
         }
+        if (area > params.contour_area_max) {
+            DEBUG_PRINT (2, "%s: Contour with area %4.1lf > %d pixels!\n", __FUNCTION__, area, params.contour_area_max);
+            DEBUG_WAITKEY(4, 0);
+            continue;
+        }
+
 
         CvBox2D Rect = cvMinAreaRect2(c_contour, m_storage);
         float angle = Rect.angle;
@@ -195,27 +202,37 @@ int mvContours::match_rectangle (IplImage* img, MvRBoxVector* rbox_vector, COLOR
             angle += 90;
         }
 
-        if (length/width < min_lw_ratio || length/width > max_lw_ratio) {
-            DEBUG_PRINT ("Rect Fail: length/width = %6.2f\n", length/width);    
+        float lw_ratio = length/width;
+        if (lw_ratio < params.lw_ratio_min) {
+            DEBUG_PRINT (2, "%s: lw_ratio of %4.1f < %4.1f\n", __FUNCTION__, lw_ratio, params.lw_ratio_min);
+            DEBUG_WAITKEY(4, 0);
+            continue;
+        }
+        if (lw_ratio > params.lw_ratio_max) {
+            DEBUG_PRINT (2, "%s: lw_ratio of %4.1f > %4.1f\n", __FUNCTION__, lw_ratio, params.lw_ratio_max);
+            DEBUG_WAITKEY(4, 0);
             continue;
         }
 
         double perimeter = cvArcLength (c_contour, CV_WHOLE_SEQ, 1);
         double perimeter_ratio = perimeter / (2*length+2*width);
         double area_ratio = area / (length*width);
-        if (method == 0) { // MAKE THE METHOD OPTIONS MORE CLEAR
-            if (area_ratio < 0.75 || perimeter_ratio > 1.2 || perimeter_ratio < 0.85) {
-                DEBUG_PRINT ("Rect Fail: Area / Peri:    %6.2lf / %6.2lf\n", area_ratio, perimeter_ratio);
-                continue;
-            }
+        if (area_ratio < params.area_ratio_min) {
+            DEBUG_PRINT (2, "%s: area_ratio of %4.1f < %4.1f\n", __FUNCTION__, area_ratio, params.area_ratio_min);
+            DEBUG_WAITKEY(4, 0);
+            continue;
         }
-        else if (method == 1) {
-            if (area_ratio < 0.55 || perimeter_ratio > 1.4 || perimeter_ratio < 0.75) {
-                DEBUG_PRINT ("Rect Fail: Area / Peri:    %6.2lf / %6.2lf\n", area_ratio, perimeter_ratio);
-                continue;
-            }
+        if (perimeter_ratio > params.peri_ratio_max) {
+            DEBUG_PRINT (2, "%s: perimeter_ratio of %4.1f > %4.1f\n", __FUNCTION__, perimeter_ratio, params.peri_ratio_max);
+            DEBUG_WAITKEY(4, 0);
+            continue;
         }
-
+        if (perimeter_ratio < params.peri_ratio_min) {
+            DEBUG_PRINT (2, "%s: perimeter_ratio of %4.1f < %4.1f\n", __FUNCTION__, perimeter_ratio, params.peri_ratio_min);
+            DEBUG_WAITKEY(4, 0);
+            continue;
+        }
+        
         MvRotatedBox rbox;
         rbox.center.x = Rect.center.x;
         rbox.center.y = Rect.center.y;
@@ -257,7 +274,7 @@ int mvContours::match_circle (IplImage* img, MvCircleVector* circle_vector, COLO
         /*cvZero (img);
         draw_contours (c_contour, img);
         //window.showImage (img);
-        cvWaitKey(0);*/
+        WAITKEY(0);*/
 
         // check that there are at least 6 points
         if (c_contour->total < 6) {
@@ -267,7 +284,7 @@ int mvContours::match_circle (IplImage* img, MvCircleVector* circle_vector, COLO
         // check the contour's area to make sure it isnt too small
         double area = cvContourArea(c_contour);
         if (area < img->width*img->height/600) {
-            DEBUG_PRINT ("Circle Fail: Contour too small!\n");
+            DEBUG_PRINT (1, "Circle Fail: Contour too small!\n");
             continue;
         }
     
@@ -297,8 +314,8 @@ int mvContours::match_circle (IplImage* img, MvCircleVector* circle_vector, COLO
         pass = (r03 <= 25.0) && (r12 <= 12.0) && (r02 <= 12.0) && (r11 > 2.5) && (R > 25);
 
         if (!pass) {
-            //DEBUG_PRINT ("Circle Moms: nu11=%lf, nu20=%lf, nu02=%lf, nu21=%lf, nu12=%lf, nu30=%lf, nu03=%lf\n", nu11, nu20, nu02, nu21, nu12, nu30, nu03);
-            DEBUG_PRINT ("Circle Fail: \tn30/n03=%3.1lf, n21/n12=%3.1lf, nu20/nu02=%3.1lf, r11=%3.1f, R=%3.1f!\n", r03, r12, r02, r11, R);
+            //DEBUG_PRINT (1, "Circle Moms: nu11=%lf, nu20=%lf, nu02=%lf, nu21=%lf, nu12=%lf, nu30=%lf, nu03=%lf\n", nu11, nu20, nu02, nu21, nu12, nu30, nu03);
+            DEBUG_PRINT (1, "Circle Fail: \tn30/n03=%3.1lf, n21/n12=%3.1lf, nu20/nu02=%3.1lf, r11=%3.1f, R=%3.1f!\n", r03, r12, r02, r11, R);
             continue;
         }
         
@@ -317,7 +334,7 @@ int mvContours::match_circle (IplImage* img, MvCircleVector* circle_vector, COLO
         double area_ratio = area / (CV_PI*radius*radius);
         //double perimeter_ratio = perimeter / (2*CV_PI*radius);
         if (area_ratio < 0.7) {
-            DEBUG_PRINT ("Circle Fail: Area: %6.2lf\n", area_ratio);
+            DEBUG_PRINT (1, "Circle Fail: Area: %6.2lf\n", area_ratio);
             continue;
         }
         
@@ -363,7 +380,7 @@ int mvContours::match_ellipse (IplImage* img, MvRBoxVector* ellipse_vector, COLO
         /*cvZero (img);
         draw_contours (c_contour, img);
         window.showImage (img);
-        cvWaitKey(0);*/
+        WAITKEY(0);*/
 
         // check that there are at least 6 points
         if (c_contour->total < 6) {
@@ -372,7 +389,7 @@ int mvContours::match_ellipse (IplImage* img, MvRBoxVector* ellipse_vector, COLO
         // check the contour's area to make sure it isnt too small
         double area = cvContourArea(c_contour);
         if (area < img->width*img->height/1000) {
-            DEBUG_PRINT ("Ellipse Fail: Contour too small!\n");
+            DEBUG_PRINT (1, "Ellipse Fail: Contour too small!\n");
             continue;
         }
     
@@ -391,7 +408,7 @@ int mvContours::match_ellipse (IplImage* img, MvRBoxVector* ellipse_vector, COLO
         }
         // check length to width
         if (height_to_width < min_lw_ratio || height_to_width > max_lw_ratio) {
-            DEBUG_PRINT ("Ellipse Fail: height_to_width = %6.2f\n", height_to_width);    
+            DEBUG_PRINT (1, "Ellipse Fail: height_to_width = %6.2f\n", height_to_width);    
             continue;
         }
 
@@ -400,13 +417,13 @@ int mvContours::match_ellipse (IplImage* img, MvRBoxVector* ellipse_vector, COLO
         double ellipse_perimeter = CV_PI*(3*(a+b)-sqrt((3*a+b)*(a+3*b)));
         double area_ratio = area / ellipse_area;
         double perimeter_ratio = perimeter / ellipse_perimeter;
-        DEBUG_PRINT ("Ellipse: area=%5.2lf/%5.2lf, perimeter=%5.2lf/%5.2lf\n", area, ellipse_area, perimeter, ellipse_perimeter);
+        DEBUG_PRINT (1, "Ellipse: area=%5.2lf/%5.2lf, perimeter=%5.2lf/%5.2lf\n", area, ellipse_area, perimeter, ellipse_perimeter);
         if (area_ratio < 0.75 || area_ratio > 1.25) {
-            DEBUG_PRINT ("Ellipse Fail: Area: %6.2lf\n", area_ratio);
+            DEBUG_PRINT (1, "Ellipse Fail: Area: %6.2lf\n", area_ratio);
             continue;
         }
         if (perimeter_ratio < 0.75 || perimeter_ratio > 1.25) {
-            DEBUG_PRINT ("Ellipse Fail: perimeter: %6.2lf\n", perimeter_ratio);
+            DEBUG_PRINT (1, "Ellipse Fail: perimeter: %6.2lf\n", perimeter_ratio);
             continue;
         }
         
@@ -425,7 +442,7 @@ int mvContours::match_ellipse (IplImage* img, MvRBoxVector* ellipse_vector, COLO
 
         //cvEllipse (img, cvPoint(ellipse.center.x,ellipse.center.y), cvSize(b,a), ellipse.angle, 0, 359, CV_RGB(50,50,50), 2);
         //window.showImage (img);
-        //cvWaitKey(0);
+        //WAITKEY(0);
         n_circles_found++;
     }
     

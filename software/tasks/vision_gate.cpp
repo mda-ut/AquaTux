@@ -18,6 +18,7 @@ MDA_VISION_MODULE_GATE:: MDA_VISION_MODULE_GATE () :
 	//HoughLines (mvHoughLines(MDA_VISION_GATE_SETTINGS)),
 	//lines (mvLines())
 {
+    rectangle_params = read_rectangle_settings(MDA_VISION_GATE_SETTINGS);
     N_FRAMES_TO_KEEP = 8;
     gray_img = mvGetScratchImage();
     gray_img_2 = mvGetScratchImage2();
@@ -50,7 +51,8 @@ void MDA_VISION_MODULE_GATE::add_frame (IplImage* src) {
             continue;
         }
 
-        contour_filter.match_rectangle(gray_img_2, &rbox_vector, color, 5.0, 15.0, 1);
+        bool found = contour_filter.match_rectangle(gray_img_2, &rbox_vector, color, rectangle_params);
+        (void) found;
         //window2.showImage (gray_img_2);
     }
 
