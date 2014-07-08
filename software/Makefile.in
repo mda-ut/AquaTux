@@ -7,12 +7,14 @@ endif
 
 CV_FLAGS=`pkg-config --cflags opencv`
 CV_LIBS=`pkg-config --libs opencv`
+NCURSES_FLAGS=`pkg-config --cflags ncurses`
+NCURSES_LIBS=`pkg-config --libs ncurses`
 
 I_FLAGS=-I ../sim -I ../vision -I ../tasks -I ../ui -I ../interface
-L_FLAGS=-Wl,--no-as-needed -lsim -L../sim -lvision -L../vision -ltasks -L../tasks -lui -L../ui -linterface -L../interface -lncurses -lm -pthread -Wl,-rpath,'$$ORIGIN/../vision/' -Wl,-rpath,'$$ORIGIN/../tasks/' -Wl,-rpath,'$$ORIGIN/../sim/' -Wl,-rpath,'$$ORIGIN/../ui/' -Wl,-rpath,'$$ORIGIN/../interface/'
+L_FLAGS=-Wl,--no-as-needed -lsim -L../sim -lvision -L../vision -ltasks -L../tasks -lui -L../ui -lm -pthread -Wl,-rpath,'$$ORIGIN/../vision/' -Wl,-rpath,'$$ORIGIN/../tasks/' -Wl,-rpath,'$$ORIGIN/../sim/' -Wl,-rpath,'$$ORIGIN/../ui/' -Wl,-rpath,'$$ORIGIN/../interface/'
 COMPILE_FLAGS+=-O3 -Wall -g -fPIC 
 
-CXXFLAGS=$(I_FLAGS) $(COMPILE_FLAGS) $(L_FLAGS) $(GL_LIBS) $(CV_FLAGS)
+CXXFLAGS=$(I_FLAGS) $(COMPILE_FLAGS) $(L_FLAGS) $(GL_LIBS) $(CV_FLAGS) $(NCURSES_FLAGS)
 CFLAGS=$(CXXFLAGS)
 
 DEBUG_FLAGS=-DDEBUG_FRAME_BY_FRAME -DDISABLE_SCRATCH_IMAGE -DFLOOD_DEBUG -DM_DEBUG
@@ -46,7 +48,7 @@ debug:
 
 ifdef SO
 $(SO): $(OBJ)
-	$(CXX) -fPIC -shared -o $@ $(OBJ)
+	$(CXX) -fPIC -shared -o $@ $(OBJ) $(CV_LIBS) $(GL_LIBS) $(NCURSES_LIBS) $(DEP_FLAGS)
 endif
 
 deps:
