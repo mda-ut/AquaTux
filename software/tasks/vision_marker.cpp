@@ -14,7 +14,7 @@ const char MDA_VISION_MODULE_MARKER::MDA_VISION_MARKER_SETTINGS[] = "vision_mark
 /// ########################################################################
 /// MODULE_MARKER methods
 /// ########################################################################
-MDA_VISION_MODULE_MARKER:: MDA_VISION_MODULE_MARKER () :
+MDA_VISION_MODULE_MARKER::MDA_VISION_MODULE_MARKER () :
 	window (mvWindow("Marker Vision Module")),
 	HSVFilter (mvHSVFilter(MDA_VISION_MARKER_SETTINGS))
 {
@@ -24,11 +24,11 @@ MDA_VISION_MODULE_MARKER:: MDA_VISION_MODULE_MARKER () :
     //_filtered_img->origin = 1;
 }
 
-MDA_VISION_MODULE_MARKER:: ~MDA_VISION_MODULE_MARKER () {
+MDA_VISION_MODULE_MARKER::~MDA_VISION_MODULE_MARKER () {
     mvReleaseScratchImage();
 }
 
-void MDA_VISION_MODULE_MARKER:: primary_filter (IplImage* src) {   
+void MDA_VISION_MODULE_MARKER::primary_filter (IplImage* src) {   
     /** src is an image that is passed in from the simulator. It is 3 channel
      *  Because it is const you may need to deep copy (not pointer copy) it 
      *  to your own IplImage first before you can modify it.
@@ -44,7 +44,7 @@ void MDA_VISION_MODULE_MARKER:: primary_filter (IplImage* src) {
     window.showImage (filtered_img);
 }
 
-MDA_VISION_RETURN_CODE MDA_VISION_MODULE_MARKER:: calc_vci () {
+MDA_VISION_RETURN_CODE MDA_VISION_MODULE_MARKER::calc_vci () {
     MDA_VISION_RETURN_CODE retval = NO_TARGET;
     double target[2][7] = {
                            {0.256755, 0.001068, 0.006488, 0.001148, 0.000003, 0.000037, -0.000000}, //the plane

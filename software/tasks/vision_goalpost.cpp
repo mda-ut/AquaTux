@@ -12,7 +12,7 @@ const char MDA_VISION_MODULE_GOALPOST::MDA_VISION_GOALPOST_SETTINGS[] = "vision_
 /// #########################################################################
 /// MODULE_GOALPOST methods
 /// #########################################################################
-MDA_VISION_MODULE_GOALPOST:: MDA_VISION_MODULE_GOALPOST () :
+MDA_VISION_MODULE_GOALPOST::MDA_VISION_MODULE_GOALPOST () :
     window (mvWindow("Goalpost Vision Module")),
     window2 (mvWindow("Goalpost Vision Module 2"))//,
 {
@@ -21,7 +21,7 @@ MDA_VISION_MODULE_GOALPOST:: MDA_VISION_MODULE_GOALPOST () :
     gray_img_2 = mvGetScratchImage2();
 }
 
-MDA_VISION_MODULE_GOALPOST:: ~MDA_VISION_MODULE_GOALPOST () {
+MDA_VISION_MODULE_GOALPOST::~MDA_VISION_MODULE_GOALPOST () {
     mvReleaseScratchImage();
     mvReleaseScratchImage2();
 }

@@ -21,7 +21,7 @@ static const int N_GOOD_FRAMES_NEEDED = 1;
 /// ########################################################################
 /// MODULE_PATH methods
 /// ########################################################################
-MDA_VISION_MODULE_PATH:: MDA_VISION_MODULE_PATH () :
+MDA_VISION_MODULE_PATH::MDA_VISION_MODULE_PATH () :
 	window (mvWindow("Path Vision 1")),
     window2 (mvWindow("Path Vision 2")),
     Morphology (mvBinaryMorphology(19, 19, MV_KERN_RECT)),
@@ -39,7 +39,7 @@ MDA_VISION_MODULE_PATH:: MDA_VISION_MODULE_PATH () :
     gray_img_2 = mvGetScratchImage2();
 }
 
-MDA_VISION_MODULE_PATH:: ~MDA_VISION_MODULE_PATH () {
+MDA_VISION_MODULE_PATH::~MDA_VISION_MODULE_PATH () {
     mvReleaseScratchImage();
     mvReleaseScratchImage2();
 }

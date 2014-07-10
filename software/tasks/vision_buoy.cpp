@@ -18,7 +18,7 @@ const char MDA_VISION_MODULE_BUOY::MDA_VISION_BUOY_SETTINGS[] = "vision_buoy_set
 /// #########################################################################
 /// MODULE_BUOY methods
 /// #########################################################################
-MDA_VISION_MODULE_BUOY:: MDA_VISION_MODULE_BUOY () :
+MDA_VISION_MODULE_BUOY::MDA_VISION_MODULE_BUOY () :
     window (mvWindow("Buoy Vision Module")),
     window2 (mvWindow("Buoy Vision Module 2")),
     Morphology5 (mvBinaryMorphology(5, 5, MV_KERN_RECT)),
@@ -35,7 +35,7 @@ MDA_VISION_MODULE_BUOY:: MDA_VISION_MODULE_BUOY () :
     N_FRAMES_TO_KEEP = FRAMES_TO_KEEP;
 }
 
-MDA_VISION_MODULE_BUOY:: ~MDA_VISION_MODULE_BUOY () {
+MDA_VISION_MODULE_BUOY::~MDA_VISION_MODULE_BUOY () {
     mvReleaseScratchImage();
     mvReleaseScratchImage2();
 }

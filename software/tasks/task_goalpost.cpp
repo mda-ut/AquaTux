@@ -3,16 +3,16 @@
 
 const int MASTER_TIMEOUT = 45;
 
-MDA_TASK_GOALPOST:: MDA_TASK_GOALPOST (AttitudeInput* a, ImageInput* i, ActuatorOutput* o) :
+MDA_TASK_GOALPOST::MDA_TASK_GOALPOST (AttitudeInput* a, ImageInput* i, ActuatorOutput* o) :
     MDA_TASK_BASE (a, i, o)
 {
 }
 
-MDA_TASK_GOALPOST:: ~MDA_TASK_GOALPOST ()
+MDA_TASK_GOALPOST::~MDA_TASK_GOALPOST ()
 {
 }
 
-MDA_TASK_RETURN_CODE MDA_TASK_GOALPOST:: run_task() {
+MDA_TASK_RETURN_CODE MDA_TASK_GOALPOST::run_task() {
     puts("Press q to quit");
 
     MDA_VISION_MODULE_GOALPOST goalpost_vision;

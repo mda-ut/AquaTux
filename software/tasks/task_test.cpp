@@ -1,17 +1,17 @@
 #include "mda_tasks.h"
 #include "mda_vision.h"
 
-MDA_TASK_TEST:: MDA_TASK_TEST (AttitudeInput* a, ImageInput* i, ActuatorOutput* o) :
+MDA_TASK_TEST::MDA_TASK_TEST (AttitudeInput* a, ImageInput* i, ActuatorOutput* o) :
     MDA_TASK_BASE (a, i, o),
     window ("task_test")
 {
 }
 
-MDA_TASK_TEST:: ~MDA_TASK_TEST ()
+MDA_TASK_TEST::~MDA_TASK_TEST ()
 {
 }
 
-MDA_TASK_RETURN_CODE MDA_TASK_TEST:: run_task() {
+MDA_TASK_RETURN_CODE MDA_TASK_TEST::run_task() {
     puts("Press q to quit");
 
     MDA_TASK_RETURN_CODE ret_code = TASK_MISSING;

@@ -5,12 +5,12 @@ const int PAN_TIME_HALF = 6;
 const int MASTER_TIMEOUT = 200;
 const int GATE_DELTA_DEPTH = 50;
 
-MDA_TASK_GATE:: MDA_TASK_GATE (AttitudeInput* a, ImageInput* i, ActuatorOutput* o) :
+MDA_TASK_GATE::MDA_TASK_GATE (AttitudeInput* a, ImageInput* i, ActuatorOutput* o) :
     MDA_TASK_BASE (a, i, o)
 {
 }
 
-MDA_TASK_GATE:: ~MDA_TASK_GATE ()
+MDA_TASK_GATE::~MDA_TASK_GATE ()
 {
 }
 
@@ -22,7 +22,7 @@ enum TASK_STATE {
     APPROACH
 };
 
-MDA_TASK_RETURN_CODE MDA_TASK_GATE:: run_task() {
+MDA_TASK_RETURN_CODE MDA_TASK_GATE::run_task() {
     puts("Press q to quit");
 
     MDA_VISION_MODULE_GATE gate_vision;

@@ -13,18 +13,18 @@ enum TASK_STATE {
     AT_ALIGN_DEPTH
 };
 
-MDA_TASK_PATH:: MDA_TASK_PATH (AttitudeInput* a, ImageInput* i, ActuatorOutput* o) :
+MDA_TASK_PATH::MDA_TASK_PATH (AttitudeInput* a, ImageInput* i, ActuatorOutput* o) :
     MDA_TASK_BASE (a, i, o)
 {
     pix_x_old = pix_y_old = 0;
 }
 
-MDA_TASK_PATH:: ~MDA_TASK_PATH ()
+MDA_TASK_PATH::~MDA_TASK_PATH ()
 {
 }
 
 
-MDA_TASK_RETURN_CODE MDA_TASK_PATH:: run_task() {
+MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task() {
     puts("Press q to quit");
 
     MDA_VISION_MODULE_PATH path_vision;
@@ -286,17 +286,17 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH:: run_task() {
     return ret_code;
 }
 
-MDA_TASK_PATH_SKIP:: MDA_TASK_PATH_SKIP (AttitudeInput* a, ImageInput* i, ActuatorOutput* o) :
+MDA_TASK_PATH_SKIP::MDA_TASK_PATH_SKIP (AttitudeInput* a, ImageInput* i, ActuatorOutput* o) :
     MDA_TASK_BASE (a, i, o)
 {
 }
 
-MDA_TASK_PATH_SKIP:: ~MDA_TASK_PATH_SKIP ()
+MDA_TASK_PATH_SKIP::~MDA_TASK_PATH_SKIP ()
 {
 }
 
 
-MDA_TASK_RETURN_CODE MDA_TASK_PATH_SKIP:: run_task() {
+MDA_TASK_RETURN_CODE MDA_TASK_PATH_SKIP::run_task() {
     puts("Press q to quit");
 
     MDA_VISION_MODULE_PATH path_vision;

@@ -4,12 +4,12 @@
 const float LEN_TO_WIDTH_MAX = 9.0;
 const float LEN_TO_WIDTH_MIN = 4.0;
 
-MDA_TASK_BUOY:: MDA_TASK_BUOY (AttitudeInput* a, ImageInput* i, ActuatorOutput* o) :
+MDA_TASK_BUOY::MDA_TASK_BUOY (AttitudeInput* a, ImageInput* i, ActuatorOutput* o) :
     MDA_TASK_BASE (a, i, o)
 {
 }
 
-MDA_TASK_BUOY:: ~MDA_TASK_BUOY ()
+MDA_TASK_BUOY::~MDA_TASK_BUOY ()
 {
 }
 
@@ -21,7 +21,7 @@ enum TASK_STATE {
     APPROACH    // buoy found, approaching buoy
 };
 
-MDA_TASK_RETURN_CODE MDA_TASK_BUOY:: run_task() {
+MDA_TASK_RETURN_CODE MDA_TASK_BUOY::run_task() {
     static int buoy_index = 0;
     MDA_TASK_RETURN_CODE code = run_single_buoy(buoy_index, BUOY_RED);
     if (code == TASK_DONE) {
@@ -46,7 +46,7 @@ void get_data_from_frame (MDA_VISION_MODULE_BUOY* vision, bool* valid, int* ang_
     }
 }
 
-MDA_TASK_RETURN_CODE MDA_TASK_BUOY:: run_single_buoy(int buoy_index, BUOY_COLOR color) {
+MDA_TASK_RETURN_CODE MDA_TASK_BUOY::run_single_buoy(int buoy_index, BUOY_COLOR color) {
     puts("Press q to quit");
 
     assert (buoy_index >= 0 && buoy_index <= 1);

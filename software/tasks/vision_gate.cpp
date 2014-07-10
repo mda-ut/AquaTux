@@ -12,7 +12,7 @@ const char MDA_VISION_MODULE_GATE::MDA_VISION_GATE_SETTINGS[] = "vision_gate_set
 /// ########################################################################
 /// MODULE_GATE methods
 /// ########################################################################
-MDA_VISION_MODULE_GATE:: MDA_VISION_MODULE_GATE () :
+MDA_VISION_MODULE_GATE::MDA_VISION_MODULE_GATE () :
 	window (mvWindow("Gate Vision Module")),
     window2 (mvWindow("Gate Vision Module 2"))//,
 	//HoughLines (mvHoughLines(MDA_VISION_GATE_SETTINGS)),
@@ -24,7 +24,7 @@ MDA_VISION_MODULE_GATE:: MDA_VISION_MODULE_GATE () :
     gray_img_2 = mvGetScratchImage2();
 }
 
-MDA_VISION_MODULE_GATE:: ~MDA_VISION_MODULE_GATE () {
+MDA_VISION_MODULE_GATE::~MDA_VISION_MODULE_GATE () {
     mvReleaseScratchImage();
     mvReleaseScratchImage2();
 }
