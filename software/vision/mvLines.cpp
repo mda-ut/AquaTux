@@ -8,7 +8,7 @@
 #define ABS(x) (((x)>0) ? (x) : (-(x)))
 
 /** mvLines methods */
-void mvLines:: removeHoriz () {
+void mvLines::removeHoriz () {
     if (_data == NULL) return;
     
     CvPoint* temp;
@@ -20,7 +20,7 @@ void mvLines:: removeHoriz () {
     }
 }
 
-void mvLines:: removeVert () {
+void mvLines::removeVert () {
     if (_data == NULL) return;
     
     CvPoint* temp;
@@ -32,7 +32,7 @@ void mvLines:: removeVert () {
     }
 }
 
-void mvLines:: sortXY () { // sort horiz lines by X, vert lines by Y
+void mvLines::sortXY () { // sort horiz lines by X, vert lines by Y
     if (_data == NULL) return;
     
     CvPoint* temp; 
@@ -56,7 +56,7 @@ void mvLines:: sortXY () { // sort horiz lines by X, vert lines by Y
     }
 }
 
-void mvLines:: drawOntoImage (IplImage* img) {
+void mvLines::drawOntoImage (IplImage* img) {
     assert (img != NULL);
     assert (_data != NULL);
     assert (img->nChannels == 1);
@@ -69,7 +69,7 @@ void mvLines:: drawOntoImage (IplImage* img) {
 }
 
 /** mvHoughLines methods */
-mvHoughLines:: mvHoughLines (const char* settings_file) :
+mvHoughLines::mvHoughLines (const char* settings_file) :
     bin_findLines ("mvHoughLines - findLines")
 {
     read_mv_setting (settings_file, "_ACCUMULATOR_THRESHOLD_", _ACCUMULATOR_THRESHOLD_);
@@ -79,7 +79,7 @@ mvHoughLines:: mvHoughLines (const char* settings_file) :
     read_mv_setting (settings_file, "ANGULAR_RESOLUTION", ANG_RESOLUTION);
 }
 
-void mvHoughLines:: findLines (IplImage *img, mvLines* lines) {
+void mvHoughLines::findLines (IplImage *img, mvLines* lines) {
     assert (img != NULL);
     assert (img->nChannels == 1);
     assert (lines != NULL);

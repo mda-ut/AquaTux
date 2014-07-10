@@ -92,7 +92,7 @@ void mvBinaryDilate (IplImage* src, IplImage* dst, int kernel_point_array[], uns
 void mvBinaryErode (IplImage* src, IplImage* dst, int kernel_point_array[], unsigned kernel_width, unsigned kernel_height, unsigned kernel_area);
 void mvBinaryGradient (IplImage* src, IplImage* dst, int kernel_point_array[], unsigned kernel_width, unsigned kernel_height, unsigned kernel_area);
 
-mvBinaryMorphology:: mvBinaryMorphology (int Kernel_Width, int Kernel_Height, MV_KERNEL_SHAPE Shape) :
+mvBinaryMorphology::mvBinaryMorphology (int Kernel_Width, int Kernel_Height, MV_KERNEL_SHAPE Shape) :
     bin_morph ("mvMorphology - morph"),
     bin_gradient ("mvMorphology - gradient")
 {
@@ -152,12 +152,12 @@ mvBinaryMorphology:: mvBinaryMorphology (int Kernel_Width, int Kernel_Height, MV
     }
 }
 
-mvBinaryMorphology:: ~mvBinaryMorphology () {
+mvBinaryMorphology::~mvBinaryMorphology () {
 	delete []kernel_point_array;
 	cvReleaseImage(&temp);
 }
 
-void mvBinaryMorphology:: mvBinaryMorphologyMain (
+void mvBinaryMorphology::mvBinaryMorphologyMain (
         MV_MORPHOLOGY_TYPE morphology_type,
         IplImage* src, IplImage* dst
 )

@@ -9,7 +9,7 @@ static bool WINDOWS_ARRAY[NUM_SUPPORTED_WINDOWS] = {false,false,false,false};
 
 bool mvWindow::show_image_val = true;
 
-mvWindow:: mvWindow (const char name[]) :
+mvWindow::mvWindow (const char name[]) :
     bin_showImage ("mvWindow - showImage"), _window_number(-1)
 { // this has to be the h file
     assert (strlen(name) < WINDOW_NAME_LEN);
@@ -33,7 +33,7 @@ mvWindow:: mvWindow (const char name[]) :
     }
 }
 
-mvWindow:: ~mvWindow () { 
+mvWindow::~mvWindow () { 
     cvDestroyWindow (_name); 
     if (_window_number != -1) {
         WINDOWS_ARRAY[_window_number] = false;
@@ -42,7 +42,7 @@ mvWindow:: ~mvWindow () {
 #endif
 
 /** mvVideoWriter methods */
-mvVideoWriter:: mvVideoWriter (const char* filename, unsigned framerate) :
+mvVideoWriter::mvVideoWriter (const char* filename, unsigned framerate) :
     bin_writeFrame ("mvVideoWriter - writeFrame")
 {
     unsigned width, height;
@@ -58,12 +58,12 @@ mvVideoWriter:: mvVideoWriter (const char* filename, unsigned framerate) :
     );
 }
 
-mvVideoWriter:: ~mvVideoWriter () {
+mvVideoWriter::~mvVideoWriter () {
     cvReleaseVideoWriter (&_writer);
 }
 
 /** mvCamera methods **/
-mvCamera:: mvCamera (unsigned cam_number) :
+mvCamera::mvCamera (unsigned cam_number) :
     bin_resize ("mvCamera - resize"),
     bin_getFrame ("mvCamera - getFrame")
 {
@@ -77,7 +77,7 @@ mvCamera:: mvCamera (unsigned cam_number) :
     _imgResized = mvGetScratchImage_Color();
 }
 
-mvCamera:: mvCamera (const char* video_file) :
+mvCamera::mvCamera (const char* video_file) :
     bin_resize ("mvCamera - resize"),
     bin_getFrame ("mvCamera - getFrame")
 {
@@ -89,7 +89,7 @@ mvCamera:: mvCamera (const char* video_file) :
     _imgResized = mvGetScratchImage_Color();
 }
 
-mvCamera:: ~mvCamera () {
+mvCamera::~mvCamera () {
     cvReleaseCapture (&_capture);
     mvReleaseScratchImage_Color();
 }

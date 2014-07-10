@@ -6,7 +6,7 @@
     #define DEBUG_PRINT(format, ...)
 #endif
     
-mvHSVFilter:: mvHSVFilter (const char* settings_file) :
+mvHSVFilter::mvHSVFilter (const char* settings_file) :
     bin_WorkingLoop ("HSV - Working Loop"),
     bin_CvtColor ("HSV - CvtColor")
  {
@@ -23,11 +23,11 @@ mvHSVFilter:: mvHSVFilter (const char* settings_file) :
     scratch_3 = mvGetScratchImage_Color();
 }
 
-mvHSVFilter:: ~mvHSVFilter () {
+mvHSVFilter::~mvHSVFilter () {
     mvReleaseScratchImage_Color();
 }
 
-void mvHSVFilter:: filter_internal (IplImage* HSV_img, IplImage* result) {
+void mvHSVFilter::filter_internal (IplImage* HSV_img, IplImage* result) {
     assert (HSV_img != NULL);
     assert (HSV_img->nChannels == 3);
     assert (result != NULL);
