@@ -1,9 +1,0 @@
-# HSVFilter settings file
-# defines the max and min for the allowed HSV values
-
-HUE_MIN, 150
-HUE_MAX, 30
-SAT_MIN, 80
-SAT_MAX, 255
-VAL_MIN, 50
-VAL_MAX, 255

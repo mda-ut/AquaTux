@@ -69,12 +69,12 @@ protected:
 
     /* Helper functions for vision modules */
     void read_color_settings(const char filename[]){
-        read_mv_setting (filename, "B_MIN", B_MIN);
-        read_mv_setting (filename, "B_MAX", B_MAX);
-        read_mv_setting (filename, "G_MIN", G_MIN);
-        read_mv_setting (filename, "G_MAX", G_MAX);
-        read_mv_setting (filename, "R_MIN", R_MIN);
-        read_mv_setting (filename, "R_MAX", R_MAX);
+      read_mv_setting (filename, "B_MIN", B_MIN);
+      read_mv_setting (filename, "B_MAX", B_MAX);
+      read_mv_setting (filename, "G_MIN", G_MIN);
+      read_mv_setting (filename, "G_MAX", G_MAX);
+      read_mv_setting (filename, "R_MIN", R_MIN);
+      read_mv_setting (filename, "R_MAX", R_MAX);
     }
 
     bool check_color_triple(COLOR_TRIPLE color){
@@ -85,19 +85,6 @@ protected:
         char buffer[100];
         sprintf (buffer, "( B(%d,%d) & G(%d,%d) & R(%d,%d) )", B_MIN, B_MAX, G_MIN, G_MAX, R_MIN, R_MAX);
         return std::string(buffer);
-    }
-
-    RECTANGLE_PARAMS read_rectangle_settings(const char filename[]) {
-        RECTANGLE_PARAMS params;
-        read_mv_setting (filename, "CONTOUR_POINTS_MIN", params.contour_points_min);
-        read_mv_setting (filename, "CONTOUR_AREA_MIN", params.contour_area_min);
-        read_mv_setting (filename, "CONTOUR_AREA_MAX", params.contour_area_max);
-        read_mv_setting (filename, "LW_RATIO_MIN", params.lw_ratio_min);
-        read_mv_setting (filename, "LW_RATIO_MAX", params.lw_ratio_max);
-        read_mv_setting (filename, "AREA_RATIO_MIN", params.area_ratio_min);
-        read_mv_setting (filename, "PERI_RATIO_MIN", params.peri_ratio_min);
-        read_mv_setting (filename, "PERI_RATIO_MAX", params.peri_ratio_max);
-        return params;
     }
 
     void clear_data () {

@@ -11,6 +11,9 @@ static const int CONTOURS_MATCH_NORMAL = 0;
 static const int CONTOURS_MATCH_RECIP = 1;
 static const int CONTOURS_MATCH_FRACTION = 2;
 
+// ##########################################################################
+// Parameters and Utility Functions
+// ##########################################################################
 typedef struct _RECTANGLE_PARAMS {
     int contour_points_min;
     int contour_area_min;
@@ -22,6 +25,27 @@ typedef struct _RECTANGLE_PARAMS {
     float peri_ratio_max;
 } RECTANGLE_PARAMS;
 
+RECTANGLE_PARAMS read_rectangle_settings(const char filename[]);
+
+typedef struct _CIRCLE_PARAMS {
+    int contour_points_min;
+    int contour_area_min;
+    int contour_area_max;
+    float ratio03_min;
+    float ratio02_min;
+    float ratio12_min;
+    float ratio11_max;
+    float ratioR_max;
+    float radius_min;
+    float radius_max;
+    float area_ratio_min;
+} CIRCLE_PARAMS;
+
+CIRCLE_PARAMS read_circle_settings(const char filename[]);
+
+  // ##########################################################################
+// mvContours
+// ##########################################################################
 class mvContours {
     int DEBUG_LEVEL;
 
@@ -74,7 +98,7 @@ public:
 
     void set_debug_level(int _debug_level) { DEBUG_LEVEL = _debug_level; }
     int match_rectangle (IplImage* img, MvRBoxVector* rbox_vector, COLOR_TRIPLE color, const RECTANGLE_PARAMS &params);
-    int match_circle (IplImage* img, MvCircleVector* circle_vector, COLOR_TRIPLE color, int method=0);
+    int match_circle (IplImage* img, MvCircleVector* circle_vector, COLOR_TRIPLE color, const CIRCLE_PARAMS &params);
     int match_ellipse (IplImage* img, MvRBoxVector* circle_vector, COLOR_TRIPLE color, float min_lw_ratio=1, float max_lw_ratio=100, int method=0);
 
     void drawOntoImage (IplImage* img) { draw_contours (m_contours, img, 1); }        

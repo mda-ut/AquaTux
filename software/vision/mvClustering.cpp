@@ -46,7 +46,7 @@ unsigned Line_Difference_Metric (const CvPoint* line1, const CvPoint* line2) {
 }
 
 inline
-unsigned mvKMeans:: Get_Line_ClusterSeed_Diff (unsigned cluster_index, unsigned line_index) {
+unsigned mvKMeans::Get_Line_ClusterSeed_Diff (unsigned cluster_index, unsigned line_index) {
 // this function first reads the Cluster_Line_Diff value cached in the matrix, if it is -1
 // that means the value wasnt calculated. So we calculate and store the value
     return Line_Difference_Metric (
@@ -67,7 +67,7 @@ void copy_line (const CvPoint* src, CvPoint* dst) {
 
 /** True methods of KMeans Algorithm */
 
-mvKMeans:: mvKMeans () {   
+mvKMeans::mvKMeans () {   
     unsigned width;
     read_common_mv_setting ("IMG_WIDTH_COMMON", width);
     
@@ -82,7 +82,7 @@ mvKMeans:: mvKMeans () {
     _nClusters_Final = 0;
 }
 
-mvKMeans:: ~mvKMeans () {
+mvKMeans::~mvKMeans () {
     for (unsigned i = 0; i < MAX_CLUSTERS; i++) {
         delete [] _Clusters_Seed[i];
         delete [] _Clusters_Temp[i];
@@ -90,7 +90,7 @@ mvKMeans:: ~mvKMeans () {
     }
 }
 
-void mvKMeans:: KMeans_CreateStartingClusters (unsigned nClusters) {
+void mvKMeans::KMeans_CreateStartingClusters (unsigned nClusters) {
 /* creates N starting clusters for the KMeans algorithm. A "cluster" really means the
  * start/endpoints of the line that other lines can bin to. The clusters are chosen thus:
  * The first cluster is just the strongest line (line[0] from HoughLines)
@@ -161,7 +161,7 @@ void mvKMeans:: KMeans_CreateStartingClusters (unsigned nClusters) {
     }
 }
 
-float mvKMeans:: KMeans_Cluster (unsigned nClusters, unsigned iterations) {
+float mvKMeans::KMeans_Cluster (unsigned nClusters, unsigned iterations) {
 /* bins each line to the closest starting/seed cluster, then averages the bins to get the starting/seed cluster
  * for the next iteration.
  * We also calculate a "validity" score for the clustering configuration. validity is defined as "avg_intra_cluster_diff"
@@ -267,7 +267,7 @@ float mvKMeans:: KMeans_Cluster (unsigned nClusters, unsigned iterations) {
     return avg_intra_cluster_diff / minimum_inter_cluster_diff; 
 }
 
-int mvKMeans:: cluster_auto (unsigned nclusters_min, unsigned nclusters_max, mvLines* lines, unsigned iterations) {
+int mvKMeans::cluster_auto (unsigned nclusters_min, unsigned nclusters_max, mvLines* lines, unsigned iterations) {
     _Lines = lines; 
     _nLines = _Lines->nlines();
     assert (nclusters_min > 0 && nclusters_max <= MAX_CLUSTERS);
@@ -313,7 +313,7 @@ int mvKMeans:: cluster_auto (unsigned nclusters_min, unsigned nclusters_max, mvL
     return 0;
 }
 
-void mvKMeans:: drawOntoImage (IplImage* img) {
+void mvKMeans::drawOntoImage (IplImage* img) {
     assert (img != NULL);
     //assert (img->nChannels == 1);
     
@@ -323,7 +323,7 @@ void mvKMeans:: drawOntoImage (IplImage* img) {
     }
 }
 
-void mvKMeans:: printClusters () {
+void mvKMeans::printClusters () {
     for (unsigned i = 0; i < _nClusters_Final; i++) {
         if (_Clusters_Best[i] != NULL)
             printf ("Cluster %d:  (%d,%d) - (%d,%d)\n", i,_Clusters_Best[i][0].x,_Clusters_Best[i][0].y,_Clusters_Best[i][1].x,_Clusters_Best[i][1].y);

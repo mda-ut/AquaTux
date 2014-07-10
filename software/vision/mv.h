@@ -41,6 +41,11 @@ inline std::string color_int_to_string (int color) {
     return std::string("UNKNOWN");
 }
 
+// ##########################################################################
+// Utility Functions
+// ##########################################################################
+
+// This function wraps cvWaitKey but will exit if q is pressed
 inline char WAITKEY (int msecs)
 {
     char c = cvWaitKey(msecs);
@@ -49,6 +54,9 @@ inline char WAITKEY (int msecs)
     return c;
 }
 
+// ##########################################################################
+// MvShape, base for MvCircle and MvRotatedBox
+// ##########################################################################
 class MvShape {
 public:
     CvPoint center;
@@ -68,6 +76,10 @@ public:
         return (abs(m1-second.m1)<limit && abs(m2-second.m2)<limit && abs(m3-second.m3)<limit);
     }
 };
+
+// ##########################################################################
+// MvCircle
+// ##########################################################################
 class MvCircle : public MvShape {
 public:
     float radius;
@@ -104,6 +116,10 @@ public:
         count = total_count;
     }
 };
+
+// ##########################################################################
+// MvRotatedBox
+// ##########################################################################
 class MvRotatedBox : public MvShape {
 public:
     float length, width;    // length is the long edge

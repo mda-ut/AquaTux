@@ -1,0 +1,45 @@
+# This file contains settings used by filters in webcam.cpp
+# mostly used for testing
+
+# HSVFilter settings
+HUE_MIN, 150
+HUE_MAX, 30
+SAT_MIN, 80
+SAT_MAX, 255
+VAL_MIN, 50
+VAL_MAX, 255
+
+# mvHoughLines settings
+PIXEL_RESOLUTION 2 # step size in pixels, > 1 means the line finder skips pixels
+ANGULAR_RESOLUTION 0.017 # step size in angles (radians)
+
+# how many points a line must pass through to be accepted by the alg
+_ACCUMULATOR_THRESHOLD_, 0.14   # scaled by image wdith
+# minimum accepted line length in pixels
+_MIN_LINE_LENGTH_, 0.1          # scaled by image width
+# colinear lines must be this far apart to be considered two lines
+_MIN_COLINEAR_LINE_DIST_ 0.1   # scaled by image width
+
+# mvContours::match_rectangle params
+CONTOUR_POINTS_MIN, 6
+CONTOUR_AREA_MIN, 600
+CONTOUR_AREA_MAX, 50000
+LW_RATIO_MIN, 2
+LW_RATIO_MAX, 5
+AREA_RATIO_MIN, 0.6
+PERI_RATIO_MIN, 0.75
+PERI_RATIO_MAX, 1.2
+
+# mvContours::match_circle params
+CIRCLE_POINTS_MIN, 6
+CIRCLE_AREA_MIN, 600
+CIRCLE_AREA_MAX, 50000
+RATIO_03_MIN, 25
+RATIO_02_MIN, 12
+RATIO_12_MIN, 12
+RATIO_11_MAX, 2.5
+RATIO_R_MAX, 25
+RADIUS_MIN, 4
+RADIUS_MAX, 240
+CIRCLE_AREA_RATIO_MIN, 0.7
+

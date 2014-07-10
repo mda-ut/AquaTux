@@ -1,6 +1,7 @@
 MAIN=main
 EXES=$(MAIN)
 SO=libtasks.so
+DEP_FLAGS=$(LIBVISION)
 
 include ../Makefile.in
 include Makefile.deps

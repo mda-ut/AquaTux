@@ -1,6 +1,7 @@
 AQUATUX=aquatux
 EXES=$(AQUATUX)
 SO=libinterface.so
+DEP_FLAGS=$(LIBVISION) $(LIBTASKS) $(LIBSIM) $(LIBUI)
 
 include ../Makefile.in
 include Makefile.deps

@@ -26,11 +26,46 @@ const char* mvContours::contour_circ_images[] = {
     /*CONTOUR_IMG_PREFIX "circ03.png", dont use the half circle for now*/
 };
 
+// ##########################################################################
+// Parameters and Utility Functions
+// ##########################################################################
+RECTANGLE_PARAMS read_rectangle_settings(const char filename[]) {
+  RECTANGLE_PARAMS params;
+  read_mv_setting (filename, "CONTOUR_POINTS_MIN", params.contour_points_min);
+  read_mv_setting (filename, "CONTOUR_AREA_MIN", params.contour_area_min);
+  read_mv_setting (filename, "CONTOUR_AREA_MAX", params.contour_area_max);
+  read_mv_setting (filename, "LW_RATIO_MIN", params.lw_ratio_min);
+  read_mv_setting (filename, "LW_RATIO_MAX", params.lw_ratio_max);
+  read_mv_setting (filename, "AREA_RATIO_MIN", params.area_ratio_min);
+  read_mv_setting (filename, "PERI_RATIO_MIN", params.peri_ratio_min);
+  read_mv_setting (filename, "PERI_RATIO_MAX", params.peri_ratio_max);
+  return params;
+}
+
+CIRCLE_PARAMS read_circle_settings(const char filename[]) {
+  CIRCLE_PARAMS params;
+  read_mv_setting (filename, "CIRCLE_POINTS_MIN", params.contour_points_min);
+  read_mv_setting (filename, "CIRCLE_AREA_MIN", params.contour_area_min);
+  read_mv_setting (filename, "CIRCLE_AREA_MAX", params.contour_area_max);
+  read_mv_setting (filename, "RATIO_03_MIN", params.ratio03_min);
+  read_mv_setting (filename, "RATIO_02_MIN", params.ratio02_min);
+  read_mv_setting (filename, "RATIO_12_MIN", params.ratio12_min);
+  read_mv_setting (filename, "RATIO_11_MAX", params.ratio11_max);
+  read_mv_setting (filename, "RATIO_R_MAX", params.ratioR_max);
+  read_mv_setting (filename, "RADIUS_MIN", params.radius_min);
+  read_mv_setting (filename, "RADIUS_MAX", params.radius_max);
+  read_mv_setting (filename, "CIRCLE_AREA_RATIO_MIN", params.area_ratio_min);
+  return params;
+}
+
 double dslog (double x) { // double signed log
     double sign = static_cast<double>(x>0) - static_cast<double>(x<0);
     return (sign * log(fabs(x)));
 }
 
+// ##########################################################################
+// mvContours Functions
+// ##########################################################################
 mvContours::mvContours(const int _debug_level) :
     DEBUG_LEVEL(_debug_level),
     bin_contours(PROFILE_BIN("mvContours - Contour Finding")),
@@ -253,7 +288,7 @@ int mvContours::match_rectangle (IplImage* img, MvRBoxVector* rbox_vector, COLOR
     return n_boxes_found;
 }
 
-int mvContours::match_circle (IplImage* img, MvCircleVector* circle_vector, COLOR_TRIPLE color, int method) {
+int mvContours::match_circle (IplImage* img, MvCircleVector* circle_vector, COLOR_TRIPLE color, const CIRCLE_PARAMS &params) {
     assert (img != NULL);
     assert (img->nChannels == 1);
 
@@ -277,17 +312,25 @@ int mvContours::match_circle (IplImage* img, MvCircleVector* circle_vector, COLO
         WAITKEY(0);*/
 
         // check that there are at least 6 points
-        if (c_contour->total < 6) {
+        if (c_contour->total < params.contour_points_min) {
+            DEBUG_PRINT (2, "%s: Contour has %d < %d points\n", __FUNCTION__, c_contour->total, params.contour_points_min);
+            DEBUG_WAITKEY(4, 0);
             continue;
         }
 
         // check the contour's area to make sure it isnt too small
         double area = cvContourArea(c_contour);
-        if (area < img->width*img->height/600) {
-            DEBUG_PRINT (1, "Circle Fail: Contour too small!\n");
+        if (area < params.contour_area_min) {
+            DEBUG_PRINT (2, "%s: Contour with area %4.1lf < %d pixels!\n", __FUNCTION__, area, params.contour_area_min);
+            DEBUG_WAITKEY(4, 0);
             continue;
         }
-    
+        if (area > params.contour_area_max) {
+            DEBUG_PRINT (2, "%s: Contour with area %4.1lf > %d pixels!\n", __FUNCTION__, area, params.contour_area_max);
+            DEBUG_WAITKEY(4, 0);
+            continue;
+        }
+            
         // do some kind of matching to ensure the contour is a circle
         CvMoments moments;
         cvContourMoments (c_contour, &moments);
@@ -301,24 +344,39 @@ int mvContours::match_circle (IplImage* img, MvCircleVector* circle_vector, COLO
         double nu03 = cvmoments.nu03;
         double nu30 = cvmoments.nu30;
 
-        double r03 = fabs(nu30 / nu03);
-        r03 = (r03 > 1) ? r03 : 1.0/r03;
-        double r12 = fabs(nu12 / nu21);
-        r12 = (r12 > 1) ? r12 : 1.0/r12;
-        double r02 = fabs(nu02 / nu20);
-        r02 = (r02 > 1) ? r02 : 1.0/r02;
-
-        double r11 = fabs( MEAN2(nu02,nu20) / nu11);
-        double R = MEAN2(nu20,nu02) / std::max((MEAN2(nu21,nu12)), (MEAN2(nu30,nu03)));
-        bool pass = true;
-        pass = (r03 <= 25.0) && (r12 <= 12.0) && (r02 <= 12.0) && (r11 > 2.5) && (R > 25);
-
-        if (!pass) {
-            //DEBUG_PRINT (1, "Circle Moms: nu11=%lf, nu20=%lf, nu02=%lf, nu21=%lf, nu12=%lf, nu30=%lf, nu03=%lf\n", nu11, nu20, nu02, nu21, nu12, nu30, nu03);
-            DEBUG_PRINT (1, "Circle Fail: \tn30/n03=%3.1lf, n21/n12=%3.1lf, nu20/nu02=%3.1lf, r11=%3.1f, R=%3.1f!\n", r03, r12, r02, r11, R);
+        double r03 = fabs(nu30 / nu03); // ratio of 3rd x,y moments
+        r03 = (r03 > 1) ? r03 : 1.0/r03; // force to be between 0-1
+        if (r03 < params.ratio03_min) {
+            DEBUG_PRINT (2, "%s: r03 of %4.1f < %4.1f\n", __FUNCTION__, r03, params.ratio03_min);
             continue;
         }
-        
+
+        double r12 = fabs(nu12 / nu21); // ratio of 1,2 x,y moments
+        r12 = (r12 > 1) ? r12 : 1.0/r12; // force to be between 0-1
+        if (r12 < params.ratio12_min) {
+            DEBUG_PRINT (2, "%s: r12 of %4.1f < %4.1f\n", __FUNCTION__, r12, params.ratio12_min);
+            continue;
+        }
+
+        double r02 = fabs(nu02 / nu20); // ratio of 2nd x,y moments
+        r02 = (r02 > 1) ? r02 : 1.0/r02; // force to be between 0-1
+        if (r02 < params.ratio02_min) {
+            DEBUG_PRINT (2, "%s: r02 of %4.1f < %4.1f\n", __FUNCTION__, r02, params.ratio02_min);
+            continue;
+        }
+
+        double r11 = fabs( MEAN2(nu02,nu20) / nu11); // Ritchie: what does this do??
+        if (r11 > params.ratio11_max) {
+            DEBUG_PRINT (2, "%s: r11 of %4.1f > %4.1f\n", __FUNCTION__, r11, params.ratio11_max);
+            continue;
+        }
+
+        double R = MEAN2(nu20,nu02) / std::max((MEAN2(nu21,nu12)), (MEAN2(nu30,nu03))); // Ritchie: what does this do??
+        if (R > params.ratioR_max) {
+            DEBUG_PRINT (2, "%s: ratio R of %4.1f > %4.1f\n", __FUNCTION__, R, params.ratioR_max);
+            continue;
+        }
+
         // get area and perimeter of the contour
         //double perimeter = cvArcLength (c_contour, CV_WHOLE_SEQ, 1);
         
@@ -326,15 +384,21 @@ int mvContours::match_circle (IplImage* img, MvCircleVector* circle_vector, COLO
         CvPoint2D32f centroid32f;
         float radius;
         cvMinEnclosingCircle(c_contour, &centroid32f, &radius);
-        if (radius > img->width/2 || radius < 0) {
+        if (radius < params.radius_min) {
+            DEBUG_PRINT (2, "%s: radius of %4.1f < %4.1f\n", __FUNCTION__, radius, params.radius_min);
+            continue;
+        }
+        if (radius > params.radius_max) {
+            DEBUG_PRINT (2, "%s: radius of %4.1f > %4.1f\n", __FUNCTION__, radius, params.radius_max);
             continue;
         }
 
         // do checks on area and perimeter
         double area_ratio = area / (CV_PI*radius*radius);
         //double perimeter_ratio = perimeter / (2*CV_PI*radius);
-        if (area_ratio < 0.7) {
-            DEBUG_PRINT (1, "Circle Fail: Area: %6.2lf\n", area_ratio);
+        if (area_ratio < params.area_ratio_min) {
+            DEBUG_PRINT (2, "%s: area_ratio of %4.1f < %4.1f\n", __FUNCTION__, area_ratio, params.area_ratio_min);
+            DEBUG_WAITKEY(4, 0);
             continue;
         }
         

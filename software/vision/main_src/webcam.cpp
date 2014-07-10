@@ -110,14 +110,17 @@ int main( int argc, char** argv ) {
     mvWindow* win3 = new mvWindow ("win3");
 
     // declare filters we need
-    mvHSVFilter HSVFilter ("HSVFilter_settings.csv"); // color filter
+    mvHSVFilter HSVFilter ("webcam_settings.csv"); // color filter
     mvBinaryMorphology Morphology7 (9,9, MV_KERN_ELLIPSE);
     mvBinaryMorphology Morphology5 (5,5, MV_KERN_ELLIPSE);
-    mvHoughLines HoughLines ("HoughLines_settings.csv");
+    mvHoughLines HoughLines ("webcam_settings.csv");
     mvLines lines; // data struct to store lines
     mvKMeans kmeans;
     mvWatershedFilter watershed_filter;
     mvContours contour_filter;
+
+    RECTANGLE_PARAMS params_rect = read_rectangle_settings ("webcam_settings.csv");
+    CIRCLE_PARAMS params_circle = read_circle_settings ("webcam_settings.csv");
 
     MDA_VISION_MODULE_GATE* gate=GATE? new MDA_VISION_MODULE_GATE : 0;
     MDA_VISION_MODULE_PATH* path=PATH? new MDA_VISION_MODULE_PATH : 0;
@@ -195,10 +198,10 @@ int main( int argc, char** argv ) {
             
             while ( watershed_filter.get_next_watershed_segment(filter_img_2, color) ) {
                 if (CIRCLE) {
-                    contour_filter.match_circle(filter_img_2, &circle_vector, color);
+                    contour_filter.match_circle(filter_img_2, &circle_vector, color, params_circle);
                 }
                 else if (RECT) {
-                    //contour_filter.match_rectangle(filter_img_2, &rbox_vector, color, params);
+                    contour_filter.match_rectangle(filter_img_2, &rbox_vector, color, params_rect);
                 }
 /*
                 win3->showImage(filter_img_2);
