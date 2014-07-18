@@ -5,12 +5,12 @@
 #define SAMPLINGFREQUENCY 1000000
 #define SPEEDOFSOUNDINWATER 1500
 #define pi 3.141592
-#define MAX_OUTPUT_LEN 27
-#define ORG_STR_LEN 11
+#define MAX_OUTPUT_LEN 28
+#define ORG_STR_LEN 12
 #define MAX_DISTANCE_LEN 11
 #define FILE_EXT_LEN 4
 #define CHAR_LEN 1
-#define LEN_TRY 3
+#define TRY_LEN 3
 
 /*
 
@@ -51,11 +51,11 @@ int main (void)
         strncpy(title, "MatLabInput", ORG_STR_LEN);
         snprintf(distance, MAX_DISTANCE_LEN,  "%g", distanceFromPinger);
         strncat(title, distance, MAX_DISTANCE_LEN);
-        strncat(title, "Try", LEN_TRY);
-        strncat(title, try, CHAR_LEN);
+        strncat(title, "Try", TRY_LEN);
+        strncat(title, "2", CHAR_LEN);
         strncat(title, ".csv", FILE_EXT_LEN);
         title[MAX_OUTPUT_LEN] = '/0';
-        
+
         FILE* OutputToMatLab = fopen(title, "w");
 	
 	double timeDelay = distanceFromPinger / SPEEDOFSOUNDINWATER * SAMPLINGFREQUENCY;
@@ -78,8 +78,7 @@ int main (void)
                 }
 		
 		//printf("%d) %g ", i, c[i]);
-                fprintf(OutputToMatLab, "%d, %g\n", i, c[i]);
+                fprintf(OutputToMatLab, "%d %g\n", i, c[i]);
 	}
-	
 	return 0;
 }
