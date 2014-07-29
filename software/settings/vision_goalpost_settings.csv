@@ -27,6 +27,16 @@ HUE_DIST, 10
 SAT_DIST, 20
 VAL_DIST, 30
 
+# params for match_rectangle
+CONTOUR_POINTS_MIN, 6
+CONTOUR_AREA_MIN, 600
+CONTOUR_AREA_MAX, 50000
+LW_RATIO_MIN, 2
+LW_RATIO_MAX, 5
+AREA_RATIO_MIN, 0.6
+PERI_RATIO_MIN, 0.75
+PERI_RATIO_MAX, 1.2
+
 # this file defines constants used in the Hough Lines algorithm
 PIXEL_RESOLUTION 1 # step size in pixels, > 1 means the line finder skips pixels
 ANGULAR_RESOLUTION 0.09 # step size in angles (radians)
