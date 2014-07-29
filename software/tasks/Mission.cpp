@@ -53,18 +53,32 @@ void Mission::work_internal(bool show_image)
   // Result of a task
   MDA_TASK_RETURN_CODE ret_code;
 
-  printf ("Running a %s mission!\n", show_image?"test":"Real");
+  printf ("Rose: Running a %s mission!\n", show_image?"test":"Real");
+
+  printf("Rose: Running path\n");
+  ret_code = path.run_task();
+  
+  /*
+
   int RUN_BUOY;
-  read_mv_setting ("hacks.csv", "RUN_BUOY", RUN_BUOY);  
+    read_mv_setting ("hacks.csv", "RUN_BUOY", RUN_BUOY);  
   int RUN_GOALPOST;
   read_mv_setting ("hacks.csv", "RUN_GOALPOST", RUN_GOALPOST);  
-
-
+  if (RUN_BUOY) 
+    {
+      printf("Rose: Running buoy\n");
+      ret_code = buoy.run_task();
+    }
+  printf("Rose: Running path again\n");
   ret_code = path.run_task();
-  if (RUN_BUOY) ret_code = buoy.run_task();
-  ret_code = path.run_task();
-  if (RUN_GOALPOST) ret_code = goalpost.run_task();
+  if (RUN_GOALPOST) 
+    {
+  printf("Rose: Running goalpost\n");
+      ret_code = goalpost.run_task();
+    }
+  printf("Rose: Surfacing\n");
   ret_code = surface.run_task();
+  
 
   /*int task_index = 0;
 

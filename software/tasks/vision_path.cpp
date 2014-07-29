@@ -94,7 +94,8 @@ void MDA_VISION_MODULE_PATH::add_frame (IplImage* src) {
             DEBUG_SHOWIMAGE(2,window2, gray_img_2);
             DEBUG_WAITKEY(2,0);
         }
-        DEBUG_PRINT(1,"VISION_PATH: Segment was %s\n", found ? "accepted" : "rejected");
+        DEBUG_PRINT(1,"VISION_PATH: Segment was %s\n", found ? "\e[0;32maccepted\e[0m" : "\e[0;31mrejected\e[0m");
+        DEBUG_WAITKEY(2,0);
     }
 
     DEBUG_PRINT(1, "VISION_PATH: Num rectangles identified: %d\n", (int)rbox_vector.size());    
