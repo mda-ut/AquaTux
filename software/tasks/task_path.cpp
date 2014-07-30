@@ -35,8 +35,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
     while (1)
     {
         set (SPEED, 5);
-        //printf("Rose: set speed = 5\n");
-        if (counter % 20 == 0)
+        if (counter % 50 == 0)
         {
 	    set (DEPTH, GATE_DEPTH);
 	    printf("Adam: set depth to %d\n", GATE_DEPTH);
