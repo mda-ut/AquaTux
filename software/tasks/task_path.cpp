@@ -41,10 +41,10 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task() {
     
     int GATE_DEPTH;
     read_mv_setting ("hacks.csv", "GATE_DEPTH", GATE_DEPTH);
+    printf("Rose: Going to depth: %d\n", GATE_DEPTH);
     set (DEPTH, GATE_DEPTH/2);
-    /*
     set (DEPTH, GATE_DEPTH/4*3);
-    set (DEPTH, GATE_DEPTH);*/
+    set (DEPTH, GATE_DEPTH);
     //set(DEPTH, 100);
 
     // go to the starting orientation in case sinking changed it
@@ -87,6 +87,8 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task() {
         *  - Align with path
         */
 
+        printf("Rose: current depth is: %d\n", attitude_input->depth());
+        printf("Rose: current yaw is: %d\n", attitude_input->yaw());
         if (!done_gate) {
             if (state == STARTING_GATE) {
                 printf ("Starting Gate: Moving Foward at High Speed\n");

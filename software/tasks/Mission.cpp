@@ -22,7 +22,7 @@ void Mission::work_internal(bool show_image)
 {
   mvWindow::setShowImage(show_image);
   
-  MDA_TASK_BASE::starting_depth = 260;//attitude_input->depth();
+  MDA_TASK_BASE::starting_depth = attitude_input->depth(); //260
   if (!startup()) {
     return;
   }
@@ -54,8 +54,9 @@ void Mission::work_internal(bool show_image)
   MDA_TASK_RETURN_CODE ret_code;
 
   printf ("Rose: Running a %s mission!\n", show_image?"test":"Real");
-
-  printf("Rose: Running path\n");
+  printf("Rose: Running gate/path\n");
+  printf("Rose: current depth is: %d\n", attitude_input->depth());
+  printf("Rose: current yaw is: %d\n", attitude_input->yaw());
   ret_code = path.run_task();
   
   /*
