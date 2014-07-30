@@ -83,7 +83,8 @@ void MDA_VISION_MODULE_PATH::add_frame (IplImage* src) {
         DEBUG_PRINT(2,"VISION_PATH: segment color: BGR=(%3d,%3d,%3d)\n", color.m1, color.m2, color.m3);
         DEBUG_PRINT(2, "VISION_PATH: comparing against: %s\n", color_limit_string().c_str());
         if (!check_color_triple(color)) {
-            DEBUG_PRINT(2,"VISION_PATH: \e[0;31mrejected rectangle due to color\e[0m\n\n");
+            DEBUG_PRINT(2,"VISION_PATH: rejected rectangle due to color\n");
+            DEBUG_WAITKEY(2,0);
             continue;
         }
 
@@ -109,13 +110,15 @@ void MDA_VISION_MODULE_PATH::add_frame (IplImage* src) {
      
         // for now, frame will store rect with best validity
         for (; iter != iter_end; ++iter) {
-            if (iter->length * iter->width < 40*20 || iter->length * iter->width > 300*10)
-                continue;
+            //if (iter->length * iter->width < 40*20 || iter->length * iter->width > 300*10)
+                //continue;
             /*if (iter->center.x - iter->width/2 == 1 || iter->center.x + iter->width/2 == 398)
                 continue;
             if (iter->center.y - iter->width/2 == 1 || iter->center.y + iter->width/2 == 298)
                 continue;*/
+            DEBUG_PRINT(1, "Rose: Assigning rbox by validity!\n");  
             m_frame_data_vector[read_index].assign_rbox_by_validity(*iter);
+            DEBUG_PRINT (1, "Rose1: m_frame_data_vector[i].rboxes_valid[0]: %d\n", m_frame_data_vector[0].rboxes_valid[0]);
         }
     }
 
@@ -141,7 +144,6 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_PATH::frame_calc () {
         }
         if (++i >= N_FRAMES_TO_KEEP) i = 0;
     } while (i != read_index);
-
     // bin the frames
     for (unsigned i = 0; i < segment_vector.size(); i++) {
         for (unsigned j = i+1; j < segment_vector.size(); j++) {
@@ -163,10 +165,10 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_PATH::frame_calc () {
 
     // sort by count
     std::sort (segment_vector.begin(), segment_vector.end(), shape_count_greater_than);
-
     // debug
     for (unsigned i = 0; i<=1 && i<segment_vector.size(); i++) {
-        DEBUG_PRINT(1,"\tSegment %d (%3d,%3d) height=%3.0f, width=%3.0f   count=%d\n", i, segment_vector[i].center.x, segment_vector[i].center.y,
+            DEBUG_WAITKEY(2, 0);
+            DEBUG_PRINT(1,"\tSegment %d (%3d,%3d) height=%3.0f, width=%3.0f   count=%d\n", i, segment_vector[i].center.x, segment_vector[i].center.y,
             segment_vector[i].length, segment_vector[i].width, segment_vector[i].count);
     }
 
@@ -175,11 +177,11 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_PATH::frame_calc () {
         return NO_TARGET;
     }
     else { // first segment is good enough, use that only
-        DEBUG_PRINT (1,"Path: Segment found\n");
+        DEBUG_PRINT (1,"Path: Target found\n");
         
         // check path length to width
         float length_to_width = static_cast<float>(segment_vector[0].length) / segment_vector[0].width;
-        if (length_to_width < rectangle_params.lw_ratio_min || length_to_width > rectangle_params.lw_ratio_min) {
+        if (length_to_width < rectangle_params.lw_ratio_min || length_to_width > rectangle_params.lw_ratio_max) {
             DEBUG_PRINT(2,"Path: length to width check failed\n");
             return NO_TARGET;
         }
@@ -195,6 +197,8 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_PATH::frame_calc () {
 #ifdef DEBUG_VISION_PATH
     segment_vector[0].drawOntoImage(gray_img);
     window2.showImage(gray_img);
+    DEBUG_PRINT (1,"Rose: drew segment_vector\n");
+    DEBUG_WAITKEY(2, 0);
 #endif
 
     m_pixel_x -= gray_img->width/2;
