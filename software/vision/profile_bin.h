@@ -1,3 +1,22 @@
+/*
+
+This is a class that creates a time profile. 
+If PROFILE_ON is true, this class will collect:
+	- the name,
+	- if this specific thing needs to be saved for now,
+	- the current time of start.
+	- how many times something is called (cont.),
+	- how long something ran for in total (cont.).
+This class has two functions - START and STOP.
+START add the numCalls by 1 and collects the current time and stores it in startTime.
+STOP collects the current time and subtracts that from the time stored in startTime divided by CLOCKS_PER_SEC and stores it in totalTime.
+When a partciluar "on" PROFILE_BIN gets destroyed, then the destructor displays:
+	- the name,
+	- the number of calls,
+	- The total seconds it was on.
+	- And the average time it was on.
+
+*/
 #ifndef __PROFILE_BIN__
 #define __PROFILE_BIN__
 #include <time.h>
