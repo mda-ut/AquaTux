@@ -1,3 +1,9 @@
+/*
+
+This header file gives us early predefines for our code.
+
+*/
+
 #ifndef __COMMON_H__
 #define __COMMON_H__
 

@@ -1,6 +1,8 @@
-/** mgui - MDA vision gui and utils
- *  includes window management and txt file reading
+/** 
+ *  This file contains the definations, functions and classes to do various vision necessities.
+ *  I.E. Read settings files, create / manage windows, write files to disk and manage webcams.
  *  Author - Ritchie Zhao
+ *  Editor - Anthony "Chewie" De Caria
  */
 
 #ifndef __MDA_VISION_MGUI__
