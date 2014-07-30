@@ -57,6 +57,7 @@ void Mission::work_internal(bool show_image)
   printf("Rose: Running gate/path\n");
   printf("Rose: current depth is: %d\n", attitude_input->depth());
   printf("Rose: current yaw is: %d\n", attitude_input->yaw());
+  
   ret_code = path.run_task();
   
   /*
