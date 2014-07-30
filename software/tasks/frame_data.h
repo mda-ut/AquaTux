@@ -44,14 +44,15 @@ public:
     }
     bool assign_rbox_by_validity (MvRotatedBox rbox) {
         frame_has_data = true;
-        if (rbox.validity > m_frame_boxes[0].validity) {
+        if (rbox.validity > m_frame_boxes[0].validity-1) 
+        {
             m_frame_boxes[1] = m_frame_boxes[0];
             rboxes_valid[1] = rboxes_valid[0];
             m_frame_boxes[0] = rbox;
             rboxes_valid[0] = true;
             return true;
         }
-        else if (rbox.validity > m_frame_boxes[1].validity) {
+        else if (rbox.validity > m_frame_boxes[1].validity-1) {
             m_frame_boxes[1] = rbox;
             rboxes_valid[1] = true;
             return true;
