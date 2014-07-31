@@ -8,8 +8,9 @@ ACTUATOR_OUTPUT SIMULATOR
 
 # IMAGE_INPUT options
 WRITE_TO_VIDEO 0
-FWD_VIDEO_FILE sim.avi
-DWN_VIDEO_FILE sim_dwn.avi
+VIDEO_DIR ~/Dropbox/MDA/Footage/
+FWD_VIDEO_FILE _sim.avi
+DWN_VIDEO_FILE _sim_dwn.avi
 
 ### Options for the submarine ###
 

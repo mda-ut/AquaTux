@@ -48,6 +48,7 @@ class ImageInput {
       bool write_to_video;
       read_mv_setting(settings_file, "WRITE_TO_VIDEO", write_to_video);
       if (write_to_video) {
+	std::string video_dir;
         std::string video_file;
 
 	// Add timestamp to file
@@ -57,15 +58,16 @@ class ImageInput {
 
   	time(&rawtime);
   	timeinfo = localtime(&rawtime);
-  	strftime(buffer,80,"%d-%m-%Y %I:%M:%S",timeinfo);
+  	strftime(buffer,80,"%d-%m-%Y_%I:%M:%S",timeinfo);
 
+	read_mv_setting(settings_file, "VIDEO_DIR", video_dir);
 	read_mv_setting(settings_file, "FWD_VIDEO_FILE", video_file);
-  	std::string file_time_stamp = std::string(buffer) + video_file;
+	std::string file_time_stamp = std::string(buffer) + video_file;
 	writer_fwd = new mvVideoWriter(file_time_stamp.c_str());
 
         read_mv_setting(settings_file, "DWN_VIDEO_FILE", video_file);
         file_time_stamp = std::string(buffer) + video_file;
-	writer_dwn = new mvVideoWriter(video_file.c_str());
+	writer_dwn = new mvVideoWriter(file_time_stamp.c_str());
       }
     }
     virtual ~ImageInput()
