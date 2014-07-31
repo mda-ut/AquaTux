@@ -1,10 +1,12 @@
 #include "mda_vision.h"
+#include "../common.h"
 
-#define M_DEBUG
-#ifdef M_DEBUG
-    #define DEBUG_PRINT(format, ...) printf(format, ##__VA_ARGS__)
+#ifdef DEBUG_VISION_GOALPOST
+    #define DEBUG_PRINT(_n, _format, ...) if(_n<=DEBUG_LEVEL)printf(_format, ##__VA_ARGS__)
+    #define DEBUG_SHOWIMAGE(_n, _win, _img) if(_n<=DEBUG_LEVEL)_win.showImage(_img);
+    #define DEBUG_WAITKEY(_n,_msecs) if(_n<=DEBUG_LEVEL)WAITKEY(_msecs);
 #else
-    #define DEBUG_PRINT(format, ...)
+    #define DEBUG_PRINT(n, format, ...)
 #endif
 
 const char MDA_VISION_MODULE_GOALPOST::MDA_VISION_GOALPOST_SETTINGS[] = "vision_goalpost_settings.csv";
@@ -16,6 +18,11 @@ MDA_VISION_MODULE_GOALPOST::MDA_VISION_MODULE_GOALPOST () :
     window (mvWindow("Goalpost Vision Module")),
     window2 (mvWindow("Goalpost Vision Module 2"))//,
 {
+    read_color_settings (MDA_VISION_GOALPOST_SETTINGS);
+    read_mv_setting (MDA_VISION_GOALPOST_SETTINGS, "GOALPOST_DEBUG_LEVEL", DEBUG_LEVEL);
+    contour_filter.set_debug_level(DEBUG_LEVEL);
+    rectangle_params = read_rectangle_settings(MDA_VISION_GOALPOST_SETTINGS);
+
     N_FRAMES_TO_KEEP = 8;
     gray_img = mvGetScratchImage();
     gray_img_2 = mvGetScratchImage2();
@@ -33,6 +40,8 @@ void MDA_VISION_MODULE_GOALPOST::primary_filter (IplImage* src) {
 
     watershed_filter.watershed(src, gray_img, mvWatershedFilter::WATERSHED_STEP_SMALL);
     window.showImage (src);
+    DEBUG_PRINT(2,"GOALPOST: showing source img from watershed\n");
+    DEBUG_WAITKEY(2,0);
 }
 
 MDA_VISION_RETURN_CODE MDA_VISION_MODULE_GOALPOST::calc_vci () {
