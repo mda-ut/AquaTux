@@ -12,6 +12,7 @@ This header file gives us early predefines for our code.
 //#define PROFILE_ON
 
 #define DEBUG_VISION_PATH
+#define DEBUG_VISION_GOALPOST
 #define DEBUG_CONTOURS
 
 #endif
