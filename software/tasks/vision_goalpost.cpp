@@ -36,11 +36,12 @@ MDA_VISION_MODULE_GOALPOST::~MDA_VISION_MODULE_GOALPOST () {
 void MDA_VISION_MODULE_GOALPOST::primary_filter (IplImage* src) {
     // shift the frames back by 1
     shift_frame_data (m_frame_data_vector, read_index, N_FRAMES_TO_KEEP);
-    rectangle_params = read_rectangle_settings(MDA_VISION_GOALPOST_SETTINGS);
 
     watershed_filter.watershed(src, gray_img, mvWatershedFilter::WATERSHED_STEP_SMALL);
-    window.showImage (src);
-    DEBUG_PRINT(2,"GOALPOST: showing source img from watershed\n");
+    DEBUG_PRINT(1,"VISION_GOALPOST: Number of Segments from watershed: %d\n", watershed_filter.num_watershed_segments());
+
+    DEBUG_SHOWIMAGE (2, window, gray_img);
+    DEBUG_PRINT(2,"VISION_GOALPOST: showing source img from watershed\n");
     DEBUG_WAITKEY(2,0);
 }
 
@@ -53,20 +54,41 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_GOALPOST::calc_vci () {
 
     // In this step, loop over every segment and try to find one that looks like a rectangle
     while ( watershed_filter.get_next_watershed_segment(gray_img_2, color) ) {
-        // check that the segment is roughly red
+
+        DEBUG_PRINT(2,"VISION_GOALPOST: segment color: BGR=(%3d,%3d,%3d)\n", color.m1, color.m2, color.m3);
+        DEBUG_PRINT(2, "VISION_GOALPOST: comparing against: %s\n", color_limit_string().c_str());
+
+        if (!check_color_triple(color)) {
+            DEBUG_PRINT(2,"VISION_GOALPOST: rejected segment due to color\n");
+            DEBUG_WAITKEY(2,0);
+            continue;
+        }
+
         bool found = contour_filter.match_rectangle(gray_img_2, &rbox_vector, color, rectangle_params);
-        (void) found;
+        if (DEBUG_LEVEL >= 2) {
+            cvZero(gray_img_2);
+            contour_filter.drawOntoImage(gray_img_2);
+            DEBUG_SHOWIMAGE(2,window2, gray_img_2);
+            DEBUG_PRINT(2, "Rose: just printed all contours from last segment\n");
+            DEBUG_WAITKEY(2,0);
+        }
+
+        DEBUG_PRINT(1,"VISION_GOALPOST: Segment was %s\n", found ? "\e[0;32maccepted\e[0m" : "\e[0;31mrejected\e[0m");
+        DEBUG_WAITKEY(2,0);
     }
+    DEBUG_PRINT(1, "VISION_GOALPOST: Num rectangles identified: %d\n", (int)rbox_vector.size());    
+
+
     for (unsigned i = 0; i < rbox_vector.size(); i++) {
         //look for vertical red rbox
         if ((rbox_vector[i].m1 < 100 && rbox_vector[i].m2 < 100 && rbox_vector[i].m3 > 150)&&(abs(rbox_vector[i].angle) < 30)) {
             rbox_vector_filtered [0] = rbox_vector[i];
-            //DEBUG_PRINT ("Found vertical red segment\n");
+            DEBUG_PRINT (2, "GOALPOST: Found vertical red segment\n");
         }
         //look for horizontal green box
         if ((rbox_vector[i].m1 < 100 && rbox_vector[i].m2 > 150 && rbox_vector[i].m3 < 100)&&(abs(rbox_vector[i].angle) > 60)) {
             rbox_vector_filtered [1] = rbox_vector[i];
-            //DEBUG_PRINT ("Found horizontal green segment\n");
+            DEBUG_PRINT (2, "GOALPOST: Found horizontal green segment\n");
         }
     }
 
@@ -107,7 +129,7 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_GOALPOST::calc_vci () {
         retval = ONE_SEGMENT;
     }
     else {
-        //DEBUG_PRINT ("Goalpost: No Target\n");
+        DEBUG_PRINT (2, "Goalpost: No Target\n");
         return NO_TARGET;
     }
     cvCircle(gray_img, cvPoint(m_pixel_x + gray_img->width/2, m_pixel_y + gray_img->height/2), 10, CV_RGB(200, 200, 200), -1);
@@ -115,7 +137,7 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_GOALPOST::calc_vci () {
 
     m_angular_x = RAD_TO_DEG * atan(TAN_FOV_X * m_pixel_x / gray_img->width);
     m_angular_y = RAD_TO_DEG * atan(TAN_FOV_Y * m_pixel_y / gray_img->height);
-    //DEBUG_PRINT ("Goalpost: (%d,%d) (%5.2f, %5.2f)  range=%d\n", m_pixel_x, m_pixel_y, m_angular_x, m_angular_y, m_range);
+    DEBUG_PRINT (2, "Goalpost: (%d,%d) (%5.2f, %5.2f)  range=%d\n", m_pixel_x, m_pixel_y, m_angular_x, m_angular_y, m_range);
     
     return retval;
 }

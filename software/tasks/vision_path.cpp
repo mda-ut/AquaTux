@@ -69,8 +69,10 @@ void MDA_VISION_MODULE_PATH::add_frame (IplImage* src) {
         return;
     }
 */
-//    window.showImage (src);
     watershed_filter.watershed(src, gray_img, mvWatershedFilter::WATERSHED_STEP_SMALL);
+    DEBUG_SHOWIMAGE(3, window, gray_img);
+    DEBUG_PRINT(3, "VISION_PATH: Showing image from watershed\n");
+    DEBUG_WAITKEY(3, 0);
 
     COLOR_TRIPLE color;
     MvRotatedBox rbox;
@@ -83,7 +85,7 @@ void MDA_VISION_MODULE_PATH::add_frame (IplImage* src) {
         DEBUG_PRINT(2,"VISION_PATH: segment color: BGR=(%3d,%3d,%3d)\n", color.m1, color.m2, color.m3);
         DEBUG_PRINT(2, "VISION_PATH: comparing against: %s\n", color_limit_string().c_str());
         if (!check_color_triple(color)) {
-            DEBUG_PRINT(2,"VISION_PATH: rejected rectangle due to color\n");
+            DEBUG_PRINT(2,"VISION_PATH: rejected segment due to color\n");
             DEBUG_WAITKEY(2,0);
             continue;
         }
@@ -93,6 +95,7 @@ void MDA_VISION_MODULE_PATH::add_frame (IplImage* src) {
             cvZero(gray_img_2);
             contour_filter.drawOntoImage(gray_img_2);
             DEBUG_SHOWIMAGE(2,window2, gray_img_2);
+            DEBUG_PRINT(2, "Rose: just printed all contours from last segment\n");
             DEBUG_WAITKEY(2,0);
         }
         DEBUG_PRINT(1,"VISION_PATH: Segment was %s\n", found ? "\e[0;32maccepted\e[0m" : "\e[0;31mrejected\e[0m");
@@ -122,10 +125,10 @@ void MDA_VISION_MODULE_PATH::add_frame (IplImage* src) {
         }
     }
 
-    if (m_frame_data_vector[read_index].is_valid()) {
-        m_frame_data_vector[read_index].drawOntoImage(gray_img_2);
-        window2.showImage (gray_img_2);
-    }
+    // if (m_frame_data_vector[read_index].is_valid()) {
+    //     m_frame_data_vector[read_index].drawOntoImage(gray_img_2);
+    //     window2.showImage (gray_img_2);
+    // }
 
     //print_frames();
 }

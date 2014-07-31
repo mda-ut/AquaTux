@@ -43,7 +43,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_GOALPOST::run_task() {
             break;
         }
         MDA_VISION_RETURN_CODE vision_code = goalpost_vision.filter(frame);
-
+        /*
         // clear dwn image
         int down_frame_ready = image_input->ready_image(DWN_IMG);
         (void) down_frame_ready;
@@ -54,7 +54,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_GOALPOST::run_task() {
                 break;
             }
             else if (vision_code == NO_TARGET) {
-                set(SPEED, 5);
+                //set(SPEED, 5);
 
                 if (t.get_time() > MASTER_TIMEOUT) {
                     stop();
@@ -71,7 +71,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_GOALPOST::run_task() {
                 if (goalpost_vision.get_range() < 350) {
                     t.restart();
                     while (t.get_time() < 5) {
-                        set (SPEED, 8);
+                        //set (SPEED, 8);
                     }
                     stop();
                     done_goalpost = true;
@@ -95,7 +95,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_GOALPOST::run_task() {
                 printf ("Error: %s: line %d\ntask module recieved an unhandled vision code.\n", __FILE__, __LINE__);
                 exit(1);
             }
-        }
+        }*/
 
         // Ensure debug messages are printed
         fflush(stdout);
