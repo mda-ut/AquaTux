@@ -11,8 +11,9 @@ WRITE_TO_VIDEO 1
 IMAGE_SHOW_RAW 1
 WEBCAM_FWD 2
 WEBCAM_DWN 1
-FWD_VIDEO_FILE sub.avi
-DWN_VIDEO_FILE sub_dwn.avi
+VIDEO_DIR ~/Dropbox/MDA/Footage/
+FWD_VIDEO_FILE _sub.avi
+DWN_VIDEO_FILE _sub_dwn.avi
 
 ### Options for the submarine ###
 
