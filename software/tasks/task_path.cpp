@@ -1,9 +1,11 @@
 #include "mda_tasks.h"
 #include "mda_vision.h"
 
-#define GATE_START_DEPTH 150
+#define GATE_START_DEPTH 25
 #define GATE_FORWARD_SPEED 5
-#define GATE_ATTITUDE_CHECK_DELAY 50
+#define GATE_ATTITUDE_CHECK_DELAY 100
+#define PATH_SEARCH_SPEED 1
+#define PATH_SPOTTED_REVERSE 2
 
 // Global declarations
 const int PATH_DELTA_DEPTH = 50;
@@ -43,9 +45,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
     printf("Starting yaw: %d\n", starting_yaw);
     
 
-    int GATE_DEPTH = attitude_input->depth()+450;
-    set(DEPTH, GATE_DEPTH);
-    /*read_mv_setting ("hacks.csv", "GATE_DEPTH", GATE_DEPTH);
+    //read_mv_setting ("hacks.csv", "GATE_DEPTH", GATE_DEPTH);
     int GATE_DEPTH = attitude_input->depth() + GATE_START_DEPTH;
     set (DEPTH, GATE_DEPTH);
     
@@ -54,7 +54,8 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
     printf("Rose: Going to depth: %d\n", GATE_DEPTH);
     set (DEPTH, GATE_DEPTH/2);
     set (DEPTH, GATE_DEPTH/4*3);
-    set (DEPTH, GATE_DEPTH);*/
+    set (DEPTH, GATE_DEPTH);
+    */
     //set(DEPTH, 100);
 
     // go to the starting orientation in case sinking changed it
@@ -100,6 +101,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
         *  - Align with path
         */
 
+	/*
         printf("Rose: current depth is: %d\n", attitude_input->depth());
         printf("Rose: current yaw is: %d\n", attitude_input->yaw());
         if (counter % 50 == 0)
@@ -111,6 +113,8 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
             set (DEPTH, GATE_DEPTH);
         }
         counter ++;
+	*/
+	
         if (!done_gate) {
             if (state == STARTING_GATE) {
                 printf("Starting Gate: Moving Foward at High Speed\n");
@@ -155,12 +159,13 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
 
                 // if path vision saw something, go do the path task
                 if (vision_code != NO_TARGET) {
-                    printf ("\nSaw Path! Going to Path vision!");
+                    printf ("\nSaw Path! Going to Path vision!\n");
                     done_gate = true;
                     set(SPEED, 0);
                     set(YAW, starting_yaw);
                     timer.restart();
                     while (timer.get_time() < 2);
+		    move(REVERSE, PATH_SPOTTED_REVERSE);
                     state = STARTING_PATH;
                 }
             }
@@ -180,7 +185,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
             if (state == STARTING_PATH) {
                 if (vision_code == NO_TARGET) {
                     printf ("Starting: No target\n");
-                    set(SPEED,3);
+                    set(SPEED, PATH_SEARCH_SPEED);
                     if (timer.get_time() > MASTER_TIMEOUT) { // timeout
                         printf ("Master Timeout\n");
                         return TASK_MISSING;
