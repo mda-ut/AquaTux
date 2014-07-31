@@ -137,7 +137,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
                     return TASK_MISSING;
                 }
 
-                else if (gate_vision_code == FULL_DETECT) {
+                /*else if (gate_vision_code == FULL_DETECT) {
                     printf ("Starting Gate: Full Detect\n");
                     int ang_x = gate_vision.get_angular_x();
                     set_yaw_change(ang_x);
@@ -155,7 +155,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
                         done_gate = true;
                         set(YAW, starting_yaw);
                         state = STARTING_PATH;
-                    }
+                    }*/
 
                     timer.restart();
                 }
