@@ -28,10 +28,6 @@ MDA_TASK_PATH::~MDA_TASK_PATH ()
 }
 
 MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
-<<<<<<< HEAD
-    int counter = 0;
-=======
->>>>>>> 818ffe1aa0969e7bb47c94fc186f4f0866805f79
     puts("Press q to quit");
 
     MDA_VISION_MODULE_PATH path_vision;
@@ -46,23 +42,20 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
     int starting_yaw = attitude_input->yaw();
     printf("Starting yaw: %d\n", starting_yaw);
     
-<<<<<<< HEAD
-    int GATE_DEPTH = attitude_input->depth()+500;
+
+    int GATE_DEPTH = attitude_input->depth()+450;
     set(DEPTH, GATE_DEPTH);
     /*read_mv_setting ("hacks.csv", "GATE_DEPTH", GATE_DEPTH);
-=======
     int GATE_DEPTH = attitude_input->depth() + GATE_START_DEPTH;
     set (DEPTH, GATE_DEPTH);
     
     /*
     read_mv_setting ("hacks.csv", "GATE_DEPTH", GATE_DEPTH);
->>>>>>> 818ffe1aa0969e7bb47c94fc186f4f0866805f79
     printf("Rose: Going to depth: %d\n", GATE_DEPTH);
     set (DEPTH, GATE_DEPTH/2);
     set (DEPTH, GATE_DEPTH/4*3);
     set (DEPTH, GATE_DEPTH);*/
     //set(DEPTH, 100);
-    */
 
     // go to the starting orientation in case sinking changed it
     set (YAW, starting_yaw);
@@ -137,7 +130,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
                     return TASK_MISSING;
                 }
 
-                /*else if (gate_vision_code == FULL_DETECT) {
+                else if (gate_vision_code == FULL_DETECT) {
                     printf ("Starting Gate: Full Detect\n");
                     int ang_x = gate_vision.get_angular_x();
                     set_yaw_change(ang_x);
@@ -155,7 +148,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
                         done_gate = true;
                         set(YAW, starting_yaw);
                         state = STARTING_PATH;
-                    }*/
+                    }
 
                     timer.restart();
                 }
