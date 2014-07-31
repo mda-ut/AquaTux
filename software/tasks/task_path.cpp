@@ -1,9 +1,9 @@
 #include "mda_tasks.h"
 #include "mda_vision.h"
 
-#define GATE_START_DEPTH 25
+#define GATE_START_DEPTH 150
 #define GATE_FORWARD_SPEED 5
-#define GATE_ATTITUDE_CHECK_DELAY 50
+#define GATE_ATTITUDE_CHECK_DELAY 100
 #define PATH_SEARCH_SPEED 1
 
 // Global declarations
@@ -60,6 +60,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
     
     // counter to check depth and yaw
     int counter = 0;
+    bool reversed_to_path = false;
 
     //TIMER master_timer;
     TIMER timer;
@@ -148,7 +149,8 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
                     done_gate = true;
                     set(SPEED, 0);
                     set(YAW, starting_yaw);
-                    timer.restart();
+                    move(REVERSE, 5);
+		    timer.restart();
                     while (timer.get_time() < 2);
                     state = STARTING_PATH;
                 }
@@ -167,7 +169,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
             printf("xy_distance = %d    xy_angle = %5.2f\n==============================\n", pix_distance, pos_angle);
 
             if (state == STARTING_PATH) {
-                if (vision_code == NO_TARGET) {
+		if (vision_code == NO_TARGET) {
                     printf ("Starting: No target\n");
                     set(SPEED, PATH_SEARCH_SPEED);
                     if (timer.get_time() > MASTER_TIMEOUT) { // timeout
