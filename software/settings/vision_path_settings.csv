@@ -3,6 +3,7 @@ PATH_DEBUG_LEVEL, 0
 # target color
 DIFF_THRESHOLD, 2.0
 
+#params for read_color_settings
 # B,G,R max and min for the path task
 B_MIN, 0
 B_MAX, 100
