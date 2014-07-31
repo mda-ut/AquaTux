@@ -36,8 +36,8 @@ Until i = arrayLength:
 
 int main (void)
 {
-	double SinHertz = 22000, distanceFromPinger = 10.1, pulseTime = 0.0013, timeBetweenPulses = 2;
-	int arrayLength = 7383;
+	double SinHertz = 33000, distanceFromPinger = 1, pulseTime = 0.0013, timeBetweenPulses = 2;
+	int arrayLength = 10000;
         
         double c[arrayLength];
 	
@@ -46,7 +46,7 @@ int main (void)
         
         char title[MAX_OUTPUT_LEN];
         char distance[MAX_DISTANCE_LEN];
-        char try[CHAR_LEN] = "2";
+        char try[CHAR_LEN] = "1";
         
         strncpy(title, "MatLabInput", ORG_STR_LEN);
         snprintf(distance, MAX_DISTANCE_LEN,  "%g", distanceFromPinger);
