@@ -1,6 +1,10 @@
 #include "mda_tasks.h"
 #include "mda_vision.h"
 
+#define GATE_START_DEPTH 150
+#define GATE_FORWARD_SPEED 5
+#define GATE_ATTITUDE_CHECK_DELAY 50
+
 // Global declarations
 const int PATH_DELTA_DEPTH = 50;
 const int MASTER_TIMEOUT = 120;
@@ -24,7 +28,10 @@ MDA_TASK_PATH::~MDA_TASK_PATH ()
 }
 
 MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
+<<<<<<< HEAD
     int counter = 0;
+=======
+>>>>>>> 818ffe1aa0969e7bb47c94fc186f4f0866805f79
     puts("Press q to quit");
 
     MDA_VISION_MODULE_PATH path_vision;
@@ -39,17 +46,29 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
     int starting_yaw = attitude_input->yaw();
     printf("Starting yaw: %d\n", starting_yaw);
     
+<<<<<<< HEAD
     int GATE_DEPTH = attitude_input->depth()+500;
     set(DEPTH, GATE_DEPTH);
     /*read_mv_setting ("hacks.csv", "GATE_DEPTH", GATE_DEPTH);
+=======
+    int GATE_DEPTH = attitude_input->depth() + GATE_START_DEPTH;
+    set (DEPTH, GATE_DEPTH);
+    
+    /*
+    read_mv_setting ("hacks.csv", "GATE_DEPTH", GATE_DEPTH);
+>>>>>>> 818ffe1aa0969e7bb47c94fc186f4f0866805f79
     printf("Rose: Going to depth: %d\n", GATE_DEPTH);
     set (DEPTH, GATE_DEPTH/2);
     set (DEPTH, GATE_DEPTH/4*3);
     set (DEPTH, GATE_DEPTH);*/
     //set(DEPTH, 100);
+    */
 
     // go to the starting orientation in case sinking changed it
     set (YAW, starting_yaw);
+    
+    // counter to check depth and yaw
+    int counter = 0;
 
     //TIMER master_timer;
     TIMER timer;
@@ -80,7 +99,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
         // clear fwd image. RZ - do we need this?
         // This ensures the other camera is properly logged
         // and that the webcam cache is cleared so it stays in sync - VZ
-        //image_input->ready_image(FWD_IMG);
+        // image_input->ready_image(FWD_IMG);
 
         /**
         * Basic Algorithm:
@@ -101,14 +120,24 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
         counter ++;
         if (!done_gate) {
             if (state == STARTING_GATE) {
-                printf ("Starting Gate: Moving Foward at High Speed\n");
-                set (SPEED, 5);
+                printf("Starting Gate: Moving Foward at High Speed\n");
+                set(SPEED, GATE_FORWARD_SPEED);
+		if (counter % GATE_ATTITUDE_CHECK_DELAY == 0)
+        	{
+            	    set (DEPTH, GATE_DEPTH);
+            	    printf("Adam: set depth to %d\n", GATE_DEPTH);
+            	    set (YAW, starting_yaw);
+            	    printf("Rose: set yaw = %d\n", starting_yaw);
+            	    counter = 0;
+		}
+		counter++;
 
                 if (timer.get_time() > MASTER_TIMEOUT) {
                     printf ("Starting Gate: Master Timer Timeout!!\n");
                     return TASK_MISSING;
                 }
-                /*else if (gate_vision_code == FULL_DETECT) {
+
+                else if (gate_vision_code == FULL_DETECT) {
                     printf ("Starting Gate: Full Detect\n");
                     int ang_x = gate_vision.get_angular_x();
                     set_yaw_change(ang_x);
@@ -129,7 +158,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
                     }
 
                     timer.restart();
-                }*/
+                }
 
                 // if path vision saw something, go do the path task
                 if (vision_code != NO_TARGET) {

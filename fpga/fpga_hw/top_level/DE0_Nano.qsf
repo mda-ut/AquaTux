@@ -462,3 +462,6 @@ set_global_assignment -name SDC_FILE ../../../../../../altera/12.0/ip/altera/sop
 set_global_assignment -name IP_TOOL_NAME sopc -entity DE0_Nano_SOPC -qip DE0_Nano_SOPC.qip
 set_global_assignment -name IP_TOOL_VERSION 12.0 -entity DE0_Nano_SOPC -qip DE0_Nano_SOPC.qip
 set_global_assignment -name IP_TOOL_ENV sopc -entity DE0_Nano_SOPC -qip DE0_Nano_SOPC.qip
+set_global_assignment -name SOPC_BUILDER_SIGNATURE_ID 9C8E9942926A000001472BBF3D87 -qip DE0_Nano_SOPC.qip
+set_global_assignment -name TCL_SCRIPT_FILE ../../../../altera/12.0/ip/altera/sopc_builder_ip/altera_avalon_altpll/altera_avalon_altpll_hw.tcl -qip DE0_Nano_SOPC.qip
+set_global_assignment -name SDC_FILE ../../../../altera/12.0/ip/altera/sopc_builder_ip/altera_avalon_clock_adapter/altera_avalon_clock_adapter.sdc -qip DE0_Nano_SOPC.qip

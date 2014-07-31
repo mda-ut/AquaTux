@@ -59,7 +59,7 @@ void Mission::work_internal(bool show_image)
   printf("Rose: current yaw is: %d\n", attitude_input->yaw());
   
   ret_code = path.run_task();
-  
+  printf("Mission executed %d\n", ret_code);
   /*
 
   int RUN_BUOY;
@@ -82,7 +82,7 @@ void Mission::work_internal(bool show_image)
   ret_code = surface.run_task();
   
 
-  /*int task_index = 0;
+  //int task_index = 0;
 
   // Run each task until the list of tasks is complete
   while (*task_ptr) {
