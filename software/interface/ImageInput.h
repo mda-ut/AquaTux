@@ -16,6 +16,7 @@
 #include <cv.h>
 #include <highgui.h>
 #include <sstream>
+#include <ctime>
 #include "mgui.h"
 
 //#define DISABLE_DOUBLE_WEBCAM  // define this if computer can't support 2 webcams at the same time 
@@ -49,10 +50,22 @@ class ImageInput {
       if (write_to_video) {
         std::string video_file;
 
-        read_mv_setting(settings_file, "FWD_VIDEO_FILE", video_file);
-        writer_fwd = new mvVideoWriter(video_file.c_str());
+	// Add timestamp to file
+	time_t rawtime;
+  	struct tm * timeinfo;
+  	char buffer[80];
+
+  	time(&rawtime);
+  	timeinfo = localtime(&rawtime);
+  	strftime(buffer,80,"%d-%m-%Y %I:%M:%S",timeinfo);
+
+	read_mv_setting(settings_file, "FWD_VIDEO_FILE", video_file);
+  	std::string file_time_stamp = std::string(buffer) + video_file;
+	writer_fwd = new mvVideoWriter(file_time_stamp.c_str());
+
         read_mv_setting(settings_file, "DWN_VIDEO_FILE", video_file);
-        writer_dwn = new mvVideoWriter(video_file.c_str());
+        file_time_stamp = std::string(buffer) + video_file;
+	writer_dwn = new mvVideoWriter(video_file.c_str());
       }
     }
     virtual ~ImageInput()
