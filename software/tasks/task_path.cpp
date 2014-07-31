@@ -1,9 +1,10 @@
 #include "mda_tasks.h"
 #include "mda_vision.h"
 
-#define GATE_START_DEPTH 150
+#define GATE_START_DEPTH 25
 #define GATE_FORWARD_SPEED 5
 #define GATE_ATTITUDE_CHECK_DELAY 50
+#define PATH_SEARCH_SPEED 1
 
 // Global declarations
 const int PATH_DELTA_DEPTH = 50;
@@ -168,7 +169,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
             if (state == STARTING_PATH) {
                 if (vision_code == NO_TARGET) {
                     printf ("Starting: No target\n");
-                    set(SPEED,3);
+                    set(SPEED, PATH_SEARCH_SPEED);
                     if (timer.get_time() > MASTER_TIMEOUT) { // timeout
                         printf ("Master Timeout\n");
                         return TASK_MISSING;
