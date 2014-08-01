@@ -5,9 +5,10 @@
 #define GATE_FORWARD_SPEED 5
 #define GATE_ATTITUDE_CHECK_DELAY 100
 #define PATH_SEARCH_SPEED 1
-#define PATH_SPOTTED_REVERSE 25
+#define PATH_SPOTTED_REVERSE 20
 #define PATH_ROTATION_MODIFIER 0.8
 #define PATH_ROTATION_DELAY 10
+#define PATH_ANGLE_DONE 8
 
 // Global declarations
 const int PATH_DELTA_DEPTH = 50;
@@ -254,14 +255,16 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
                     if (abs(xy_ang) > 90 ) {
                         // turn different direction based on pix_y value
                         xy_ang = (xy_ang > 0) ? xy_ang - 180 : xy_ang + 180; 
-                    } 
-                    printf("Adam: Turning %s %d degrees (xy_ang)\n", (abs(xy_ang) > 0) ? "Right" : "Left", static_cast<int>(round(abs(xy_ang * PATH_ROTATION_MODIFIER))));
-                    set(SPEED, 0);
-                    move(RIGHT, round(xy_ang * PATH_ROTATION_MODIFIER));
-                    path_vision.clear_frames();
-		    path_rotation_delay.restart();
-		    printf("Adam: Delaying rotation for %fs\n", round(abs(PATH_ROTATION_DELAY * xy_ang / 10)));
-		    while (path_rotation_delay.get_time() < round(abs(PATH_ROTATION_DELAY * xy_ang / 10)));
+                    }
+                    if (abs(pos_angle) >= PATH_ANGLE_DONE) {
+	                    //printf("Adam: Turning %s %d degrees (xy_ang)\n", (abs(xy_ang) > 0) ? "Right" : "Left", static_cast<int>(round(abs(xy_ang * PATH_ROTATION_MODIFIER))));
+	                    printf("Adam: Turning %s %d degrees (pos_angle)\n", (abs(pos_angle) > 0) ? "Right" : "Left", static_cast<int>(round(abs(pos_angle))));
+	                    set(SPEED, 0);
+	                    move(RIGHT, round(pos_angle));
+	                    path_vision.clear_frames();
+			    //path_rotation_delay.restart();
+			    //printf("Adam: Delaying rotation for %fs\n", round(abs(PATH_ROTATION_DELAY * pos_angle / 10)));
+			    //while (path_rotation_delay.get_time() < round(abs(PATH_ROTATION_DELAY * pos_angle / 10)));
                     /*else {                              // we are over the path, sink and try align state
                         set(SPEED, 0);
                         move(SINK, ALIGN_DELTA_DEPTH);
@@ -269,7 +272,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
                         path_vision.clear_frames();
                         state = AT_ALIGN_DEPTH;
                     }*/
-		    if (abs(xy_ang) <= 10){
+		    else {
 			printf("\nAdam: Done Path!\n");
 			done_path = true;
 		    }
