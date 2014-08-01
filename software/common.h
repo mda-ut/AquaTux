@@ -13,6 +13,7 @@ This header file gives us early predefines for our code.
 
 #define DEBUG_VISION_PATH
 #define DEBUG_VISION_GOALPOST
+#define DEBUG_VISION_BUOY
 #define DEBUG_CONTOURS
 
 #endif

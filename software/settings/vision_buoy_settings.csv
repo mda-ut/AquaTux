@@ -6,6 +6,15 @@ TARGET_GREEN, 95
 TARGET_RED, 190
 DIFF_THRESHOLD, 0.8
 
+#params for read_color_settings
+# B,G,R max and min for the goalpost task
+B_MIN, 0
+B_MAX, 100
+G_MIN, 0
+G_MAX, 255
+R_MIN, 0
+R_MAX, 255
+
 # params for match_rectangle
 CONTOUR_POINTS_MIN, 6
 CONTOUR_AREA_MIN, 600

@@ -1,10 +1,12 @@
 #include "mda_vision.h"
+#include "../common.h"
 
-#define M_DEBUG
-#ifdef M_DEBUG
-    #define DEBUG_PRINT(format, ...) printf(format, ##__VA_ARGS__)
+#ifdef DEBUG_VISION_GOALPOST
+    #define DEBUG_PRINT(_n, _format, ...) if(_n<=DEBUG_LEVEL)printf(_format, ##__VA_ARGS__)
+    #define DEBUG_SHOWIMAGE(_n, _win, _img) if(_n<=DEBUG_LEVEL)_win.showImage(_img);
+    #define DEBUG_WAITKEY(_n,_msecs) if(_n<=DEBUG_LEVEL)WAITKEY(_msecs);
 #else
-    #define DEBUG_PRINT(format, ...)
+    #define DEBUG_PRINT(n, format, ...)
 #endif
 
 const int ANGLE_LIMIT = 45;
@@ -13,7 +15,7 @@ const float LEN_TO_WIDTH_MIN = 1.0;
 const int FRAMES_TO_KEEP = 60;
 const int FRAMES_THRESHOLD_FRACTION = 6;
 
-const char MDA_VISION_MODULE_BUOY::MDA_VISION_BUOY_SETTINGS[] = "vision_buoy_settings_new.csv";
+const char MDA_VISION_MODULE_BUOY::MDA_VISION_BUOY_SETTINGS[] = "vision_buoy_settings.csv";
 
 /// #########################################################################
 /// MODULE_BUOY methods
