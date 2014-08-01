@@ -24,7 +24,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_GOALPOST::run_task() {
 
     bool done_goalpost = false;
 
-    int GOALPOST_DEPTH = attitude_input->depth()+450;
+    int GOALPOST_DEPTH = attitude_input->depth()+250;
     /*read_mv_setting ("hacks.csv", "GOALPOST_DEPTH", GOALPOST_DEPTH);
     
     if (GOALPOST_DEPTH > 500)
