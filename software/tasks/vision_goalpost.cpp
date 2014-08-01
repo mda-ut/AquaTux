@@ -40,9 +40,9 @@ void MDA_VISION_MODULE_GOALPOST::primary_filter (IplImage* src) {
     watershed_filter.watershed(src, gray_img, mvWatershedFilter::WATERSHED_STEP_SMALL);
     DEBUG_PRINT(1,"VISION_GOALPOST: Number of Segments from watershed: %d\n", watershed_filter.num_watershed_segments());
 
-    DEBUG_SHOWIMAGE (2, window, gray_img);
-    DEBUG_PRINT(2,"VISION_GOALPOST: showing source img from watershed\n");
-    DEBUG_WAITKEY(2,0);
+    DEBUG_SHOWIMAGE (1, window, gray_img);
+    DEBUG_PRINT(1,"VISION_GOALPOST: showing source img from watershed\n");
+    DEBUG_WAITKEY(1,0);
 }
 
 MDA_VISION_RETURN_CODE MDA_VISION_MODULE_GOALPOST::calc_vci () {
@@ -55,7 +55,7 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_GOALPOST::calc_vci () {
     // In this step, loop over every segment and try to find one that looks like a rectangle
     while ( watershed_filter.get_next_watershed_segment(gray_img_2, color) ) {
 
-        DEBUG_PRINT(2,"VISION_GOALPOST: segment color: BGR=(%3d,%3d,%3d)\n", color.m1, color.m2, color.m3);
+        DEBUG_PRINT(1,"VISION_GOALPOST: segment color: BGR=(%3d,%3d,%3d)\n", color.m1, color.m2, color.m3);
         DEBUG_PRINT(2, "VISION_GOALPOST: comparing against: %s\n", color_limit_string().c_str());
 
         if (!check_color_triple(color)) {
@@ -108,7 +108,7 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_GOALPOST::calc_vci () {
 
     // 2 valid segments
     if (seg_red_v_valid && seg_green_h_valid) {
-        m_pixel_x = rbox_vector_filtered[0].center.x + rbox_vector_filtered[1].length/2 - gray_img->width/2;
+        m_pixel_x = rbox_vector_filtered[0].center.x + rbox_vector_filtered[1].length/8*3 - gray_img->width/2;
         m_pixel_y = rbox_vector_filtered[0].center.y - gray_img->height/2;
         //rbox length is used as height of red box
         m_range = (float)(GOALPOST_REAL_HEIGHT * gray_img->height / rbox_vector_filtered[0].length * TAN_FOV_Y);
@@ -116,7 +116,7 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_GOALPOST::calc_vci () {
         DEBUG_PRINT (2, "Goalpost: Full detect\n");
     }
     else if (seg_red_v_valid && !seg_green_h_valid) {
-        m_pixel_x = rbox_vector_filtered[0].center.x - gray_img->width/2;
+        m_pixel_x = rbox_vector_filtered[0].center.x - gray_img->width/2 + rbox_vector_filtered[0].length/8*3;
         m_pixel_y = rbox_vector_filtered[0].center.y - gray_img->height/2;
         //rbox length is used as height of red box
         m_range = (float)(GOALPOST_REAL_HEIGHT * gray_img->height / rbox_vector_filtered[0].length * TAN_FOV_Y);
@@ -124,7 +124,7 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_GOALPOST::calc_vci () {
         DEBUG_PRINT (2, "Goalpost: One segment: red\n");
     }
     else if (!seg_red_v_valid && seg_green_h_valid) {
-        m_pixel_x = rbox_vector_filtered[1].center.x - gray_img->width/2 + rbox_vector_filtered[1].length/2;
+        m_pixel_x = rbox_vector_filtered[1].center.x - gray_img->width/2 + rbox_vector_filtered[1].length/8*3;
         m_pixel_y = rbox_vector_filtered[1].center.y - gray_img->height/2 - rbox_vector_filtered[1].length/3;
         //rbox length is used as length of green box
         m_range = (float)(GOALPOST_REAL_WIDTH * gray_img->width / rbox_vector_filtered[1].length * TAN_FOV_X);

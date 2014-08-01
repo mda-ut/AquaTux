@@ -55,7 +55,6 @@ MDA_TASK_RETURN_CODE MDA_TASK_GOALPOST::run_task() {
                 break;
             }
             else if (vision_code == NO_TARGET) {
-                set(SPEED, 2);
                 set(YAW, attitude_input->yaw()-15);
                 printf("Rose: Goalpost not found! looking around\n");
                 if (timer.get_time() > MASTER_TIMEOUT) {
@@ -72,9 +71,25 @@ MDA_TASK_RETURN_CODE MDA_TASK_GOALPOST::run_task() {
                 // if we can see full goalpost and range is less than 200 we are done the frame part
                 if (goalpost_vision.get_range() < 300) {
                     timer.restart();
-                    while (timer.get_time() < 15) { //charging forward after task is done
+                    while (timer.get_time() < 7) { //charging forward after task is done
                         set (SPEED, 5);
                     }
+
+                    int counter = 0;
+                    while (counter < 5)
+                    {
+                        stop();
+                        
+                        printf("Rose: changing yaw: %d\n", attitude_input->yaw());
+                        
+                        set(YAW, attitude_input->yaw()-100);
+                        timer.restart();
+                        while (timer.get_time() < 2) { //charging forward after task is done
+                            set (SPEED, 5);
+                        }
+                        counter ++;
+                    }
+
                     stop();
                     done_goalpost = true;
                     ret_code = TASK_DONE;

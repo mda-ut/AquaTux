@@ -6,18 +6,18 @@ CONTOUR_AREA_MIN, 60
 CONTOUR_AREA_MAX, 50000
 LW_RATIO_MIN, 5
 LW_RATIO_MAX, 80
-AREA_RATIO_MIN, 0.3
+AREA_RATIO_MIN, 0.2
 PERI_RATIO_MIN, 0.75
 PERI_RATIO_MAX, 1.2
 
 #params for read_color_settings
 # B,G,R max and min for the goalpost task
-B_MIN, 0
-B_MAX, 100
-G_MIN, 0
-G_MAX, 255
-R_MIN, 0
-R_MAX, 255
+B_MIN, 70
+B_MAX, 150
+G_MIN, 90
+G_MAX, 160
+R_MIN, 10
+R_MAX, 25
 
 ### color filter settings
 HUE_MIN, 50
