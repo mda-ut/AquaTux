@@ -1,7 +1,7 @@
 #include "mda_vision.h"
 #include "mda_tasks.h"
 
-const int MASTER_TIMEOUT = 45;
+const int MASTER_TIMEOUT = 120;
 
 MDA_TASK_GOALPOST::MDA_TASK_GOALPOST (AttitudeInput* a, ImageInput* i, ActuatorOutput* o) :
     MDA_TASK_BASE (a, i, o)
@@ -33,8 +33,8 @@ MDA_TASK_RETURN_CODE MDA_TASK_GOALPOST::run_task() {
     set(DEPTH, GOALPOST_DEPTH);
     set(YAW, starting_yaw);
 
-    TIMER t;
-    t.restart();
+    TIMER timer;
+    timer.restart();
 
     while (1) {
         IplImage* frame = image_input->get_image();
@@ -43,7 +43,8 @@ MDA_TASK_RETURN_CODE MDA_TASK_GOALPOST::run_task() {
             break;
         }
         MDA_VISION_RETURN_CODE vision_code = goalpost_vision.filter(frame);
-        /*
+        printf("Rose: Goalpost vision_code: %d\n", vision_code);
+        
         // clear dwn image
         int down_frame_ready = image_input->ready_image(DWN_IMG);
         (void) down_frame_ready;
@@ -54,24 +55,25 @@ MDA_TASK_RETURN_CODE MDA_TASK_GOALPOST::run_task() {
                 break;
             }
             else if (vision_code == NO_TARGET) {
-                //set(SPEED, 5);
-
-                if (t.get_time() > MASTER_TIMEOUT) {
+                set(SPEED, 2);
+                set(YAW, attitude_input->yaw()-15);
+                printf("Rose: Goalpost not found! looking around\n");
+                if (timer.get_time() > MASTER_TIMEOUT) {
                     stop();
                     return TASK_MISSING;
                 }
             }
-            else if (vision_code == FULL_DETECT) {
+            else if (vision_code == FULL_DETECT || vision_code == ONE_SEGMENT) {
                 int ang_x = goalpost_vision.get_angular_x();
                 int ang_y = goalpost_vision.get_angular_y();
                 int range = goalpost_vision.get_range();
                 int depth_change = tan(ang_y*0.017453) * range; 
 
-                // if we can see full goalpost and range is less than 400 we are done the frame part
-                if (goalpost_vision.get_range() < 350) {
-                    t.restart();
-                    while (t.get_time() < 5) {
-                        //set (SPEED, 8);
+                // if we can see full goalpost and range is less than 200 we are done the frame part
+                if (goalpost_vision.get_range() < 300) {
+                    timer.restart();
+                    while (timer.get_time() < 15) { //charging forward after task is done
+                        set (SPEED, 5);
                     }
                     stop();
                     done_goalpost = true;
@@ -79,13 +81,15 @@ MDA_TASK_RETURN_CODE MDA_TASK_GOALPOST::run_task() {
                     break;
                 }
 
-                if(fabs(ang_y) > 30.0) {
+                if(fabs(ang_y) > 10.0 && range < 800) {
                     stop();
-                    move(SINK, depth_change);
+                    move(SINK, depth_change/2);// /2 for hacks
+                    printf("Goalpost: Move: adjusting depth\n");
                 }
                 else if(abs(ang_x) > 10.0) {
                     stop();
                     move(RIGHT, ang_x);
+                    printf("Goalpost: Move: adjusting yaw\n");
                 }
                 else {
                     set(SPEED, 5);
@@ -95,7 +99,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_GOALPOST::run_task() {
                 printf ("Error: %s: line %d\ntask module recieved an unhandled vision code.\n", __FILE__, __LINE__);
                 exit(1);
             }
-        }*/
+        }
 
         // Ensure debug messages are printed
         fflush(stdout);

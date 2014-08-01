@@ -47,12 +47,17 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
     printf("Starting yaw: %d\n", starting_yaw);
     
 
+    //int GATE_DEPTH = attitude_input->depth()+450;
+    // int GATE_DEPTH = 500; 
+    // set(DEPTH, GATE_DEPTH);
+    
     //read_mv_setting ("hacks.csv", "GATE_DEPTH", GATE_DEPTH);
+    
     int GATE_DEPTH = attitude_input->depth() + GATE_START_DEPTH;
     set (DEPTH, GATE_DEPTH);
     
-    /*
-    read_mv_setting ("hacks.csv", "GATE_DEPTH", GATE_DEPTH);
+
+    /*read_mv_setting ("hacks.csv", "GATE_DEPTH", GATE_DEPTH);
     printf("Rose: Going to depth: %d\n", GATE_DEPTH);
     set (DEPTH, GATE_DEPTH/2);
     set (DEPTH, GATE_DEPTH/4*3);
@@ -109,14 +114,14 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
 	/*
         printf("Rose: current depth is: %d\n", attitude_input->depth());
         printf("Rose: current yaw is: %d\n", attitude_input->yaw());
-        if (counter % 50 == 0)
-        {
-            set (YAW, starting_yaw);
-        }
-        else if (counter % 75 == 0)
-        {
-            set (DEPTH, GATE_DEPTH);
-        }
+        // if (counter % 50 == 0)
+        // {
+        //     set (YAW, starting_yaw);
+        // }
+        // else if (counter % 75 == 0)
+        // {
+        //     set (DEPTH, GATE_DEPTH);
+        // }
         counter ++;
 	*/
 	
@@ -124,15 +129,15 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
             if (state == STARTING_GATE) {
                 printf("Starting Gate: Moving Foward at High Speed\n");
                 set(SPEED, GATE_FORWARD_SPEED);
-		if (counter % GATE_ATTITUDE_CHECK_DELAY == 0)
-        	{
-            	    set (DEPTH, GATE_DEPTH);
-            	    printf("Adam: set depth to %d\n", GATE_DEPTH);
-            	    set (YAW, starting_yaw);
-            	    printf("Rose: set yaw = %d\n", starting_yaw);
-            	    counter = 0;
-		}
-		counter++;
+        		if (counter % GATE_ATTITUDE_CHECK_DELAY == 0)
+                	{
+                    	    set (DEPTH, GATE_DEPTH);
+                    	    printf("Adam: set depth to %d\n", GATE_DEPTH);
+                    	    set (YAW, starting_yaw);
+                    	    printf("Rose: set yaw = %d\n", starting_yaw);
+                    	    counter = 0;
+        		}
+        		counter++;
 
                 if (timer.get_time() > MASTER_TIMEOUT) {
                     printf ("Starting Gate: Master Timer Timeout!!\n");
@@ -170,7 +175,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
                     set(YAW, starting_yaw);
                     timer.restart();
                     while (timer.get_time() < 2);
-		    move(REVERSE, PATH_SPOTTED_REVERSE);
+		            move(REVERSE, PATH_SPOTTED_REVERSE);
                     state = STARTING_PATH;
                 }
             }
@@ -304,8 +309,8 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
             while (timer.get_time() < 2) {
                 set(SPEED, 0);
             }
-            while (timer.get_time() < 2) {
-                set(SPEED, 4);
+            while (timer.get_time() < 15) {
+                set(SPEED, 5);
             }
             set(SPEED, 0);
             printf ("Path Task Done!!\n");
