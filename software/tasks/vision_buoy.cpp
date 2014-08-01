@@ -30,6 +30,7 @@ MDA_VISION_MODULE_BUOY::MDA_VISION_MODULE_BUOY () :
     read_mv_setting (MDA_VISION_BUOY_SETTINGS, "BUOY_DEBUG_LEVEL", DEBUG_LEVEL);
     read_mv_setting (MDA_VISION_BUOY_SETTINGS, "DIFF_THRESHOLD", DIFF_THRESHOLD_SETTING);
     rectangle_params = read_rectangle_settings(MDA_VISION_BUOY_SETTINGS);
+    circle_params = read_circle_settings(MDA_VISION_BUOY_SETTINGS);
 
     gray_img = mvGetScratchImage();
     gray_img_2 = mvGetScratchImage2();
@@ -47,8 +48,8 @@ void MDA_VISION_MODULE_BUOY::add_frame (IplImage* src) {
     shift_frame_data (m_frame_data_vector, read_index, N_FRAMES_TO_KEEP);
 
     COLOR_TRIPLE color;
-    //MvCircle circle;
-    //MvCircleVector circle_vector;
+    MvCircle circle;
+    MvCircleVector circle_vector;
     MvRotatedBox rbox;
     MvRBoxVector rbox_vector;
 
@@ -73,8 +74,7 @@ void MDA_VISION_MODULE_BUOY::add_frame (IplImage* src) {
     }*/
 
     watershed_filter.watershed(src, gray_img, mvWatershedFilter::WATERSHED_STEP_SMALL);
-    window.showImage(src);
-    window2.showImage(gray_img);
+    DEBUG_SHOWIMAGE (2, window, gray_img);
 
     while ( watershed_filter.get_next_watershed_segment(gray_img_2, color) ) {
         cvCopy (gray_img_2, gray_img);
@@ -85,7 +85,7 @@ void MDA_VISION_MODULE_BUOY::add_frame (IplImage* src) {
             continue;
         }*/
 
-        bool found = contour_filter.match_rectangle(gray_img_2, &rbox_vector, color, rectangle_params);
+        bool found = contour_filter.match_circle(gray_img_2, &circle_vector, color, circle_params);
         (void) found;
         //contour_filter.match_rectangle(gray_img, &rbox_vector, color, LEN_TO_WIDTH_MIN, LEN_TO_WIDTH_MAX);        
         //window2.showImage (gray_img_2);

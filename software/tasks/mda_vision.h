@@ -51,6 +51,7 @@ protected:
     int DEBUG_LEVEL;
     int B_MIN, B_MAX, G_MIN, G_MAX, R_MIN, R_MAX;
     RECTANGLE_PARAMS rectangle_params;
+    CIRCLE_PARAMS circle_params;
 
     // stores numerical data that can be queried. The goal of the modules is to calculate this
     int m_pixel_x, m_pixel_y, m_range;
