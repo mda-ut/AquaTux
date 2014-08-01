@@ -59,10 +59,10 @@ void Mission::work_internal(bool show_image)
   printf("Rose: current yaw is: %d\n", attitude_input->yaw());
   
   ret_code = path.run_task();
-  ret_code = path.run_task();
-  ret_code = goalpost.run_task();
-  ret_code = goalpost.run_task();
-  ret_code = goalpost.run_task();
+  //ret_code = path.run_task();
+  //ret_code = goalpost.run_task();
+  //ret_code = goalpost.run_task();
+  //ret_code = goalpost.run_task();
   printf("Mission executed %d\n", ret_code);
   /*
 

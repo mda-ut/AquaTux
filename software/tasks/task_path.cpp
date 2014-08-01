@@ -7,7 +7,7 @@
 #define PATH_SEARCH_SPEED 1
 #define PATH_SPOTTED_REVERSE 15
 #define PATH_ROTATION_MODIFIER 0.8
-#define PATH_ROTATION_DELAY 2000
+#define PATH_ROTATION_DELAY 5
 
 // Global declarations
 const int PATH_DELTA_DEPTH = 50;
@@ -129,15 +129,15 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
             if (state == STARTING_GATE) {
                 printf("Starting Gate: Moving Foward at High Speed\n");
                 set(SPEED, GATE_FORWARD_SPEED);
-        		if (counter % GATE_ATTITUDE_CHECK_DELAY == 0)
-                	{
-                    	    set (DEPTH, GATE_DEPTH);
-                    	    printf("Adam: set depth to %d\n", GATE_DEPTH);
-                    	    set (YAW, starting_yaw);
-                    	    printf("Rose: set yaw = %d\n", starting_yaw);
-                    	    counter = 0;
-        		}
-        		counter++;
+        	if (counter % GATE_ATTITUDE_CHECK_DELAY == 0)
+                {
+                    set (DEPTH, GATE_DEPTH);
+                    printf("Adam: set depth to %d\n", GATE_DEPTH);
+                    set (YAW, starting_yaw);
+                    printf("Rose: set yaw = %d\n", starting_yaw);
+                    counter = 0;
+        	}
+        	counter++;
 
                 if (timer.get_time() > MASTER_TIMEOUT) {
                     printf ("Starting Gate: Master Timer Timeout!!\n");
@@ -175,7 +175,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
                     set(YAW, starting_yaw);
                     timer.restart();
                     while (timer.get_time() < 2);
-		            move(REVERSE, PATH_SPOTTED_REVERSE);
+		    move(REVERSE, PATH_SPOTTED_REVERSE);
                     state = STARTING_PATH;
                 }
             }
@@ -194,7 +194,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
 
             if (state == STARTING_PATH) {
                 if (vision_code == NO_TARGET) {
-                    if (counter % 50 == 0){
+                    if (counter % 150 == 0){
 		        printf ("Starting: No target\n");
 			counter = 0;
 		    }
@@ -205,7 +205,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
                         return TASK_MISSING;
                     }
                 }
-                	else if (vision_code == UNKNOWN_TARGET) {
+                    else if (vision_code == UNKNOWN_TARGET) {
                     printf ("Starting: Unknown target\n");
                     timer.restart();
                 }
@@ -222,15 +222,12 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
                         continue;
                     }
                     printf ("Searching: No target\n");
-                    if (timer.get_time() > 5) { // timeout, go back to starting state
+                    if (timer.get_time() > 20) { // timeout, go back to starting state
                         printf ("Timeout\n");
                         //set (YAW, starting_yaw);
                         timer.restart();
                         path_vision.clear_frames();
                         state = STARTING_PATH;
-                    }
-                    else if (timer.get_time() % 2 == 0) { // spin around a bit to try to re-aquire?
-                        //move (RIGHT, 45);
                     }
                     else { // just wait
                     }
@@ -246,10 +243,10 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
                         if (abs(xy_ang) < 10) {
                             // go fowards or backwards depending on the pix_y value 
                             if (pix_y >= 0) { 
-                                printf ("Set speed foward\n");
+                                printf ("Ritchie: Set speed foward\n");
                                 set(SPEED, 3);
                             } else { 
-                                printf ("Set speed reverse\n");
+                                printf ("Ritchie: Set speed reverse\n");
                                 set(SPEED, -3);
                             }
                         }
@@ -263,8 +260,8 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
                             move(RIGHT, round(xy_ang * PATH_ROTATION_MODIFIER));
                             path_vision.clear_frames();
 			    path_rotation_delay.restart();
-			    printf("Adam: Delaying rotation for %dms\n", abs(PATH_ROTATION_DELAY * xy_ang / 180));
-			    while (path_rotation_delay.get_time() < abs(PATH_ROTATION_DELAY * xy_ang / 180));
+			    printf("Adam: Delaying rotation for %ds\n", round(abs(PATH_ROTATION_DELAY * xy_ang / 180)));
+			    while (path_rotation_delay.get_time() < round(abs(PATH_ROTATION_DELAY * xy_ang / 180)));
                         }
                     }
                     else {                              // we are over the path, sink and try align state
@@ -279,7 +276,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
             else if (state == AT_ALIGN_DEPTH) {
                 if (vision_code == NO_TARGET) {     // wait for timeout
                     printf ("Aligning: No target\n");
-                    if (timer.get_time() > 6) { // timeout
+                    if (timer.get_time() > 20) { // timeout
                         printf ("Timeout\n");
                         move(RISE, ALIGN_DELTA_DEPTH);
                         timer.restart();
@@ -293,7 +290,8 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
                 }
                 else {
                     if (abs(pos_angle) >= 10) {
-                        move(RIGHT, pos_angle);
+                        printf("Aligning %s %d degrees (pos_angle)\n", (abs(pos_angle) > 0) ? "Right" : "Left", static_cast<int>(round(abs(pos_angle * PATH_ROTATION_MODIFIER))));
+			move(RIGHT, round(pos_angle * PATH_ROTATION_MODIFIER));
                         path_vision.clear_frames();
                         timer.restart();
                     }
