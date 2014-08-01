@@ -161,7 +161,7 @@ void MDA_VISION_MODULE_BUOY::rbox_calc(MvRBoxVector* rboxes_returned, int nframe
         }
     }
 
-    for (unsigne d i = 0; i < m_rbox_segment_vector.size(); i++) {
+    for (unsigned i = 0; i < m_rbox_segment_vector.size(); i++) {
         if (m_rbox_segment_vector[i].count < nframes/FRAMES_THRESHOLD_FRACTION) {
             m_rbox_segment_vector.erase(m_rbox_segment_vector.begin()+i);
             i--;
