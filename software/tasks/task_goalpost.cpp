@@ -1,7 +1,7 @@
 #include "mda_vision.h"
 #include "mda_tasks.h"
 
-const int MASTER_TIMEOUT = 120;
+const int MASTER_TIMEOUT = 240;
 
 MDA_TASK_GOALPOST::MDA_TASK_GOALPOST (AttitudeInput* a, ImageInput* i, ActuatorOutput* o) :
     MDA_TASK_BASE (a, i, o)
@@ -15,6 +15,7 @@ MDA_TASK_GOALPOST::~MDA_TASK_GOALPOST ()
 MDA_TASK_RETURN_CODE MDA_TASK_GOALPOST::run_task() {
     puts("Press q to quit");
 
+
     MDA_VISION_MODULE_GOALPOST goalpost_vision;
     MDA_TASK_RETURN_CODE ret_code = TASK_MISSING;
     
@@ -23,7 +24,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_GOALPOST::run_task() {
 
     bool done_goalpost = false;
 
-    int GOALPOST_DEPTH = attitude_input->depth();
+    int GOALPOST_DEPTH = attitude_input->depth()+450;
     /*read_mv_setting ("hacks.csv", "GOALPOST_DEPTH", GOALPOST_DEPTH);
     
     if (GOALPOST_DEPTH > 500)
@@ -33,11 +34,28 @@ MDA_TASK_RETURN_CODE MDA_TASK_GOALPOST::run_task() {
     set(DEPTH, GOALPOST_DEPTH);
     set(YAW, starting_yaw);
 
+    //hacks for semi
+    TIMER t;
+    t.restart();
+    while (t.get_time() < 25)
+    {
+        set(SPEED, 5);
+    }
+    stop();
+    set(YAW, attitude_input->yaw() - 30);
+    t.restart();
+        while (t.get_time() < 25)
+    {
+        set(SPEED, 5);
+    }
+    stop();
+
     TIMER timer;
     timer.restart();
 
     while (1) {
         IplImage* frame = image_input->get_image();
+        int counter = 0;
         if (!frame) {
             ret_code = TASK_ERROR;
             break;
@@ -55,7 +73,18 @@ MDA_TASK_RETURN_CODE MDA_TASK_GOALPOST::run_task() {
                 break;
             }
             else if (vision_code == NO_TARGET) {
-                set(YAW, attitude_input->yaw()-15);
+                counter ++;
+                t.restart();
+                if (counter % 8 == 0)
+                    while(t.get_time()<3)
+                    {
+                        set(SPEED, 5);
+                    }
+                if (counter % 10 == 0)
+                    set(YAW, attitude_input->yaw()-15);
+                else if (counter % 5 == 0)
+                    set(YAW, attitude_input->yaw()+ 15);
+                stop();
                 printf("Rose: Goalpost not found! looking around\n");
                 if (timer.get_time() > MASTER_TIMEOUT) {
                     stop();

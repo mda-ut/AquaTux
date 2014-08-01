@@ -54,14 +54,9 @@ void Mission::work_internal(bool show_image)
   MDA_TASK_RETURN_CODE ret_code;
 
   printf ("Rose: Running a %s mission!\n", show_image?"test":"Real");
-  printf("Rose: Running gate/path\n");
   printf("Rose: current depth is: %d\n", attitude_input->depth());
   printf("Rose: current yaw is: %d\n", attitude_input->yaw());
   
-  ret_code = path.run_task();
-  ret_code = path.run_task();
-  ret_code = goalpost.run_task();
-  ret_code = goalpost.run_task();
   ret_code = goalpost.run_task();
   printf("Mission executed %d\n", ret_code);
   /*
