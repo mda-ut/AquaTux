@@ -108,11 +108,12 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_GOALPOST::calc_vci () {
 
     // 2 valid segments
     if (seg_red_v_valid && seg_green_h_valid) {
-        m_pixel_x = rbox_vector_filtered[0].center.x - gray_img->width/2;
+        m_pixel_x = rbox_vector_filtered[0].center.x + rbox_vector_filtered[1].length/2 - gray_img->width/2;
         m_pixel_y = rbox_vector_filtered[0].center.y - gray_img->height/2;
         //rbox length is used as height of red box
         m_range = (float)(GOALPOST_REAL_HEIGHT * gray_img->height / rbox_vector_filtered[0].length * TAN_FOV_Y);
         retval = FULL_DETECT;
+        DEBUG_PRINT (2, "Goalpost: Full detect\n");
     }
     else if (seg_red_v_valid && !seg_green_h_valid) {
         m_pixel_x = rbox_vector_filtered[0].center.x - gray_img->width/2;
@@ -120,24 +121,26 @@ MDA_VISION_RETURN_CODE MDA_VISION_MODULE_GOALPOST::calc_vci () {
         //rbox length is used as height of red box
         m_range = (float)(GOALPOST_REAL_HEIGHT * gray_img->height / rbox_vector_filtered[0].length * TAN_FOV_Y);
         retval = ONE_SEGMENT;
+        DEBUG_PRINT (2, "Goalpost: One segment: red\n");
     }
     else if (!seg_red_v_valid && seg_green_h_valid) {
-        m_pixel_x = rbox_vector_filtered[1].center.x - gray_img->width/2;
+        m_pixel_x = rbox_vector_filtered[1].center.x - gray_img->width/2 + rbox_vector_filtered[1].length/2;
         m_pixel_y = rbox_vector_filtered[1].center.y - gray_img->height/2 - rbox_vector_filtered[1].length/3;
         //rbox length is used as length of green box
         m_range = (float)(GOALPOST_REAL_WIDTH * gray_img->width / rbox_vector_filtered[1].length * TAN_FOV_X);
         retval = ONE_SEGMENT;
+        DEBUG_PRINT (2, "Goalpost: One segment: green\n");
     }
     else {
         DEBUG_PRINT (2, "Goalpost: No Target\n");
         return NO_TARGET;
     }
-    cvCircle(gray_img, cvPoint(m_pixel_x + gray_img->width/2, m_pixel_y + gray_img->height/2), 10, CV_RGB(200, 200, 200), -1);
-    window2.showImage (gray_img);
+    cvCircle(gray_img, cvPoint(m_pixel_x + gray_img->width/2, m_pixel_y + gray_img->height/2), 5, CV_RGB(200, 200, 200), -1);
+    DEBUG_SHOWIMAGE (2, window2, gray_img);
 
     m_angular_x = RAD_TO_DEG * atan(TAN_FOV_X * m_pixel_x / gray_img->width);
     m_angular_y = RAD_TO_DEG * atan(TAN_FOV_Y * m_pixel_y / gray_img->height);
-    DEBUG_PRINT (2, "Goalpost: (%d,%d) (%5.2f, %5.2f)  range=%d\n", m_pixel_x, m_pixel_y, m_angular_x, m_angular_y, m_range);
+    DEBUG_PRINT (2, "Goalpost: m_pixel_y, m_pixel_y (%d,%d)  m_angular_x, m_angular_y (%5.2f, %5.2f)  range=%d\n", m_pixel_x, m_pixel_y, m_angular_x, m_angular_y, m_range);
     
     return retval;
 }
