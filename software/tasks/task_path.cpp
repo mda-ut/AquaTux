@@ -5,9 +5,9 @@
 #define GATE_FORWARD_SPEED 5
 #define GATE_ATTITUDE_CHECK_DELAY 100
 #define PATH_SEARCH_SPEED 1
-#define PATH_SPOTTED_REVERSE 15
+#define PATH_SPOTTED_REVERSE 25
 #define PATH_ROTATION_MODIFIER 0.8
-#define PATH_ROTATION_DELAY 5
+#define PATH_ROTATION_DELAY 10
 
 // Global declarations
 const int PATH_DELTA_DEPTH = 50;
@@ -194,7 +194,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
 
             if (state == STARTING_PATH) {
                 if (vision_code == NO_TARGET) {
-                    if (counter % 150 == 0){
+                    if (counter % 350 == 0){
 		        printf ("Starting: No target\n");
 			counter = 0;
 		    }
@@ -218,15 +218,13 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
             }
             else if (state == AT_SEARCH_DEPTH){
                 if (vision_code == NO_TARGET) {
-                    if (timer.get_time() < 1) {
-                        continue;
-                    }
                     printf ("Searching: No target\n");
                     if (timer.get_time() > 20) { // timeout, go back to starting state
                         printf ("Timeout\n");
                         //set (YAW, starting_yaw);
                         timer.restart();
                         path_vision.clear_frames();
+			move(REVERSE, PATH_SPOTTED_REVERSE);
                         state = STARTING_PATH;
                     }
                     else { // just wait
@@ -239,7 +237,8 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
                 else {
                     timer.restart();
                     printf ("Searching: Good\n");
-                    if(pix_distance > frame->height/5){ // move over the path
+                    /*
+		    if(pix_distance > frame->height/5){ // move over the path
                         if (abs(xy_ang) < 10) {
                             // go fowards or backwards depending on the pix_y value 
                             if (pix_y >= 0) { 
@@ -251,26 +250,29 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
                             }
                         }
                         else {
-                            if (abs(xy_ang) > 90 ) {
-                                // turn different direction based on pix_y value
-                                xy_ang = (xy_ang > 0) ? xy_ang - 180 : xy_ang + 180; 
-                            } 
-                            printf("Turning %s %d degrees (xy_ang)\n", (abs(xy_ang) > 0) ? "Right" : "Left", static_cast<int>(round(abs(xy_ang * PATH_ROTATION_MODIFIER))));
-                            set(SPEED, 0);
-                            move(RIGHT, round(xy_ang * PATH_ROTATION_MODIFIER));
-                            path_vision.clear_frames();
-			    path_rotation_delay.restart();
-			    printf("Adam: Delaying rotation for %ds\n", round(abs(PATH_ROTATION_DELAY * xy_ang / 180)));
-			    while (path_rotation_delay.get_time() < round(abs(PATH_ROTATION_DELAY * xy_ang / 180)));
-                        }
-                    }
-                    else {                              // we are over the path, sink and try align state
+		    */
+                    if (abs(xy_ang) > 90 ) {
+                        // turn different direction based on pix_y value
+                        xy_ang = (xy_ang > 0) ? xy_ang - 180 : xy_ang + 180; 
+                    } 
+                    printf("Adam: Turning %s %d degrees (xy_ang)\n", (abs(xy_ang) > 0) ? "Right" : "Left", static_cast<int>(round(abs(xy_ang * PATH_ROTATION_MODIFIER))));
+                    set(SPEED, 0);
+                    move(RIGHT, round(xy_ang * PATH_ROTATION_MODIFIER));
+                    path_vision.clear_frames();
+		    path_rotation_delay.restart();
+		    printf("Adam: Delaying rotation for %fs\n", round(abs(PATH_ROTATION_DELAY * xy_ang / 10)));
+		    while (path_rotation_delay.get_time() < round(abs(PATH_ROTATION_DELAY * xy_ang / 10)));
+                    /*else {                              // we are over the path, sink and try align state
                         set(SPEED, 0);
                         move(SINK, ALIGN_DELTA_DEPTH);
                         timer.restart();
                         path_vision.clear_frames();
                         state = AT_ALIGN_DEPTH;
-                    }
+                    }*/
+		    if (abs(xy_ang) <= 10){
+			printf("\nAdam: Done Path!\n");
+			done_path = true;
+		    }
                 }   
             }
             else if (state == AT_ALIGN_DEPTH) {
