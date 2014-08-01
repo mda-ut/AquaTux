@@ -5,7 +5,9 @@
 #define GATE_FORWARD_SPEED 5
 #define GATE_ATTITUDE_CHECK_DELAY 100
 #define PATH_SEARCH_SPEED 1
-#define PATH_SPOTTED_REVERSE 2
+#define PATH_SPOTTED_REVERSE 15
+#define PATH_ROTATION_MODIFIER 0.8
+#define PATH_ROTATION_DELAY 2000
 
 // Global declarations
 const int PATH_DELTA_DEPTH = 50;
@@ -55,8 +57,9 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
     set (DEPTH, GATE_DEPTH/2);
     set (DEPTH, GATE_DEPTH/4*3);
     set (DEPTH, GATE_DEPTH);
+    set(DEPTH, 100);
     */
-    //set(DEPTH, 100);
+    printf("Finished diving, correcting yaw\n");
 
     // go to the starting orientation in case sinking changed it
     set (YAW, starting_yaw);
@@ -67,6 +70,8 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
     //TIMER master_timer;
     TIMER timer;
     timer.restart();
+
+    TIMER path_rotation_delay;
 
     while (1) {
 
@@ -180,18 +185,22 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
             int pix_y = path_vision.get_pixel_y();
             int pix_distance = sqrt(pow(pix_y,2) + pow(pix_x,2));
 
-            printf("xy_distance = %d    xy_angle = %5.2f\n==============================\n", pix_distance, pos_angle);
+            //printf("xy_distance = %d    xy_angle = %5.2f\n==============================\n", pix_distance, pos_angle);
 
             if (state == STARTING_PATH) {
                 if (vision_code == NO_TARGET) {
-                    printf ("Starting: No target\n");
+                    if (counter % 50 == 0){
+		        printf ("Starting: No target\n");
+			counter = 0;
+		    }
+		    counter++;
                     set(SPEED, PATH_SEARCH_SPEED);
                     if (timer.get_time() > MASTER_TIMEOUT) { // timeout
                         printf ("Master Timeout\n");
                         return TASK_MISSING;
                     }
                 }
-                else if (vision_code == UNKNOWN_TARGET) {
+                	else if (vision_code == UNKNOWN_TARGET) {
                     printf ("Starting: Unknown target\n");
                     timer.restart();
                 }
@@ -244,10 +253,13 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
                                 // turn different direction based on pix_y value
                                 xy_ang = (xy_ang > 0) ? xy_ang - 180 : xy_ang + 180; 
                             } 
-                            printf("Turning %s %d degrees (xy_ang)\n", (abs(xy_ang) > 0) ? "Right" : "Left", static_cast<int>(abs(xy_ang)));
+                            printf("Turning %s %d degrees (xy_ang)\n", (abs(xy_ang) > 0) ? "Right" : "Left", static_cast<int>(round(abs(xy_ang * PATH_ROTATION_MODIFIER))));
                             set(SPEED, 0);
-                            move(RIGHT, xy_ang);
+                            move(RIGHT, round(xy_ang * PATH_ROTATION_MODIFIER));
                             path_vision.clear_frames();
+			    path_rotation_delay.restart();
+			    printf("Adam: Delaying rotation for %dms\n", abs(PATH_ROTATION_DELAY * xy_ang / 180));
+			    while (path_rotation_delay.get_time() < abs(PATH_ROTATION_DELAY * xy_ang / 180));
                         }
                     }
                     else {                              // we are over the path, sink and try align state
@@ -298,7 +310,6 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
             set(SPEED, 0);
             printf ("Path Task Done!!\n");
             return TASK_DONE;
-
         }
 
         // Ensure debug messages are printed
