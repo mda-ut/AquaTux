@@ -272,6 +272,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task(){
                         path_vision.clear_frames();
                         state = AT_ALIGN_DEPTH;
                     }*/
+                    }
 		    else {
 			printf("\nAdam: Done Path!\n");
 			done_path = true;
