@@ -32,7 +32,7 @@ MDA_TASK_PATH::~MDA_TASK_PATH ()
 MDA_TASK_RETURN_CODE MDA_TASK_PATH::run_task()
 {
     TIMER t;
-    set(DEPTH, attitude_input->depth() + 450);
+    set(DEPTH, attitude_input->depth() + 250);
     t.restart();
     while (t.get_time() < 45)
     {
