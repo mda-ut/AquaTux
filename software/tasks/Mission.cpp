@@ -59,6 +59,7 @@ void Mission::work_internal(bool show_image)
   
   ret_code = path.run_task();
   ret_code = goalpost.run_task();
+  ret_code = surface.run_task();
 
   printf("Mission executed %d\n", ret_code);
   /*
