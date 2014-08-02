@@ -19,34 +19,37 @@ MDA_TASK_RETURN_CODE MDA_TASK_GOALPOST::run_task() {
     MDA_VISION_MODULE_GOALPOST goalpost_vision;
     MDA_TASK_RETURN_CODE ret_code = TASK_MISSING;
     
-    int starting_yaw = attitude_input->yaw();
+    int starting_yaw = attitude_input->yaw()-30;
     printf("Starting yaw: %d\n", starting_yaw);
 
     bool done_goalpost = false;
 
-    int GOALPOST_DEPTH = attitude_input->depth()+250;
     /*read_mv_setting ("hacks.csv", "GOALPOST_DEPTH", GOALPOST_DEPTH);
     
     if (GOALPOST_DEPTH > 500)
         set(DEPTH, 500);
     if (GOALPOST_DEPTH > 600)
         set(DEPTH, 600);*/
-    set(DEPTH, GOALPOST_DEPTH);
-    set(YAW, starting_yaw);
+    stop();
 
     //hacks for semi
     TIMER t;
     t.restart();
-    while (t.get_time() < 25)
-    {
-        set(SPEED, 5);
-    }
     stop();
-    set(YAW, attitude_input->yaw() - 30);
+    int starting_depth = attitude_input->depth();
+    set(YAW, starting_yaw);
     t.restart();
-        while (t.get_time() < 25)
+    int counter = 0;
+    int counter2 = 0;
+    while (t.get_time() < 15)
     {
         set(SPEED, 5);
+        if (counter % 50 == 0)
+        {
+            set(YAW, starting_yaw);
+            set (DEPTH, starting_depth);
+        }
+        counter ++;
     }
     stop();
 
@@ -55,7 +58,7 @@ MDA_TASK_RETURN_CODE MDA_TASK_GOALPOST::run_task() {
 
     while (1) {
         IplImage* frame = image_input->get_image();
-        int counter = 0;
+        
         if (!frame) {
             ret_code = TASK_ERROR;
             break;
@@ -73,19 +76,21 @@ MDA_TASK_RETURN_CODE MDA_TASK_GOALPOST::run_task() {
                 break;
             }
             else if (vision_code == NO_TARGET) {
-                counter ++;
+                
                 t.restart();
-                if (counter % 8 == 0)
+                if (counter2 % 8 == 0)
+                {
                     while(t.get_time()<3)
                     {
                         set(SPEED, 5);
                     }
-                if (counter % 10 == 0)
+                }
+                if (counter2 % 10 == 0)
                     set(YAW, attitude_input->yaw()-15);
-                else if (counter % 5 == 0)
+                else if (counter2 % 5 == 0)
                     set(YAW, attitude_input->yaw()+ 15);
                 stop();
-                printf("Rose: Goalpost not found! looking around\n");
+                counter2++;
                 if (timer.get_time() > MASTER_TIMEOUT) {
                     stop();
                     return TASK_MISSING;
