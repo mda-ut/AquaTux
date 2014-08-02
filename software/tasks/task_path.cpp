@@ -1,9 +1,9 @@
 #include "mda_tasks.h"
 #include "mda_vision.h"
 
-#define GATE_START_DEPTH 25
+#define GATE_START_DEPTH 350
 #define GATE_FORWARD_SPEED 5
-#define GATE_ATTITUDE_CHECK_DELAY 100
+#define GATE_ATTITUDE_CHECK_DELAY 50
 #define PATH_SEARCH_SPEED 1
 #define PATH_SPOTTED_REVERSE 20
 #define PATH_ROTATION_MODIFIER 0.8
